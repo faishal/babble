@@ -113,6 +113,8 @@ class Babble_Post_Public extends Babble_Plugin {
 		$this->add_filter( 'bbl_translated_taxonomy', null, null, 2 );
 		$this->add_filter( 'admin_body_class' );
 
+		$this->add_action( 'load-post.php', 'load_post_edit' );
+
 		$this->initiate();
 	}
 	/**
@@ -142,6 +144,50 @@ class Babble_Post_Public extends Babble_Plugin {
 			'show_ui' => false,
 			'show_in_nav_menus' => false,
 		) );
+	}
+
+	/**
+	 * Hooks the WP action load-post.php to detect people
+	 * trying to edit translated posts, and instead kick
+	 * redirect them to an existing translation job or
+	 * create a translation job and direct them to that.
+	 *
+	 * @TODO this should be in the post-public class
+	 *
+	 * @action load-post.php
+	 *
+	 * @return void
+	 **/
+	public function load_post_edit() {
+		$post_id = isset( $_GET[ 'post' ] ) ? absint( $_GET[ 'post' ] ) : false;
+		if ( ! $post_id )
+			$post_id = isset( $_POST[ 'post_ID' ] ) ? absint( $_POST[ 'post_ID' ] ) : false;
+		$translated_post = get_post( $post_id );
+		if ( ! $translated_post )
+			return;
+		if ( ! bbl_is_translated_post_type( $translated_post->post_type ) )
+			return;
+		$canonical_post = bbl_get_default_lang_post( $translated_post );
+		$lang_code = bbl_get_post_lang_code( $translated_post );
+		if ( bbl_get_default_lang_code() == $lang_code )
+			return;
+		// @TODO Check capabilities include editing a translation post
+		// - If not, the button shouldn't be on the Admin Bar
+		// - But we also need to not process at this point
+		global $bbl_jobs;
+		$existing_jobs = $bbl_jobs->get_incomplete_post_jobs( $canonical_post );
+		if ( isset( $existing_jobs[ $lang_code ] ) ) {
+			$url = get_edit_post_link( $existing_jobs[ $lang_code ], 'url' );
+			wp_redirect( $url );
+			exit;
+		}
+		// Create a new translation job for the current language
+		$lang_codes = array( $lang_code );
+		$jobs = $bbl_jobs->create_post_jobs( $canonical_post, $lang_codes );
+		// Redirect to the translation job
+		$url = get_edit_post_link( $jobs[0], 'url' );
+		wp_redirect( $url );
+		exit;
 	}
 
 	/**
@@ -267,15 +313,18 @@ class Babble_Post_Public extends Babble_Plugin {
 	public function registered_post_type( $post_type, $args ) {
 		// Don't bother with non-public post_types for now
 		// @FIXME: This may need to change for menus?
-		if ( false === $args->public )
+		if ( false === $args->public ){
 			return;
+		}
 
 		// Don't shadow shadow post types, it's going to get silly
-		if ( in_array( $post_type, $this->post_types ) )
+		if ( in_array( $post_type, $this->post_types ) ) {
 			return;
+		}
 
-		if ( $this->no_recursion )
+		if ( $this->no_recursion ){
 			return;
+		}
 
 		$this->no_recursion = 'registered_post_type';
 
@@ -318,8 +367,7 @@ class Babble_Post_Public extends Babble_Plugin {
 			// @FIXME: We are in danger of a post_type name being longer than 20 chars
 			// I would prefer to keep the post_type human readable, as human devs and sysadmins always 
 			// end up needing to read this kind of thing.
-			// @FIXME: Should I be sanitising these values?
-			$new_post_type = strtolower( "{$post_type}_{$lang->code}" );
+			$new_post_type = sanitize_key( strtolower( "{$post_type}_{$lang->code}" ) );
 
 			if ( false !== $args[ 'rewrite' ] ) {
 				if ( ! is_array( $new_args[ 'rewrite' ] ) )
@@ -507,7 +555,7 @@ class Babble_Post_Public extends Babble_Plugin {
 		if ( $this->is_media_manager() ) {
 			return;
 		}
-		
+
 		$query->query_vars = $this->translate_query_vars( $query->query_vars );
 	}
 

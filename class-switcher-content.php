@@ -94,7 +94,7 @@ class Babble_Switcher_Menu {
 		} else if ( 'page' == get_option( 'show_on_front' ) && is_home() ) {
 			$this->translations = bbl_get_post_translations( get_option( 'page_for_posts' ) );
 			$this->jobs         = bbl_get_incomplete_post_jobs( get_option( 'page_for_posts' ) );
-		} else if ( ( !is_admin() and ( is_tax() || is_category() ) ) || $editing_term ) {
+		} else if ( ( !is_admin() and ( is_tax() || is_category() || is_tag() ) ) || $editing_term ) {
 			if ( isset( $_REQUEST[ 'tag_ID' ] ) )
 				$term = get_term( (int) @ $_REQUEST[ 'tag_ID' ], $this->screen->taxonomy );
 			else
@@ -134,13 +134,13 @@ class Babble_Switcher_Menu {
 			// @TODO this cap check should move into each add_*_link() method:
 			if ( ! bbl_is_public_lang( $alt_lang->code ) && ! current_user_can( 'edit_posts' ) )
 				continue;
-			
+
 			if ( is_front_page() ) { 				// Language homepage
 				// is_front_page works for language homepages, phew
 				$this->add_front_page_link( $alt_lang );
 			} else if ( is_post_type_archive() ) {			// Post type archives
 				$this->add_post_type_archive_link( $alt_lang );
-			} else if ( is_tax() || is_category() ) { 		// Category or taxonomy archive
+			} else if ( is_tax() || is_category() || is_tag() ) { 		// Category or taxonomy archive
 				$this->add_taxonomy_archive_link( $alt_lang );
 			} else { // 404's, amongst other things
 				$this->add_arbitrary_link( $alt_lang );

@@ -92,8 +92,8 @@ class Babble_Locale {
 		# @TODO this exposes the $wpdb prefix. We should set the cookie path to the site path instead
 		# (example.com/site or site.example.com) so the cookie is only set for the current site on a multisite install
 		# @TODO actually, both of these should be user preferences, not cookies.
-		$this->content_lang_cookie   = $wpdb->prefix . '_bbl_content_lang_' . COOKIEHASH;
-		$this->interface_lang_cookie = $wpdb->prefix . '_bbl_interface_lang_' . COOKIEHASH;
+		$this->content_lang_cookie   = 'bbl_' . get_current_blog_id() . '_bbl_content_lang_' . COOKIEHASH;
+		$this->interface_lang_cookie = 'bbl_' . get_current_blog_id() . '_bbl_interface_lang_' . COOKIEHASH;
 	}
 
 	/**

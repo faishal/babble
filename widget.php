@@ -131,14 +131,14 @@ class Babble_Widget extends WP_Widget {
 		?>
 		<p>
 			<?php _e('Show as:','babble'); ?>
-			<select id="<?php echo $this->get_field_id('show_as'); ?>" name="<?php echo $this->get_field_name('show_as'); ?>">
+			<select id="<?php echo esc_attr( $this->get_field_id('show_as') ); ?>" name="<?php echo esc_attr( $this->get_field_name('show_as') ); ?>">
 				<option value="dropdown" <?php selected( $instance['show_as'],'dropdown' ); ?>><?php _e('Dropdown','babble'); ?></option>
 				<option value="list" <?php selected( $instance['show_as'],'list' ); ?>><?php _e('List','babble'); ?></option>
 			</select>
 		</p>
 		<p>
-			<input id="<?php echo $this->get_field_id('show_if_unavailable'); ?>" name="<?php echo $this->get_field_name('show_if_unavailable'); ?>" type="checkbox" <?php checked( 'on', $instance['show_if_unavailable'] ); ?> />
-			<label for="<?php echo $this->get_field_id('show_if_unavailable'); ?>"><?php _e('Show all languages in widget, even if there is no translation / equivalent page?', 'babble'); ?></label>
+			<input id="<?php echo esc_attr( $this->get_field_id('show_if_unavailable') ); ?>" name="<?php echo esc_attr( $this->get_field_name('show_if_unavailable') ); ?>" type="checkbox" <?php checked( 'on', $instance['show_if_unavailable'] ); ?> />
+			<label for="<?php echo esc_attr( $this->get_field_id('show_if_unavailable') ); ?>"><?php _e('Show all languages in widget, even if there is no translation / equivalent page?', 'babble'); ?></label>
 		</p>
 		<p class="description">
 			<?php _e("Don't worry: if there's no equivalent page, the link won't be clickable.","babble"); ?>

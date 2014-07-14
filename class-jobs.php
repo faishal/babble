@@ -35,7 +35,6 @@ class Babble_Jobs extends Babble_Plugin {
 		$this->add_action( 'bbl_translation_terms_meta_boxes', null, 10, 2 );
 		$this->add_action( 'edit_form_after_title' );
 		$this->add_action( 'init', 'init_early', 0 );
-		$this->add_action( 'load-post.php', 'load_post_edit' );
 		$this->add_action( 'manage_bbl_job_posts_custom_column', 'action_column', null, 2 );
 		$this->add_action( 'pre_get_posts' );
 		$this->add_action( 'save_post', 'save_job', null, 2 );
@@ -123,49 +122,6 @@ class Babble_Jobs extends Babble_Plugin {
 	public function admin_init() {
 		# @TODO use filemtime everywhere
 		wp_enqueue_style( 'bbl-jobs-admin', $this->url( 'css/jobs-admin.css' ), array(), $this->version );
-	}
-
-	/**
-	 * Hooks the WP action load-post.php to detect people
-	 * trying to edit translated posts, and instead kick 
-	 * redirect them to an existing translation job or
-	 * create a translation job and direct them to that.
-	 *
-	 * @TODO this should be in the post-public class
-	 * 
-	 * @action load-post.php
-	 * 
-	 * @return void
-	 **/
-	public function load_post_edit() {
-		$post_id = isset( $_GET[ 'post' ] ) ? absint( $_GET[ 'post' ] ) : false;
-		if ( ! $post_id )
-			$post_id = isset( $_POST[ 'post_ID' ] ) ? absint( $_POST[ 'post_ID' ] ) : false;
-		$translated_post = get_post( $post_id );
-		if ( ! $translated_post )
-			return;
-		if ( ! bbl_is_translated_post_type( $translated_post->post_type ) )
-			return;
-		$canonical_post = bbl_get_default_lang_post( $translated_post );
-		$lang_code = bbl_get_post_lang_code( $translated_post );
-		if ( bbl_get_default_lang_code() == $lang_code )
-			return;
-		// @TODO Check capabilities include editing a translation post
-		// - If not, the button shouldn't be on the Admin Bar
-		// - But we also need to not process at this point
-		$existing_jobs = $this->get_incomplete_post_jobs( $canonical_post );
-		if ( isset( $existing_jobs[ $lang_code ] ) ) {
-			$url = get_edit_post_link( $existing_jobs[ $lang_code ], 'url' );
-			wp_redirect( $url );
-			exit;
-		}
-		// Create a new translation job for the current language
-		$lang_codes = array( $lang_code );
-		$jobs = $this->create_post_jobs( $canonical_post, $lang_codes );
-		// Redirect to the translation job
-		$url = get_edit_post_link( $jobs[0], 'url' );
-		wp_redirect( $url );
-		exit;
 	}
 
 	/**
@@ -563,6 +519,7 @@ class Babble_Jobs extends Babble_Plugin {
 			}
 			# @TODO else wp_die()?
 		}
+
 
 		# @TODO not implemented:
 		if ( $origin_term_nonce and wp_verify_nonce( $origin_term_nonce, "bbl_translation_origin_term_{$job->ID}") ) {

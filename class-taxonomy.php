@@ -55,6 +55,7 @@ class Babble_Taxonomies extends Babble_Plugin {
 		$this->add_filter( 'term_link', null, null, 3 );
 		$this->add_filter( 'bbl_translated_taxonomy', null, null, 2 );
 		$this->add_filter( 'admin_body_class' );
+		$this->add_filter( 'the_tags', null, null, 5 );
 
 	}
 	
@@ -164,7 +165,7 @@ class Babble_Taxonomies extends Babble_Plugin {
 
 			// @FIXME: Note currently we are in danger of a taxonomy name being longer than 32 chars
 			// Perhaps we need to create some kind of map like (taxonomy) + (lang) => (shadow translated taxonomy)
-			$new_taxonomy = strtolower( "{$taxonomy}_{$lang->code}" );
+			$new_taxonomy = sanitize_key( strtolower( "{$taxonomy}_{$lang->code}" ) );
 
 			$this->taxonomies[ $new_taxonomy ] = $taxonomy;
 			if ( ! isset( $this->lang_map[ $lang->code ] ) || ! is_array( $this->lang_map[ $lang->code ] ) )
@@ -189,9 +190,9 @@ class Babble_Taxonomies extends Babble_Plugin {
 		}
 
 		// @FIXME: Remove this when menu's are translatable
-		if( 'nav_menu' == $taxonomy ) {
-			return false;
-		}
+//		if( 'nav_menu' == $taxonomy ) {
+//			return false;
+//		}
 
 		return apply_filters( 'bbl_translated_taxonomy', true, $taxonomy );
 	}
@@ -290,7 +291,7 @@ class Babble_Taxonomies extends Babble_Plugin {
 		if ( 'post_tag' == $taxonomy || 'category' == $taxonomy || ! isset( $this->taxonomies[ $taxonomy ] ) ) {
 			return $termlink;
 		}
-	
+
 		// Deal with our shadow taxonomies
 		if ( ! ( $base_taxonomy = $this->get_base_taxonomy( $taxonomy ) ) ) {
 			return $termlink;
@@ -306,7 +307,7 @@ class Babble_Taxonomies extends Babble_Plugin {
 				$term = &get_term_by('slug', $term, $base_taxonomy);
 			}
 		}
-	
+
 		if ( !is_object($term) ) {
 			$term = new WP_Error('invalid_term', __('Empty Term', 'babble'));
 		}
@@ -547,9 +548,9 @@ class Babble_Taxonomies extends Babble_Plugin {
 		if ( 'term_translation' == $taxonomy ) {
 			return false;
 		}
-		if ( 'nav_menu' == $taxonomy ) {
-			return false;
-		}
+//		if ( 'nav_menu' == $taxonomy ) {
+//			return false;
+//		}
 		if ( 'link_category' == $taxonomy ) {
 			return false;
 		}
@@ -614,6 +615,9 @@ class Babble_Taxonomies extends Babble_Plugin {
 		foreach ( $existing_terms as $t ) {
 			$terms[ $this->get_taxonomy_lang_code( $t->taxonomy ) ] = $t;
 		}
+
+		wp_cache_add( $transid, $terms, 'bbl_term_translations' );
+
 		return $terms;
 	}
 
@@ -700,6 +704,19 @@ class Babble_Taxonomies extends Babble_Plugin {
 		}
 		return $this->taxonomies[ $taxonomy ];
 	}
+
+	/**
+	 * Return all the base taxonomies (in the default language).
+	 *
+	 * @return array An array of taxonomy objects
+	 **/
+	public function get_base_taxonomies() {
+		$taxonomies = array();
+		foreach ( $this->taxonomies as $taxonomy )
+			$taxonomies[ $taxonomy ] = get_taxonomy( $taxonomy );
+		return $taxonomies;
+	}
+
 
 	/**
 	 * Returns the equivalent taxonomy in the specified language.
@@ -941,6 +958,17 @@ class Babble_Taxonomies extends Babble_Plugin {
 				throw new exception( "Problem syncing terms: " . print_r( $terms, true ), " Error: " . print_r( $result, true ) );
 			}
 		}
+	}
+
+	function the_tags( $term_list, $before = null, $sep = null, $after = null, $id = null ) {
+		$lang_taxonomy = bbl_get_taxonomy_in_lang( 'post_tag', bbl_get_current_lang_code() );
+		if ( 'post_tag' != $lang_taxonomy ) {
+			$this->remove_filter( 'the_tags', null, null, 5 );
+			$lang_taxonomy = bbl_get_taxonomy_in_lang( 'post_tag', bbl_get_current_lang_code() );
+			$term_list     = get_the_term_list( $id, $lang_taxonomy, $before, $sep, $after );
+			$this->add_filter( 'the_tags', null, null, 5 );
+		}
+		return $term_list;
 	}
 
 }

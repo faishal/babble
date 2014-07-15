@@ -556,6 +556,9 @@ class Babble_Post_Public extends Babble_Plugin {
 			return;
 		}
 
+		if ( true === in_array( 'nav_menu_item', (array) $query->query_vars[ 'post_type' ] ) ) {
+			return;
+		}
 		$query->query_vars = $this->translate_query_vars( $query->query_vars );
 	}
 
@@ -1088,6 +1091,7 @@ class Babble_Post_Public extends Babble_Plugin {
 	 **/
 	protected function translate_query_vars( array $query_vars, $request = false ) {
 
+
 		// Sequester the original query, in case we need it to get the default content later
 		$query_vars[ 'bbl_original_query' ] = $query_vars;
 
@@ -1098,6 +1102,14 @@ class Babble_Post_Public extends Babble_Plugin {
 
 		$lang_url_prefix = isset( $query_vars[ 'lang_url_prefix' ] ) ? $query_vars[ 'lang_url_prefix' ] : get_query_var( 'lang_url_prefix' );
 		$lang = isset( $query_vars[ 'lang' ] ) ? $query_vars[ 'lang' ] : get_query_var( 'lang' );
+		if ( is_admin()  ) {
+			if(empty( $lang )){
+				$lang = bbl_get_current_content_lang_code();
+			}
+			if ( bbl_get_default_lang_code() == $lang ) {
+				return $query_vars;
+			}
+		}
 
 		// Detect language specific homepages
 		if ( $request == $lang_url_prefix ) {

@@ -142,7 +142,7 @@ class Babble_Menus extends Babble_Plugin {
 		if ( !isset( $q->query_vars[ 'post_type' ] ) ) {
 			return;
 		}
-		if ( 'nav_menu_item' !== $q->query_vars[ 'post_type' ] ) {
+		if ( false === in_array( 'nav_menu_item', (array) $q->query_vars[ 'post_type' ] ) ) {
 			return;
 		}
 		$q->query_vars[ 'meta_query' ] = array(

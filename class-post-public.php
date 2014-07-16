@@ -961,8 +961,8 @@ class Babble_Post_Public extends Babble_Plugin {
 	 * @return Path to a template file
 	 **/
 	public function single_template( $template ) {
-		if( bbl_is_default_lang() )
-			return $template;
+//		if( bbl_is_default_lang() )
+//			return $template;
 
 		// Deal with the language front pages and custom page templates
 		$post = get_post( get_the_ID() );
@@ -986,7 +986,7 @@ class Babble_Post_Public extends Babble_Plugin {
 		// Check if we're dealing with a page or a translation of a page
 		if ( 'page' == $this->get_base_post_type( $post->post_type ) ) {
 			$custom_page_template = get_post_meta( get_the_ID(), '_wp_page_template', true );
-			if ( false !== $custom_page_template && 'default' != $custom_page_template )
+			if ( $custom_page_template && 'default' != $custom_page_template )
 				$templates = (array) $custom_page_template;
 			else
 				$templates = array( 'page.php' );

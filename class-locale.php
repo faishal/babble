@@ -65,6 +65,9 @@ class Babble_Locale {
 	 * @var int
 	 **/
 	protected $version = 2;
+
+	protected $content_lang_cookie;
+	protected $interface_lang_cookie;
 	
 	/**
 	 * Setup any add_action or add_filter calls. Initiate properties.
@@ -97,7 +100,7 @@ class Babble_Locale {
 	}
 
 	/**
-	 * Hooks the WP admin_init action 
+	 * Hooks the WP admin_init action
 	 *
 	 * @return void
 	 **/

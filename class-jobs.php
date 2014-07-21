@@ -21,7 +21,7 @@ class Babble_Jobs extends Babble_Plugin {
 	 *
 	 * @var boolean
 	 **/
-	protected $no_recursion;
+	public $no_recursion;
 	
 	public function __construct() {
 		$this->setup( 'babble-job', 'plugin' );
@@ -511,6 +511,12 @@ class Babble_Jobs extends Babble_Plugin {
 			if ( $origin_post = get_post( absint( $_POST['bbl_origin_post'] ) ) ) {
 				add_post_meta( $job->ID, 'bbl_job_post', "{$origin_post->post_type}|{$origin_post->ID}", true );
 
+				$GLOBALS['acf_save_lock'] = true;
+
+				updat_post_meta( $job->ID, 'bbl_acf_load_value', 'self' );
+
+				wp_cache_set( 'bbl_acf_load_value/post_id=' . $job->ID , 'self', 'babble' );
+
 				foreach ( $this->get_post_terms_to_translate( $origin_post->ID, $lang_code ) as $taxo => $terms ) {
 					foreach ( $terms as $term_id => $term )
 						add_post_meta( $job->ID, 'bbl_job_term', "{$taxo}|{$term_id}", false );
@@ -615,7 +621,7 @@ class Babble_Jobs extends Babble_Plugin {
 			}
 
 		}
-
+		$GLOBALS['acf_save_lock'] =false;
 	}
 
 	public function save_post( $post_id, WP_Post $post ) {

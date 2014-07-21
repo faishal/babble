@@ -145,6 +145,11 @@ class Babble_Menus extends Babble_Plugin {
 		if ( false === in_array( 'nav_menu_item', (array) $q->query_vars[ 'post_type' ] ) ) {
 			return;
 		}
+
+		if ( isset( $q->query_vars[ 'bbl_translate' ] ) && false === $q->query_vars[ 'bbl_translate' ] ) {
+			return;
+		}
+
 		$q->query_vars[ 'meta_query' ] = array(
 			array(
 				'key'     => '_menu_lang_code',
@@ -152,6 +157,15 @@ class Babble_Menus extends Babble_Plugin {
 				'compare' => 'LIKE'
 			),
 		);
+//		if ( bbl_get_default_lang_code() === bbl_get_current_lang_code() ) {
+//
+//			$q->query_vars[ 'meta_query' ]['relation'] =  'OR';
+//			$q->query_vars[ 'meta_query' ][ ] = array(
+//				'key'     => '_menu_lang_code',
+//				'compare' => 'NOT EXISTS',
+//				'value'   => bbl_get_current_lang_code()
+//			);
+//		}
 	}
 
 	public function wp_insert_post_data( $data, $postarr ) {

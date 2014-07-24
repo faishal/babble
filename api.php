@@ -369,7 +369,7 @@ function bbl_get_post_type_slug_in_lang( $slug, $lang_code = null ) {
  * @return void
  **/
 function bbl_the_title_in_lang( $post = null, $lang_code = null, $fallback = false ) {
-	echo bbl_get_the_title_in_lang( $post, $lang_code, $fallback );
+	echo esc_html( bbl_get_the_title_in_lang( $post, $lang_code, $fallback ) );
 }
 
 /**
@@ -402,7 +402,7 @@ function bbl_get_the_title_in_lang( $post = null, $lang_code = null, $fallback =
  * @return void
  **/
 function bbl_the_permalink_in_lang( $post = null, $lang_code = null, $fallback = false ) {
-	echo bbl_get_the_permalink_in_lang( $post, $lang_code, $fallback );
+	echo esc_html( bbl_get_the_permalink_in_lang( $post, $lang_code, $fallback ) );
 }
 
 /**

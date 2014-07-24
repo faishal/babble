@@ -66,7 +66,7 @@
 			<?php endif; foreach ( $terms as $term ) : ?>
 				<tbody id="tg-<?php echo esc_attr( $term->term_id ); ?>">
 				<tr>
-					<th colspan="4"><h3>Translation Group: <?php echo $term->term_id; ?></h3></th>
+					<th colspan="4"><h3>Translation Group: <?php echo esc_html($term->term_id); ?></h3></th>
 				</tr>
 					<?php 
 						$post_ids = get_objects_in_term( $term->term_id, 'post_translation' );
@@ -81,23 +81,23 @@
 							<tr>
 								<th colspan="4">
 									<span class="error"><strong>WARNING:</strong> Post <?php echo $post_id ?> does not exist</span> –
-									<a href="<?php echo $this->get_action_link( $post_id, 'delete_from_groups' ); ?>">remove from all groups</a>
+									<a href="<?php echo esc_url( $this->get_action_link( $post_id, 'delete_from_groups' ) ); ?>">remove from all groups</a>
 								</th>
 							</tr>
 						<?php else : ?>
 							<tr class="post-id-<?php echo esc_attr( $post->ID ); ?>">
 								<th scope="row" class="manage-column column-id">
 									<span class="post-id"><?php echo $post->ID ?></span><br /> 
-									<a href="<?php echo add_query_arg( array( 'lang' => bbl_get_post_lang_code( $post->ID ) ), get_edit_post_link( $post->ID ) ); ?>">edit</a> |
-									<a href="<?php echo $this->get_action_link( $post->ID, 'delete_post', "tg-$term->term_id" ); ?>">delete</a> | 
-									<a href="<?php echo $this->get_action_link( $post->ID, 'trash_post', "tg-$term->term_id" ); ?>">trash</a> | 
+									<a href="<?php echo esc_url( add_query_arg( array( 'lang' => bbl_get_post_lang_code( $post->ID ) ), get_edit_post_link( $post->ID ) ) ); ?>">edit</a> |
+									<a href="<?php echo esc_url($this->get_action_link( $post->ID, 'delete_post', "tg-$term->term_id" ) ); ?>">delete</a> |
+									<a href="<?php echo esc_url($this->get_action_link( $post->ID, 'trash_post', "tg-$term->term_id" ) ); ?>">trash</a> |
 									<?php if ( bbl_get_default_lang_code() == bbl_get_post_lang_code( $post->ID ) ) : ?>
-										<a href="<?php echo $this->get_action_link( $post->ID, 'delete_from_groups', "tg-$term->term_id" ); ?>">remove from group</a>
+										<a href="<?php echo esc_url($this->get_action_link( $post->ID, 'delete_from_groups', "tg-$term->term_id" )); ?>">remove from group</a>
 									<?php endif; ?>
 								</th>
-								<td class="manage-column column-type"><?php echo $post->post_type ?></td>
-								<td class="manage-column column-status"><?php echo $post->post_status ?></td>
-								<td class="manage-column column-lang"><?php echo bbl_get_post_lang_code( $post->ID ) ?></td>
+								<td class="manage-column column-type"><?php echo esc_html($post->post_type) ;?></td>
+								<td class="manage-column column-status"><?php echo esc_html( $post->post_status ); ?></td>
+								<td class="manage-column column-lang"><?php echo esc_html(bbl_get_post_lang_code( $post->ID ) ) ?></td>
 							</tr>
 					<?php endif; ?>
 							

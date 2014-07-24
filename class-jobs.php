@@ -674,7 +674,7 @@ class Babble_Jobs extends Babble_Plugin {
 			'publicly_queryable' => false,
 			'show_ui'            => true,
 			'show_in_menu'       => true,
-			'menu_icon'          => 'dashicons-clipboard',
+			//'menu_icon'          => 'dashicons-clipboard',
 			'query_var'          => false,
 			'labels'             => $labels,
 			'can_export'         => true,
@@ -740,15 +740,15 @@ class Babble_Jobs extends Babble_Plugin {
 		switch ( $col ) {
 
 			case 'bbl_language':
-				echo $this->get_job_language( $post )->display_name;
+				echo esc_html( $this->get_job_language( $post )->display_name );
 				break;
 
 			case 'bbl_type':
-				echo implode( ', ', $this->get_job_type( $post ) );
+				echo esc_html( implode( ', ', $this->get_job_type( $post ) ) );
 				break;
 
 			case 'bbl_status':
-				echo $status->label;
+				echo esc_html( $status->label );
 				break;
 
 		}
@@ -799,7 +799,7 @@ class Babble_Jobs extends Babble_Plugin {
 				'bbl_job_post' => "{$post->post_type}|{$post->ID}",
 			);
 			?>
-			<p><a href="<?php echo add_query_arg( $args, admin_url( 'edit.php' ) ); ?>"><?php _e( 'View pending translation jobs &raquo;', 'babble' ); ?></a></p>
+			<p><a href="<?php echo esc_url( add_query_arg( $args, admin_url( 'edit.php' ) ) ); ?>"><?php esc_html_e( 'View pending translation jobs &raquo;', 'babble' ); ?></a></p>
 			<?php
 
 		} else if ( $capable ) {
@@ -807,7 +807,7 @@ class Babble_Jobs extends Babble_Plugin {
 			wp_nonce_field( "bbl_ready_for_translation-{$post->ID}", '_bbl_ready_for_translation' );
 
 			?>
-			<p><label><input type="checkbox" name="babble_ready_for_translation" value="<?php echo absint( $post->ID ); ?>" /> <?php _e( 'Ready for translation', 'babble' ); ?></label></p>
+			<p><label><input type="checkbox" name="babble_ready_for_translation" value="<?php echo esc_attr( absint( $post->ID ) ); ?>" /> <?php esc_html_e( 'Ready for translation', 'babble' ); ?></label></p>
 			<?php
 
 		} else {

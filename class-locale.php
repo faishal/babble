@@ -75,7 +75,13 @@ class Babble_Locale {
 	 * @return void
 	 **/
 	function __construct() {
-		add_action( 'plugins_loaded', array( & $this, 'plugins_loaded' ) );
+		$this->content_lang_cookie   = 'bbl_' . get_current_blog_id() . '_bbl_content_lang_' . COOKIEHASH;
+		$this->interface_lang_cookie = 'bbl_' . get_current_blog_id() . '_bbl_interface_lang_' . COOKIEHASH;
+
+		if ( function_exists( 'vary_cache_on_function' ) ) {
+			vary_cache_on_function( 'return (bool) isset($_COOKIE) && isset($_COOKIE["' . $this->content_lang_cookie . '"]);' );
+			vary_cache_on_function( 'return (bool) isset($_COOKIE) && isset($_COOKIE["' . $this->interface_lang_cookie . '"]);' );
+		}
 
 		add_action( 'admin_init', array( & $this, 'admin_init' ) );
 		add_action( 'admin_notices', array( & $this, 'admin_notices' ) );
@@ -87,16 +93,6 @@ class Babble_Locale {
 		add_filter( 'post_class', array( & $this, 'post_class' ), null, 3 );
 		add_filter( 'pre_update_option_rewrite_rules', array( & $this, 'internal_rewrite_rules_filter' ) );
 		add_filter( 'query_vars', array( & $this, 'query_vars' ) );
-	}
-
-	public function plugins_loaded() {
-		global $wpdb;
-
-		# @TODO this exposes the $wpdb prefix. We should set the cookie path to the site path instead
-		# (example.com/site or site.example.com) so the cookie is only set for the current site on a multisite install
-		# @TODO actually, both of these should be user preferences, not cookies.
-		$this->content_lang_cookie   = 'bbl_' . get_current_blog_id() . '_bbl_content_lang_' . COOKIEHASH;
-		$this->interface_lang_cookie = 'bbl_' . get_current_blog_id() . '_bbl_interface_lang_' . COOKIEHASH;
 	}
 
 	/**
@@ -577,11 +573,11 @@ class Babble_Locale {
 			return;
 
 		if ( $version < 1 ) {
-			error_log( "Babble Locale: Flushing rewrite rules" );
+			bbl_log( "Babble Locale: Flushing rewrite rules" );
 			flush_rewrite_rules();
 		}
 
-		error_log( "Babble Locale: Done updates" );
+		bbl_log( "Babble Locale: Done updates" );
 		update_option( $option_name, $this->version );
 	}
 

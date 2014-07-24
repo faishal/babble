@@ -889,7 +889,7 @@ class Babble_Taxonomies extends Babble_Plugin {
 			$transid_name = 'term_transid_' . uniqid();
 			$result = wp_insert_term( $transid_name, 'term_translation', array() );
 			if ( is_wp_error( $result ) ) {
-				error_log( "Problem creating a new Term TransID: " . print_r( $result, true ) );
+				bbl_log( "Problem creating a new Term TransID: " . print_r( $result, true ) );
 			} else {
 				$transid = $result[ 'term_id' ];
 			}
@@ -897,7 +897,7 @@ class Babble_Taxonomies extends Babble_Plugin {
 
 		$result = wp_set_object_terms( $target_term_id, absint( $transid ), 'term_translation' );
 		if ( is_wp_error( $result ) ) {
-			error_log( "Problem associating TransID with new posts: " . print_r( $result, true ) );
+			bbl_log( "Problem associating TransID with new posts: " . print_r( $result, true ) );
 		}
 
 		wp_cache_delete( $target_term_id, 'bbl_term_transids' );

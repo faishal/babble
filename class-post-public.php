@@ -1461,6 +1461,8 @@ class Babble_Post_Public extends Babble_Plugin {
 			$target_parent_post = $this->get_post_in_lang( $source_parent_post, $target_lang_code );
 		}
 
+		//get complete job
+
 		$target_post = get_post( $target_id );
 
 		$postdata = array(
@@ -1489,11 +1491,8 @@ class Babble_Post_Public extends Babble_Plugin {
 			$postdata[ 'comment_status' ] = $source_post->comment_status;
 
 		$postdata = apply_filters( 'bbl_pre_sync_properties', $postdata, $source_id );
-		$GLOBALS['acf_save_lock'] = true;
 
 		wp_update_post( $postdata );
-
-		$GLOBALS['acf_save_lock'] = false;
 	}
 
 	/**

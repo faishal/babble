@@ -485,3 +485,16 @@ function bbl_acf_load_value( $value, $post_id, $field ) {
 
 	return $value;
 }
+
+/**
+ * remove acf post type from translated post types
+ */
+
+add_filter( 'bbl_translated_post_type', 'bbl_acf_filter_translated_post_type', 10, 2 );
+function bbl_acf_filter_translated_post_type( $translated, $post_type ) {
+	if ( 'acf' === $post_type ) {
+		$translated = false;
+	}
+
+	return $translated;
+}

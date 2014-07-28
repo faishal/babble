@@ -37,8 +37,8 @@ class Babble_Jobs extends Babble_Plugin {
 		$this->add_action( 'init', 'init_early', 0 );
 		$this->add_action( 'manage_bbl_job_posts_custom_column', 'action_column', null, 2 );
 		$this->add_action( 'pre_get_posts' );
-		$this->add_action( 'save_post', 'save_job', 10, 2 );
-		$this->add_action( 'save_post', null, 8, 2 );
+		$this->add_action( 'save_post', 'save_job', 11, 2 );
+		$this->add_action( 'save_post', null, 9, 2 );
 		$this->add_action( 'wp_before_admin_bar_render' );
 
 		$this->add_filter( 'admin_title', null, null, 2 );
@@ -546,7 +546,6 @@ class Babble_Jobs extends Babble_Plugin {
 			update_post_meta( $job->ID, 'bbl_acf_load_value', 'self' );
 
 			wp_cache_set( 'bbl_acf_load_value/post_id=' . $job->ID , 'self', 'babble' );
-
 			if ( 'complete' == $job->post_status ) {
 
 				# The ability to complete a translation of a post directly
@@ -561,12 +560,14 @@ class Babble_Jobs extends Babble_Plugin {
 					$post_data['post_status'] = $post->post_status;
 
 					$this->no_recursion = true;
-					$GLOBALS['acf_save_lock'] = false ;
+
+					$GLOBALS['acf_save_lock'] = true ;
 
 					wp_update_post( $post_data, true );
 
-
+					do_action('acf/save_post', $trans->ID);
 					$this->no_recursion = false;
+					//save post meta for new post
 
 				} else {
 

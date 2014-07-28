@@ -177,9 +177,7 @@ class Babble_Post_Public extends Babble_Plugin {
 		global $bbl_jobs;
 		$existing_jobs = $bbl_jobs->get_incomplete_post_jobs( $canonical_post );
 		if ( isset( $existing_jobs[ $lang_code ] ) ) {
-			$url = get_edit_post_link( $existing_jobs[ $lang_code ], 'url' );
-			wp_redirect( $url );
-			exit;
+			return;
 		}
 		// Create a new translation job for the current language
 		$lang_codes = array( $lang_code );
@@ -251,7 +249,6 @@ class Babble_Post_Public extends Babble_Plugin {
 		$this->sync_properties( $origin_post->ID, $new_post->ID );
 
 		do_action( 'bbl_created_new_shadow_post', $new_post->ID, $origin_post->ID );
-
 		return $new_post;
 
 	}
@@ -1093,7 +1090,6 @@ class Babble_Post_Public extends Babble_Plugin {
 	 **/
 	protected function translate_query_vars( array $query_vars, $request = false ) {
 
-
 		// Sequester the original query, in case we need it to get the default content later
 		$query_vars[ 'bbl_original_query' ] = $query_vars;
 
@@ -1110,7 +1106,11 @@ class Babble_Post_Public extends Babble_Plugin {
 			}
 			if ( bbl_get_default_lang_code() == $lang ) {
 				return $query_vars;
+			} else {
+				$query_vars[ 'post_type' ] = $this->get_post_type_in_lang( $query_vars[ 'post_type' ], bbl_get_current_lang_code() );
+				return $query_vars;
 			}
+
 		}
 
 		// Detect language specific homepages
@@ -1128,6 +1128,7 @@ class Babble_Post_Public extends Babble_Plugin {
 
 			// Trigger the archive listing for the relevant shadow post type
 			// of 'post' for this language.
+
 			if ( bbl_get_default_lang_code() != $lang && empty( $query_vars['s'] ) ) {
 				$post_type = isset( $query_vars[ 'post_type' ] ) ? $query_vars[ 'post_type' ] : 'post';
 
@@ -1488,8 +1489,11 @@ class Babble_Post_Public extends Babble_Plugin {
 			$postdata[ 'comment_status' ] = $source_post->comment_status;
 
 		$postdata = apply_filters( 'bbl_pre_sync_properties', $postdata, $source_id );
+		$GLOBALS['acf_save_lock'] = true;
 
 		wp_update_post( $postdata );
+
+		$GLOBALS['acf_save_lock'] = false;
 	}
 
 	/**
@@ -1600,7 +1604,9 @@ class Babble_Post_Public extends Babble_Plugin {
 			// Delete anything in there currently
 			wp_cache_delete( $transid, 'bbl_post_translations' );
 		}
-		$result = wp_set_object_terms( $post->ID, $transid, 'post_translation' );
+		$term = get_term($transid, 'post_translation');
+		$result = wp_set_object_terms( $post->ID, $term->slug, 'post_translation' );
+
 		if ( is_wp_error( $result ) )
 			bbl_log( "Problem associating TransID with new posts: " . print_r( $result, true ) );
 

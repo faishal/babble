@@ -37,8 +37,8 @@ class Babble_Jobs extends Babble_Plugin {
 		$this->add_action( 'init', 'init_early', 0 );
 		$this->add_action( 'manage_bbl_job_posts_custom_column', 'action_column', null, 2 );
 		$this->add_action( 'pre_get_posts' );
-		$this->add_action( 'save_post', 'save_job', null, 2 );
-		$this->add_action( 'save_post', null, null, 2 );
+		$this->add_action( 'save_post', 'save_job', 10, 2 );
+		$this->add_action( 'save_post', null, 8, 2 );
 		$this->add_action( 'wp_before_admin_bar_render' );
 
 		$this->add_filter( 'admin_title', null, null, 2 );
@@ -482,11 +482,10 @@ class Babble_Jobs extends Babble_Plugin {
 	}
 
 	public function save_job( $job_id, WP_Post $job ) {
-
 		global $bbl_post_public, $bbl_taxonomies;
-
-		if ( $this->no_recursion )
+		if ( $this->no_recursion ){
 			return;
+		}
 		if ( 'bbl_job' != $job->post_type )
 			return;
 
@@ -510,12 +509,6 @@ class Babble_Jobs extends Babble_Plugin {
 		if ( $origin_post_nonce and wp_verify_nonce( $origin_post_nonce, "bbl_translation_origin_post_{$job->ID}") ) {
 			if ( $origin_post = get_post( absint( $_POST['bbl_origin_post'] ) ) ) {
 				add_post_meta( $job->ID, 'bbl_job_post', "{$origin_post->post_type}|{$origin_post->ID}", true );
-
-				$GLOBALS['acf_save_lock'] = true;
-
-				updat_post_meta( $job->ID, 'bbl_acf_load_value', 'self' );
-
-				wp_cache_set( 'bbl_acf_load_value/post_id=' . $job->ID , 'self', 'babble' );
 
 				foreach ( $this->get_post_terms_to_translate( $origin_post->ID, $lang_code ) as $taxo => $terms ) {
 					foreach ( $terms as $term_id => $term )
@@ -550,6 +543,9 @@ class Babble_Jobs extends Babble_Plugin {
 				# Nothing.
 
 			}
+			update_post_meta( $job->ID, 'bbl_acf_load_value', 'self' );
+
+			wp_cache_set( 'bbl_acf_load_value/post_id=' . $job->ID , 'self', 'babble' );
 
 			if ( 'complete' == $job->post_status ) {
 
@@ -565,7 +561,11 @@ class Babble_Jobs extends Babble_Plugin {
 					$post_data['post_status'] = $post->post_status;
 
 					$this->no_recursion = true;
+					$GLOBALS['acf_save_lock'] = false ;
+
 					wp_update_post( $post_data, true );
+
+
 					$this->no_recursion = false;
 
 				} else {
@@ -621,7 +621,6 @@ class Babble_Jobs extends Babble_Plugin {
 			}
 
 		}
-		$GLOBALS['acf_save_lock'] =false;
 	}
 
 	public function save_post( $post_id, WP_Post $post ) {
@@ -639,7 +638,6 @@ class Babble_Jobs extends Babble_Plugin {
 			return;
 		if ( !isset( $_POST['babble_ready_for_translation'] ) )
 			return;
-
 		# @TODO individual language selection when marking post as translation ready
 		$langs       = bbl_get_active_langs();
 		$lang_codes  = wp_list_pluck( $langs, 'code' );
@@ -756,6 +754,13 @@ class Babble_Jobs extends Babble_Plugin {
 	}
 
 	public function metabox_post_translations( WP_Post $post, array $metabox ) {
+		global $bbl_post_public;
+		if( $post->post_status == 'publish') {
+			$trans_id = $bbl_post_public->get_transid( $post );
+
+			?> <h4><?php _e( 'Trans ID:', 'babble' ); ?></h4>
+			<p><?php echo esc_html( $trans_id ); ?></p><?php
+		}
 
 		$trans   = bbl_get_post_translations( $post );
 		$incomplete_jobs    = $this->get_incomplete_post_jobs( $post );
@@ -767,6 +772,7 @@ class Babble_Jobs extends Babble_Plugin {
 		$capable = current_user_can( 'publish_post', $post->ID );
 
 		unset( $trans[$default] );
+
 
 		if ( !empty( $trans ) ) {
 

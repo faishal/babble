@@ -122,6 +122,13 @@ if ( class_exists( "WP_CLI_Command" ) ):
 					$wmpl_trasalated_posts_map = $this->_get_wpml_post_translations( $post );
 					if ( false === empty( $wmpl_trasalated_posts_map ) ) {
 						$default_language_post_id = $post->ID;
+						foreach ( $wmpl_trasalated_posts_map as $language_code => $wpml_single_post_map ) {
+							$lang_post_id           = $wpml_single_post_map->element_id;
+							if ( bbl_get_default_lang_code() === $wmpl_languages[ $language_code ]->default_locale ) {
+								$default_language_post_id = $lang_post_id;
+							}
+						}
+
 						$transid                  = $bbl_post_public->get_transid( $post->ID );
 						foreach ( $wmpl_trasalated_posts_map as $language_code => $wpml_single_post_map ) {
 							$bbl_jobs->no_recursion = false;
@@ -142,9 +149,6 @@ if ( class_exists( "WP_CLI_Command" ) ):
 
 								if ( isset( $existing_jobs[ $lang_code ] ) ) {
 									$job = get_post( $existing_jobs[ $lang_code ] );
-									$url = get_edit_post_link( $existing_jobs[ $lang_code ], 'url' );
-									wp_redirect( $url );
-									exit;
 								} else {
 									$jobs             = $bbl_jobs->create_post_jobs( $post->ID, (array) $lang_code );
 									$job              = get_post( $jobs[ 0 ] );
@@ -173,9 +177,25 @@ if ( class_exists( "WP_CLI_Command" ) ):
 
 								$lang_post            = get_post( $lang_post_id );
 								$lang_post->post_type = bbl_get_post_type_in_lang( $post->post_type, $wmpl_languages[ $language_code ]->default_locale );
+
+
+								if( $lang_post->post_date == '0000-00-00 00:00:00'){
+									$default_language_post = get_post( $default_language_post_id );
+									$lang_post->post_date  = $default_language_post->post_date;
+									$lang_post->post_date_gmt  = $default_language_post->post_date_gmt;
+									if( $lang_post->post_date == '0000-00-00 00:00:00'){
+										$lang_post->post_date  = $lang_post->post_date_gmt;
+									}
+								}
+
 								wp_update_post( $lang_post, true );
 								//bbl_get_base_post_type($post->post_type)
 								$base_post_type = bbl_get_base_post_type( $post->post_type );
+
+								if ( 'page' == $base_post_type ) {
+									$custom_page_template = get_post_meta( $default_language_post_id, '_wp_page_template', true );
+									update_post_meta($lang_post_id,'_wp_page_template', $custom_page_template );
+								}
 
 								$taxonomies = get_object_taxonomies( $base_post_type );
 

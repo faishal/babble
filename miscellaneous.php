@@ -356,6 +356,12 @@ class Bbl_Comment_Query {
 add_action( 'bbl_translation_post_meta_boxes', 'acl_bbl_translation_post_meta_boxes', 10, 3 );
 
 function acl_bbl_translation_post_meta_boxes( $type, $original, $translation ) {
+	// return if acf is not activate
+
+	if ( ! class_exists('acf') ) {
+		return;
+	}
+
 	/**
 	 * Remove own filter for Advance Custom Field Hooks to avoid duplicate metaboxes
 	 **/
@@ -364,26 +370,32 @@ function acl_bbl_translation_post_meta_boxes( $type, $original, $translation ) {
 
 	// Add default value filter only for job, it will fetch meta value from original post of it is not saved for queue
 	add_filter( 'acf/load_value', 'bbl_acf_load_value', 6, 3 );
-
+	global $post;
 	// Helper original post id to fetch meta value
 	$GLOBALS[ 'bbl_job_edit_original_post' ] = $original->ID;
+	$GLOBALS[ 'bbl_job_edit_original_job' ] = $post->ID;
 
 	// get field groups for original post type
 	$filter      = array(
 		'post_id'   => $original->ID,
-		'post_type' => $original->post_type
+		'post_type' => bbl_get_base_post_type($original->post_type)
 	);
 	$metabox_ids = array();
 	//Fetch metabox ids for original posts
 	$metabox_ids = apply_filters( 'acf/location/match_field_groups', $metabox_ids, $filter );
 
-	$acf_input = new acf_input();
 	// get field groups
 	$acfs = apply_filters( 'acf/get_field_groups', array() );
 
 	global $post;
 
+	$languages = get_the_terms( $post, 'bbl_job_language' );
+	if ( empty( $languages ) )
+		return false;
+	bbl_switch_to_lang(reset($languages)->name);
+
 	if ( $acfs ) {
+		$acf_input = new acf_controller_post();
 		foreach ( $acfs as $acf ) {
 			// load options
 			$acf[ 'options' ] = apply_filters( 'acf/field_group/get_options', array(), $post->ID );
@@ -428,6 +440,11 @@ function bbl_acf_admin_head() {
 	if ( !( isset( $current_screen ) && isset( $current_screen->post_type ) && 'post' === $current_screen->base && 'bbl_job' === $current_screen->post_type ) ) {
 		return;
 	}
+
+	if ( ! class_exists('acf') ) {
+		return;
+	}
+
 	/**
 	 * Filter to ignore custom filed metabox registration on admin_head, we manually adding it for babble job
 	 */
@@ -453,14 +470,13 @@ function bbl_acf_get_field_groups( $field_group ) {
  */
 function bbl_acf_load_value( $value, $post_id, $field ) {
 	$found              = false;
-	$bbl_acf_load_value = wp_cache_get( 'bbl_acf_load_value/post_id=' . $GLOBALS[ 'bbl_job_edit_original_post' ], 'babble', false, $found );
-
+	$bbl_acf_load_value = wp_cache_get( 'bbl_acf_load_value/post_id=' . $GLOBALS[ 'bbl_job_edit_original_job' ], 'babble', false, $found );
 	if ( !$found ) {
 		$bbl_acf_load_value = get_post_meta( $post_id, 'bbl_acf_load_value', true );
-		wp_cache_set( 'bbl_acf_load_value/post_id=' . $GLOBALS[ 'bbl_job_edit_original_post' ], $bbl_acf_load_value, 'babble' );
+		wp_cache_set( 'bbl_acf_load_value/post_id=' . $GLOBALS[ 'bbl_job_edit_original_job' ], $bbl_acf_load_value, 'babble' );
 	}
 
-	if ( 'self' !== $bbl_acf_load_value ) {
+	if ( 'self' !== $bbl_acf_load_value  || false === $value  || empty($value) ) {
 		remove_filter( 'acf/load_value', 'bbl_acf_load_value', 6, 3 );
 		//get value from original post type
 		$value = apply_filters( 'acf/load_value', $value, $GLOBALS[ 'bbl_job_edit_original_post' ], $field );

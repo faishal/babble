@@ -159,7 +159,65 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 		}
 		
 		global $bbl_post_public;
+
+		$old_trans_id = $bbl_post_public->get_transid($post);
+
 		$bbl_post_public->set_transid( $post, $transid );
+
+
+		//$original post
+		//Translated post
+		//Create a job and make it complete
+		global $bbl_jobs;
+		$lang_post = get_post( $post );
+		$translations = bbl_get_post_translations($post);
+		if( isset( $translations[bbl_get_default_lang_code()] )) {
+			$original_post = $translations[ bbl_get_default_lang_code() ];
+			$lang_code     = bbl_get_post_lang_code( $post );
+			$existing_jobs = $bbl_jobs->get_incomplete_post_jobs( $original_post );
+
+			if ( isset( $existing_jobs[ $lang_code ] ) ) {
+				$job = get_post( $existing_jobs[ $lang_code ] );
+			} else {
+				$jobs = $bbl_jobs->create_post_jobs( $original_post->ID, (array) $lang_code );
+				$job  = get_post( $jobs[ 0 ] );
+			}
+			$job->post_title   = $lang_post->post_title;
+			$job->post_name    = $lang_post->post_name;
+			$job->post_content = $lang_post->post_content;
+			$job->post_status  = 'complete';
+			$post_meta         = get_post_meta( $lang_post->ID );
+
+			foreach ( $post_meta as $meta_key => $val ) {
+				foreach ( $val as $meta_value ) {
+					update_post_meta( $job->ID, $meta_key, $meta_value );
+				}
+			}
+			wp_update_post( $job, true );
+			wp_set_object_terms( $job->ID, stripslashes( $lang_code ), 'bbl_job_language', false );
+			$language = get_the_terms( $job, 'bbl_job_language' );
+
+			if ( empty( $language ) ) {
+				return false;
+			} else {
+				$lang_code = reset( $language )->name;
+			}
+
+			update_post_meta( $job->ID, 'bbl_job_post', "{$original_post->post_type}|{$original_post->ID}", true );
+
+
+			update_post_meta( $job->ID, "bbl_post_{$original_post->ID}", $lang_post );
+
+
+			//bbl_get_base_post_type($post->post_type)
+			$base_post_type = bbl_get_base_post_type( $post->post_type );
+
+			if ( 'page' == $base_post_type ) {
+				$custom_page_template = get_post_meta( $original_post->ID, '_wp_page_template', true );
+				update_post_meta( $lang_post->ID, '_wp_page_template', $custom_page_template );
+			}
+		}
+
 	}
 
 	/**

@@ -4,6 +4,8 @@
  * Translations and languages API.
  *
  * @package Babble
+ * @subpackage API
+ * @api
  * @since Alpha 1
  */
 
@@ -30,7 +32,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * Returns the current content language code.
  *
  * @FIXME: Currently does not check for language validity, though perhaps we should check that elsewhere and redirect?
- *
  * @return string A language code
  * @access public
  **/
@@ -648,4 +649,17 @@ function bbl_log( $msg ) {
 function bbl_is_logging() {
 	global $bbl_log;
 	return $bbl_log->logging;
+}
+
+/**
+ * To check if babble translation is locked or not
+ * It will required During content import
+ *
+ * @return bool
+ */
+function bbl_is_locked(){
+	if(isset($GLOBALS['bbl_global_lock']) && true === $GLOBALS['bbl_global_lock'] ){
+		return true;
+	}
+	return false;
 }

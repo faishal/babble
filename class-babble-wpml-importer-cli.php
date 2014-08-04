@@ -129,6 +129,7 @@ if ( class_exists( "WP_CLI_Command" ) ):
 							}
 						}
 
+						$default_language_post = get_post( $default_language_post_id );
 						$transid                  = $bbl_post_public->get_transid( $post->ID );
 						foreach ( $wmpl_trasalated_posts_map as $language_code => $wpml_single_post_map ) {
 							$bbl_jobs->no_recursion = false;
@@ -137,6 +138,7 @@ if ( class_exists( "WP_CLI_Command" ) ):
 							if ( 'done' === get_post_meta( $lang_post_id, '_bbl_wpml_transalated', true ) ) {
 								continue;
 							}
+
 							$bbl_post_public->set_transid( $lang_post_id, $transid );
 
 							if ( bbl_get_default_lang_code() === $wmpl_languages[ $language_code ]->default_locale ) {
@@ -144,18 +146,30 @@ if ( class_exists( "WP_CLI_Command" ) ):
 							} else {
 								$lang_code = $wmpl_languages[ $language_code ]->default_locale;
 
+								$lang_post = get_post( $lang_post_id );
+
 								global $bbl_jobs;
 								$existing_jobs = $bbl_jobs->get_incomplete_post_jobs( $post );
 
 								if ( isset( $existing_jobs[ $lang_code ] ) ) {
 									$job = get_post( $existing_jobs[ $lang_code ] );
 								} else {
-									$jobs             = $bbl_jobs->create_post_jobs( $post->ID, (array) $lang_code );
-									$job              = get_post( $jobs[ 0 ] );
-									$job->post_status = 'complete';
-									wp_update_post( $job, true );
+									$jobs             = $bbl_jobs->create_post_jobs( $default_language_post_id, (array) $lang_code );
+									$job = get_post( $jobs[ 0 ] );
 								}
 
+								$job->post_title = $lang_post->post_title;
+								$job->post_name = $lang_post->post_name;
+								$job->post_content = $lang_post->post_content;
+								$job->post_status = 'complete';
+								$post_meta = get_post_meta($lang_post->ID);
+
+								foreach( $post_meta as $meta_key => $val ){
+									foreach($val as $meta_value){
+										update_post_meta($job->ID , $meta_key , $meta_value);
+									}
+								}
+								wp_update_post( $job, true );
 
 								wp_set_object_terms( $job->ID, stripslashes( $lang_code ), 'bbl_job_language', false );
 								$language = get_the_terms( $job, 'bbl_job_language' );
@@ -175,12 +189,10 @@ if ( class_exists( "WP_CLI_Command" ) ):
 									}
 								}
 
-								$lang_post            = get_post( $lang_post_id );
 								$lang_post->post_type = bbl_get_post_type_in_lang( $post->post_type, $wmpl_languages[ $language_code ]->default_locale );
 
 
 								if( $lang_post->post_date == '0000-00-00 00:00:00'){
-									$default_language_post = get_post( $default_language_post_id );
 									$lang_post->post_date  = $default_language_post->post_date;
 									$lang_post->post_date_gmt  = $default_language_post->post_date_gmt;
 									if( $lang_post->post_date == '0000-00-00 00:00:00'){
@@ -189,6 +201,11 @@ if ( class_exists( "WP_CLI_Command" ) ):
 								}
 
 								wp_update_post( $lang_post, true );
+
+
+								update_post_meta( $job->ID, "bbl_post_{$default_language_post_id}", $lang_post );
+
+
 								//bbl_get_base_post_type($post->post_type)
 								$base_post_type = bbl_get_base_post_type( $post->post_type );
 

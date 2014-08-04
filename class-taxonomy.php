@@ -116,7 +116,7 @@ class Babble_Taxonomies extends Babble_Plugin {
 			// of all of the base post_types it applies to.
 			foreach ( $object_type as $ot ) {
 				if ( ! ( $base_post_type = bbl_get_base_post_type( $ot ) ) ) {
-					continue;
+					//continue;
 				}
 				$shadow_post_types = bbl_get_shadow_post_types( $base_post_type );
 				foreach ( $shadow_post_types as $shadow_post_type ) {
@@ -271,6 +271,9 @@ class Babble_Taxonomies extends Babble_Plugin {
 	 * @return void
 	 **/
 	public function save_post( $post_id, $post ) {
+		if ( bbl_is_locked() ) {
+			return;
+		}
 		$this->maybe_resync_terms( $post_id, $post );
 	}
 
@@ -358,6 +361,9 @@ class Babble_Taxonomies extends Babble_Plugin {
 	 * @return array The terms which were got
 	 **/
 	public function get_terms( $terms ) {
+		if ( bbl_is_locked() ) {
+			return $terms;
+		}
 		foreach ( $terms as $term ) {
 			if ( empty( $term ) ) {
 				continue;
@@ -388,7 +394,9 @@ class Babble_Taxonomies extends Babble_Plugin {
 	 * @return void
 	 **/
 	public function parse_request( $wp ) {
-
+		if ( bbl_is_locked() ) {
+			return;
+		}
 		if ( is_admin() ) {
 			return;
 		}
@@ -467,6 +475,10 @@ class Babble_Taxonomies extends Babble_Plugin {
 	 * @return void
 	 **/
 	public function set_object_terms( $object_id, $terms, $tt_ids, $taxonomy, $append ) {
+		if ( bbl_is_locked() ) {
+			return;
+		}
+
 		if ( $this->no_recursion ) {
 			return;
 		}

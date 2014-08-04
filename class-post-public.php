@@ -79,6 +79,7 @@ class Babble_Post_Public extends Babble_Plugin {
 	protected $unique_meta_keys;
 	
 	public function __construct() {
+
 		$this->setup( 'babble-post-public', 'plugin' );
 
 		$this->add_action( 'added_post_meta', null, null, 4 );
@@ -138,6 +139,7 @@ class Babble_Post_Public extends Babble_Plugin {
 		else
 			$post_types = $core_post_types;
 
+
 		register_taxonomy( 'post_translation', $post_types, array(
 			'rewrite' => false,
 			'public' => false,
@@ -177,7 +179,13 @@ class Babble_Post_Public extends Babble_Plugin {
 		global $bbl_jobs;
 		$existing_jobs = $bbl_jobs->get_incomplete_post_jobs( $canonical_post );
 		if ( isset( $existing_jobs[ $lang_code ] ) ) {
-			return;
+			if ( null === bbl_get_post_in_lang( $translated_post, bbl_get_default_lang_code() ) ) {
+				return;
+			} else {
+				$url = get_edit_post_link( $existing_jobs[ $lang_code ], 'url' );
+				wp_redirect( $url );
+				exit;
+			}
 		}
 		// Create a new translation job for the current language
 		$lang_codes = array( $lang_code );
@@ -402,6 +410,7 @@ class Babble_Post_Public extends Babble_Plugin {
 				// post_types registered before the hook runs, so we don't miss any 
 				// (take a look at where we register post_translation for more info).
 				register_taxonomy_for_object_type( 'post_translation', $new_post_type );
+				register_taxonomy_for_object_type( 'post_translation', $post_type );
 			}
 		}
 
@@ -539,6 +548,9 @@ class Babble_Post_Public extends Babble_Plugin {
 	 * @return void (param passed by reference)
 	 **/
 	public function pre_get_posts( WP_Query & $query ) {
+		if ( bbl_is_locked() ) {
+			return;
+		}
 		if ( false === $query->get( 'bbl_translate' ) ) {
 			return;
 		}
@@ -568,6 +580,9 @@ class Babble_Post_Public extends Babble_Plugin {
 	 * @return void
 	 **/
 	public function parse_request( WP & $wp ) {
+		if ( bbl_is_locked() ) {
+			return;
+		}
 
 		if ( isset( $wp->query_vars['bbl_translate'] ) and ( false === $wp->query_vars['bbl_translate'] ) ) {
 			return;
@@ -591,6 +606,10 @@ class Babble_Post_Public extends Babble_Plugin {
 	 * @return array The posts
 	 **/
 	public function the_posts( array $posts, WP_Query & $wp_query ) {
+		if ( bbl_is_locked() ) {
+			return $posts;
+		}
+
 		if ( is_admin() )
 			return $posts;
 		
@@ -652,6 +671,10 @@ class Babble_Post_Public extends Babble_Plugin {
 	 * @return string The permalink
 	 **/
 	public function post_type_link( $post_link, $post, $leavename ) {
+		if ( bbl_is_locked() ) {
+			return;
+		}
+
 		global $wp_rewrite;
 	
 		// Regular ol' post types, and other types added by other plugins, etc
@@ -848,6 +871,11 @@ class Babble_Post_Public extends Babble_Plugin {
 	 * @return void
 	 **/
 	public function post_updated( $post_id ) {
+
+		if ( bbl_is_locked() ) {
+			return;
+		}
+
 		if ( $this->no_recursion )
 			return;
 		$this->no_recursion = 'post_updated';
@@ -894,6 +922,9 @@ class Babble_Post_Public extends Babble_Plugin {
 	 * @return void
 	 **/
 	public function transition_post_status( $new_status, $old_status, $post ) {
+		if ( bbl_is_locked() ) {
+			return;
+		}
 		if ( $new_status == $old_status )
 			return;
 
@@ -1112,6 +1143,9 @@ class Babble_Post_Public extends Babble_Plugin {
 			}
 
 		}
+//		if(!empty( $query_vars[ 's' ] )){
+//			return $query_vars;
+//		}
 
 		// Detect language specific homepages
 		if ( $request == $lang_url_prefix ) {
@@ -1552,7 +1586,9 @@ class Babble_Post_Public extends Babble_Plugin {
 	 **/
 	function get_transid( $post, $create = true ) {
 		$post = get_post( $post );
-
+		if( ! is_object( $post) ){
+			return false;
+		}
 		if ( ! $post->ID )
 			return false;
 

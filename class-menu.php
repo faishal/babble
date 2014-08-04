@@ -101,7 +101,7 @@ class Babble_Menus extends Babble_Plugin {
 	 * @param array $menu_item_data The menu item's data.
 	 */
 	public function wp_update_nav_menu_item( $menu_id, $menu_item_db_id, $args ) {
-		update_post_meta( $menu_item_db_id, '_menu_lang_code', bbl_get_current_lang_code() );
+			update_post_meta( $menu_item_db_id, '_menu_lang_code', bbl_get_current_lang_code() );
 	}
 
 	/**

@@ -469,18 +469,20 @@ function bbl_acf_get_field_groups( $field_group ) {
  * @return mixed
  */
 function bbl_acf_load_value( $value, $post_id, $field ) {
-	$found              = false;
-	$bbl_acf_load_value = wp_cache_get( 'bbl_acf_load_value/post_id=' . $GLOBALS[ 'bbl_job_edit_original_job' ], 'babble', false, $found );
-	if ( !$found ) {
-		$bbl_acf_load_value = get_post_meta( $post_id, 'bbl_acf_load_value', true );
-		wp_cache_set( 'bbl_acf_load_value/post_id=' . $GLOBALS[ 'bbl_job_edit_original_job' ], $bbl_acf_load_value, 'babble' );
-	}
+	if ( false === $value  || empty($value) ) {
+		$found              = false;
+		$bbl_acf_load_value = wp_cache_get( 'bbl_acf_load_value/post_id=' . $GLOBALS[ 'bbl_job_edit_original_job' ], 'babble', false, $found );
 
-	if ( 'self' !== $bbl_acf_load_value  || false === $value  || empty($value) ) {
-		remove_filter( 'acf/load_value', 'bbl_acf_load_value', 6, 3 );
-		//get value from original post type
-		$value = apply_filters( 'acf/load_value', $value, $GLOBALS[ 'bbl_job_edit_original_post' ], $field );
-		add_filter( 'acf/load_value', 'bbl_acf_load_value', 6, 3 );
+		if ( !$found ) {
+			$bbl_acf_load_value = get_post_meta( $post_id, 'bbl_acf_load_value', true );
+			wp_cache_set( 'bbl_acf_load_value/post_id=' . $GLOBALS[ 'bbl_job_edit_original_job' ], $bbl_acf_load_value, 'babble' );
+		}
+		if('self' !== $bbl_acf_load_value) {
+			remove_filter( 'acf/load_value', 'bbl_acf_load_value', 6, 3 );
+			//get value from original post type
+			$value = apply_filters( 'acf/load_value', $value, $GLOBALS[ 'bbl_job_edit_original_post' ], $field );
+			add_filter( 'acf/load_value', 'bbl_acf_load_value', 6, 3 );
+		}
 	}
 
 	return $value;
@@ -497,4 +499,12 @@ function bbl_acf_filter_translated_post_type( $translated, $post_type ) {
 	}
 
 	return $translated;
+}
+
+/**
+ * Lock babble during import, it will not generate duplicate jobs and translation
+ */
+add_action( 'import_start' , 'bbl_lock_translations_import' );
+function bbl_lock_translations_import(){
+	$GLOBALS['bbl_global_lock'] = true;
 }

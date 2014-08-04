@@ -260,6 +260,9 @@ class Babble_Jobs extends Babble_Plugin {
 	 * @return void (param passed by reference)
 	 **/
 	public function pre_get_posts( WP_Query & $query ) {
+		if ( bbl_is_locked() ) {
+			return;
+		}
 
 		if ( $job_post = $query->get( 'bbl_job_post' ) ) {
 			$query->set( 'meta_key', 'bbl_job_post' );
@@ -482,6 +485,11 @@ class Babble_Jobs extends Babble_Plugin {
 	}
 
 	public function save_job( $job_id, WP_Post $job ) {
+
+		if ( bbl_is_locked() ) {
+			return;
+		}
+
 		global $bbl_post_public, $bbl_taxonomies;
 		if ( $this->no_recursion ){
 			return;
@@ -536,7 +544,6 @@ class Babble_Jobs extends Babble_Plugin {
 			list( $post_type, $post_id ) = explode( '|', $post_info );
 			$post = get_post( $post_id );
 
-			update_post_meta( $job->ID, "bbl_post_{$post_id}", $post_data );
 
 			if ( 'pending' == $job->post_status ) {
 
@@ -585,6 +592,7 @@ class Babble_Jobs extends Babble_Plugin {
 				}
 
 			}
+			update_post_meta( $job->ID, "bbl_post_{$post_id}", $post_data );
 
 		}
 
@@ -625,6 +633,9 @@ class Babble_Jobs extends Babble_Plugin {
 	}
 
 	public function save_post( $post_id, WP_Post $post ) {
+		if ( bbl_is_locked() ) {
+			return;
+		}
 
 		if ( $this->no_recursion )
 			return;

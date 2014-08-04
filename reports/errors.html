@@ -1,0 +1,2092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <meta charset="utf-8"/>
+    <title>     &raquo; Compilation errors
+</title>
+    <meta name="author" content=""/>
+    <meta name="description" content=""/>
+
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/prism.css" rel="stylesheet" media="all"/>
+    <link href="../css/template.css" rel="stylesheet" media="all"/>
+    
+    <!--[if lt IE 9]>
+    <script src="https://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
+    <![endif]-->
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js" type="text/javascript"></script>
+    <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script src="../js/jquery.smooth-scroll.js"></script>
+    <script src="../js/prism.min.js"></script>
+    <!-- TODO: Add http://jscrollpane.kelvinluck.com/ to style the scrollbars for browsers not using webkit-->
+    
+    <link rel="shortcut icon" href="../images/favicon.ico"/>
+    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png"/>
+    <link rel="apple-touch-icon" sizes="72x72" href="../images/apple-touch-icon-72x72.png"/>
+    <link rel="apple-touch-icon" sizes="114x114" href="../images/apple-touch-icon-114x114.png"/>
+</head>
+<body>
+
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <i class="icon-ellipsis-vertical"></i>
+            </a>
+            <a class="brand" href="../index.html">API Documentation</a>
+
+            <div class="nav-collapse">
+                <ul class="nav pull-right">
+                                        <li class="dropdown" id="charts-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Charts <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../graphs/class.html">
+                                    <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown" id="reports-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Reports <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../reports/errors.html">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">225</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../reports/markers.html">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <i class="icon-list-alt"></i>&#160;Markers <span class="label label-info pull-right">3</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../reports/deprecated.html">
+                                                                                                            <i class="icon-list-alt"></i>&#160;Deprecated <span class="label label-info pull-right">0</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--<div class="go_to_top">-->
+    <!--<a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>-->
+    <!--</div>-->
+</div>
+
+<div id="___" class="container-fluid">
+        <section class="row-fluid">
+        <div class="span2 sidebar">
+
+            <ul class="side-nav nav nav-list">
+                <li class="nav-header">Navigation</li>
+                                                                            <li><a href="#api.php"><i class="icon-file"></i> api.php</a></li>
+                                                                                                                                                            <li><a href="#class-admin-bar.php"><i class="icon-file"></i> class-admin-bar.php</a></li>
+                                                                                                    <li><a href="#class-babble-log.php"><i class="icon-file"></i> class-babble-log.php</a></li>
+                                                                                                    <li><a href="#class-babble-wpml-importer-cli.php"><i class="icon-file"></i> class-babble-wpml-importer-cli.php</a></li>
+                                                                                                    <li><a href="#class-comment.php"><i class="icon-file"></i> class-comment.php</a></li>
+                                                                                                    <li><a href="#class-jobs.php"><i class="icon-file"></i> class-jobs.php</a></li>
+                                                                                                    <li><a href="#class-languages.php"><i class="icon-file"></i> class-languages.php</a></li>
+                                                                                                    <li><a href="#class-locale.php"><i class="icon-file"></i> class-locale.php</a></li>
+                                                                                                    <li><a href="#class-menu.php"><i class="icon-file"></i> class-menu.php</a></li>
+                                                                                                    <li><a href="#class-plugin.php"><i class="icon-file"></i> class-plugin.php</a></li>
+                                                                                                    <li><a href="#class-post-public.php"><i class="icon-file"></i> class-post-public.php</a></li>
+                                                                                                    <li><a href="#class-switcher-content.php"><i class="icon-file"></i> class-switcher-content.php</a></li>
+                                                                                                    <li><a href="#class-switcher-interface.php"><i class="icon-file"></i> class-switcher-interface.php</a></li>
+                                                                                                    <li><a href="#class-taxonomy.php"><i class="icon-file"></i> class-taxonomy.php</a></li>
+                                                                                                    <li><a href="#class-translator.php"><i class="icon-file"></i> class-translator.php</a></li>
+                                                                                                    <li><a href="#class-updates.php"><i class="icon-file"></i> class-updates.php</a></li>
+                                                                                                                                                            <li><a href="#external-update-api/external-update-api/euapi.php"><i class="icon-file"></i> external-update-api/external-update-api/euapi.php</a></li>
+                                                                                                    <li><a href="#external-update-api/external-update-api/handler-files.php"><i class="icon-file"></i> external-update-api/external-update-api/handler-files.php</a></li>
+                                                                                                    <li><a href="#external-update-api/external-update-api/handler-github.php"><i class="icon-file"></i> external-update-api/external-update-api/handler-github.php</a></li>
+                                                                                                    <li><a href="#external-update-api/external-update-api/handler.php"><i class="icon-file"></i> external-update-api/external-update-api/handler.php</a></li>
+                                                                                                    <li><a href="#external-update-api/external-update-api/info.php"><i class="icon-file"></i> external-update-api/external-update-api/info.php</a></li>
+                                                                                                    <li><a href="#external-update-api/external-update-api/item-plugin.php"><i class="icon-file"></i> external-update-api/external-update-api/item-plugin.php</a></li>
+                                                                                                    <li><a href="#external-update-api/external-update-api/item-theme.php"><i class="icon-file"></i> external-update-api/external-update-api/item-theme.php</a></li>
+                                                                                                    <li><a href="#external-update-api/external-update-api/item.php"><i class="icon-file"></i> external-update-api/external-update-api/item.php</a></li>
+                                                                                                    <li><a href="#external-update-api/external-update-api/update.php"><i class="icon-file"></i> external-update-api/external-update-api/update.php</a></li>
+                                                                                                    <li><a href="#external-update-api/external-update-api.php"><i class="icon-file"></i> external-update-api/external-update-api.php</a></li>
+                                                                                                    <li><a href="#languages/fa_IR.php"><i class="icon-file"></i> languages/fa_IR.php</a></li>
+                                                                                                    <li><a href="#miscellaneous.php"><i class="icon-file"></i> miscellaneous.php</a></li>
+                                                                                                    <li><a href="#templates-admin/options-available-languages.php"><i class="icon-file"></i> templates-admin/options-available-languages.php</a></li>
+                                                                                                    <li><a href="#templates-admin/switcher-interface.php"><i class="icon-file"></i> templates-admin/switcher-interface.php</a></li>
+                                                                                                    <li><a href="#templates-admin/translation-editor-post-excerpt.php"><i class="icon-file"></i> templates-admin/translation-editor-post-excerpt.php</a></li>
+                                                                                                    <li><a href="#templates-admin/translation-editor-terms.php"><i class="icon-file"></i> templates-admin/translation-editor-terms.php</a></li>
+                                                                                                    <li><a href="#templates-admin/translation-editor.php"><i class="icon-file"></i> templates-admin/translation-editor.php</a></li>
+                                                                                                    <li><a href="#templates-admin/translation-groups.php"><i class="icon-file"></i> templates-admin/translation-groups.php</a></li>
+                                                                                                    <li><a href="#translation-group-tool-sorter.php"><i class="icon-file"></i> translation-group-tool-sorter.php</a></li>
+                                                                                                    <li><a href="#translation-group-tool.php"><i class="icon-file"></i> translation-group-tool.php</a></li>
+                                                                                                    <li><a href="#widget.php"><i class="icon-file"></i> widget.php</a></li>
+                                                                    </ul>
+        </div>
+
+        <div class="span10 offset2">
+            <ul class="breadcrumb">
+                <li><a href="../"><i class="icon-remove-sign"></i></a><span class="divider">\</span></li>
+                <li>Compilation Errors</li>
+            </ul>
+
+            
+                            <div class="package-contents">
+                                            <a name="api.php" id="api.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            api.php
+                            <small style="float: right;padding-right: 10px;">4</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>115</td>
+                                        <td>Argument $taxonomy is missing from the Docblock of \bbl_get_term_translations()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>128</td>
+                                        <td>Argument $taxonomy is missing from the Docblock of \bbl_get_term_jobs()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>289</td>
+                                        <td>Argument $original_post_type is missing from the Docblock of \bbl_get_post_type_in_lang()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>507</td>
+                                        <td>Argument $lang_code is missing from the Docblock of \bbl_get_lang()</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="class-admin-bar.php" id="class-admin-bar.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            class-admin-bar.php
+                            <small style="float: right;padding-right: 10px;">2</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>11</td>
+                                        <td>No summary for method __construct()</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="class-babble-log.php" id="class-babble-log.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            class-babble-log.php
+                            <small style="float: right;padding-right: 10px;">2</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>40</td>
+                                        <td>Argument $msg is missing from the Docblock of log()</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="class-babble-wpml-importer-cli.php" id="class-babble-wpml-importer-cli.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            class-babble-wpml-importer-cli.php
+                            <small style="float: right;padding-right: 10px;">14</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>11</td>
+                                        <td>No summary for class \Babble_WPML_Importer_CLI</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>17</td>
+                                        <td>No summary for method __construct()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>35</td>
+                                        <td>Argument $args is missing from the Docblock of import()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>35</td>
+                                        <td>Argument $assoc_args is missing from the Docblock of import()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>238</td>
+                                        <td>Argument $post is missing from the Docblock of _get_wpml_post_translations()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>238</td>
+                                        <td>No summary for method _get_wpml_post_translations()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>248</td>
+                                        <td>Argument $tax is missing from the Docblock of _get_wpml_tax_translations()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>248</td>
+                                        <td>No summary for method _get_wpml_tax_translations()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>259</td>
+                                        <td>No summary for method _get_post()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>283</td>
+                                        <td>No summary for method _reset_get_post()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>12</td>
+                                        <td>No summary for property $paged</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>13</td>
+                                        <td>No summary for property $posts_per_page</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>14</td>
+                                        <td>No summary for property $excluded_post_types</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>15</td>
+                                        <td>No summary for property $post_types</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="class-comment.php" id="class-comment.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            class-comment.php
+                            <small style="float: right;padding-right: 10px;">2</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>11</td>
+                                        <td>No summary for method __construct()</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="class-jobs.php" id="class-jobs.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            class-jobs.php
+                            <small style="float: right;padding-right: 10px;">51</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>26</td>
+                                        <td>No summary for method __construct()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>57</td>
+                                        <td>No summary for method add_meta_boxes_bbl_job()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>66</td>
+                                        <td>Argument $maybe_empty is missing from the Docblock of wp_insert_post_empty_content()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>66</td>
+                                        <td>Argument $postarr is missing from the Docblock of wp_insert_post_empty_content()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>66</td>
+                                        <td>No summary for method wp_insert_post_empty_content()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>73</td>
+                                        <td>Argument $translated is missing from the Docblock of bbl_translated_post_type()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>73</td>
+                                        <td>Argument $post_type is missing from the Docblock of bbl_translated_post_type()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>73</td>
+                                        <td>No summary for method bbl_translated_post_type()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>79</td>
+                                        <td>Argument $translated is missing from the Docblock of bbl_translated_taxonomy()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>79</td>
+                                        <td>Argument $taxonomy is missing from the Docblock of bbl_translated_taxonomy()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>79</td>
+                                        <td>No summary for method bbl_translated_taxonomy()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>312</td>
+                                        <td>No summary for method edit_form_after_title()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>415</td>
+                                        <td>No summary for method admin_menu()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>420</td>
+                                        <td>No summary for method wp_before_admin_bar_render()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>432</td>
+                                        <td>Argument $post_type is missing from the Docblock of add_meta_boxes()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>440</td>
+                                        <td>Argument $type is missing from the Docblock of bbl_translation_post_meta_boxes()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>440</td>
+                                        <td>Argument $original is missing from the Docblock of bbl_translation_post_meta_boxes()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>440</td>
+                                        <td>Argument $translation is missing from the Docblock of bbl_translation_post_meta_boxes()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>440</td>
+                                        <td>No summary for method bbl_translation_post_meta_boxes()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>448</td>
+                                        <td>Argument $type is missing from the Docblock of bbl_translation_terms_meta_boxes()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>448</td>
+                                        <td>Argument $items is missing from the Docblock of bbl_translation_terms_meta_boxes()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>448</td>
+                                        <td>No summary for method bbl_translation_terms_meta_boxes()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>457</td>
+                                        <td>Argument $type is missing from the Docblock of bbl_translation_submit_meta_boxes()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>457</td>
+                                        <td>Argument $job is missing from the Docblock of bbl_translation_submit_meta_boxes()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>457</td>
+                                        <td>No summary for method bbl_translation_submit_meta_boxes()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>463</td>
+                                        <td>No summary for method metabox_translation_terms()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>471</td>
+                                        <td>No summary for method metabox_translation_post_excerpt()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>479</td>
+                                        <td>No summary for method metabox_translation_submit()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>487</td>
+                                        <td>Argument $job_id is missing from the Docblock of save_job()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>487</td>
+                                        <td>No summary for method save_job()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>635</td>
+                                        <td>Argument $post_id is missing from the Docblock of save_post()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>635</td>
+                                        <td>No summary for method save_post()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>730</td>
+                                        <td>Argument $cols is missing from the Docblock of filter_columns()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>730</td>
+                                        <td>No summary for method filter_columns()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>745</td>
+                                        <td>Argument $col is missing from the Docblock of action_column()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>745</td>
+                                        <td>Argument $post_id is missing from the Docblock of action_column()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>745</td>
+                                        <td>No summary for method action_column()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>768</td>
+                                        <td>No summary for method metabox_post_translations()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>875</td>
+                                        <td>Argument $taxonomy is missing from the Docblock of get_term_jobs()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>889</td>
+                                        <td>Argument $id is missing from the Docblock of get_object_jobs()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>889</td>
+                                        <td>Argument $statuses is missing from the Docblock of get_object_jobs()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>914</td>
+                                        <td>Argument $job is missing from the Docblock of get_job_language()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>914</td>
+                                        <td>No summary for method get_job_language()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>922</td>
+                                        <td>Argument $job is missing from the Docblock of get_job_type()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>922</td>
+                                        <td>No summary for method get_job_type()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>948</td>
+                                        <td>Argument $job is missing from the Docblock of get_job_objects()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>948</td>
+                                        <td>No summary for method get_job_objects()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>1018</td>
+                                        <td>Argument $post_id is missing from the Docblock of get_post_terms_to_translate()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>1018</td>
+                                        <td>Argument $lang_code is missing from the Docblock of get_post_terms_to_translate()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>1018</td>
+                                        <td>No summary for method get_post_terms_to_translate()</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="class-languages.php" id="class-languages.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            class-languages.php
+                            <small style="float: right;padding-right: 10px;">5</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>189</td>
+                                        <td>Argument $lang_codes is missing from the Docblock of set_active_langs()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>234</td>
+                                        <td>Argument $lang_code is missing from the Docblock of get_lang()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>289</td>
+                                        <td>Argument $url_prefix is missing from the Docblock of get_code_from_url_prefix()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>476</td>
+                                        <td>Argument $code is missing from the Docblock of format_code_lang()</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="class-locale.php" id="class-locale.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            class-locale.php
+                            <small style="float: right;padding-right: 10px;">4</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>152</td>
+                                        <td>Argument $rules is missing from the Docblock of internal_rewrite_rules_filter()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>69</td>
+                                        <td>No summary for property $content_lang_cookie</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>70</td>
+                                        <td>No summary for property $interface_lang_cookie</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="class-menu.php" id="class-menu.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            class-menu.php
+                            <small style="float: right;padding-right: 10px;">10</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>26</td>
+                                        <td>No summary for method __construct()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>103</td>
+                                        <td>Argument $args is missing from the Docblock of wp_update_nav_menu_item()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>127</td>
+                                        <td>Argument $menus_meta_box_object is missing from the Docblock of nav_menu_meta_box_object()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>127</td>
+                                        <td>No summary for method nav_menu_meta_box_object()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>141</td>
+                                        <td>Argument $q is missing from the Docblock of parse_query()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>141</td>
+                                        <td>No summary for method parse_query()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>171</td>
+                                        <td>Argument $data is missing from the Docblock of wp_insert_post_data()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>171</td>
+                                        <td>Argument $postarr is missing from the Docblock of wp_insert_post_data()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>171</td>
+                                        <td>No summary for method wp_insert_post_data()</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="class-plugin.php" id="class-plugin.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            class-plugin.php
+                            <small style="float: right;padding-right: 10px;">16</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>111</td>
+                                        <td>Argument $name is missing from the Docblock of setup()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>111</td>
+                                        <td>Argument $type is missing from the Docblock of setup()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>200</td>
+                                        <td>Argument $filter is missing from the Docblock of add_filter()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>215</td>
+                                        <td>Argument $filter is missing from the Docblock of remove_filter()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>273</td>
+                                        <td>Argument $template_file is missing from the Docblock of render()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>273</td>
+                                        <td>Argument $vars is missing from the Docblock of render()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>295</td>
+                                        <td>Argument $template_file is missing from the Docblock of render_admin()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>295</td>
+                                        <td>Argument $vars is missing from the Docblock of render_admin()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>318</td>
+                                        <td>Argument $template_file is missing from the Docblock of capture()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>318</td>
+                                        <td>Argument $vars is missing from the Docblock of capture()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>334</td>
+                                        <td>Argument $template_file is missing from the Docblock of capture_admin()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>334</td>
+                                        <td>Argument $vars is missing from the Docblock of capture_admin()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>472</td>
+                                        <td>Argument $function is missing from the Docblock of add_shortcode()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>514</td>
+                                        <td>Argument $value is missing from the Docblock of update_all_options()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>525</td>
+                                        <td>Argument $value is missing from the Docblock of get_option()</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="class-post-public.php" id="class-post-public.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            class-post-public.php
+                            <small style="float: right;padding-right: 10px;">16</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>81</td>
+                                        <td>No summary for method __construct()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>673</td>
+                                        <td>Argument $leavename is missing from the Docblock of post_type_link()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>797</td>
+                                        <td>Argument $post_id is missing from the Docblock of page_link()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>1041</td>
+                                        <td>Argument $sync is missing from the Docblock of sync_meta_key()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>1041</td>
+                                        <td>Argument $meta_key is missing from the Docblock of sync_meta_key()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>1098</td>
+                                        <td>Argument $translated is missing from the Docblock of bbl_translated_taxonomy()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>1098</td>
+                                        <td>Argument $taxonomy is missing from the Docblock of bbl_translated_taxonomy()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>1098</td>
+                                        <td>No summary for method bbl_translated_taxonomy()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>1104</td>
+                                        <td>Argument $class is missing from the Docblock of admin_body_class()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>1104</td>
+                                        <td>No summary for method admin_body_class()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>1231</td>
+                                        <td>Argument $lang_code is missing from the Docblock of is_language_front_page()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>1273</td>
+                                        <td>Argument $lang_code is missing from the Docblock of get_new_post_translation_url()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>1378</td>
+                                        <td>Argument $post_type is missing from the Docblock of get_post_type_in_lang()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>1539</td>
+                                        <td>Argument $post_id is missing from the Docblock of sync_post_meta()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>1587</td>
+                                        <td>Argument $create is missing from the Docblock of get_transid()</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="class-switcher-content.php" id="class-switcher-content.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            class-switcher-content.php
+                            <small style="float: right;padding-right: 10px;">1</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="class-switcher-interface.php" id="class-switcher-interface.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            class-switcher-interface.php
+                            <small style="float: right;padding-right: 10px;">3</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>14</td>
+                                        <td>No summary for method __construct()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>20</td>
+                                        <td>No summary for method personal_options()</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="class-taxonomy.php" id="class-taxonomy.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            class-taxonomy.php
+                            <small style="float: right;padding-right: 10px;">26</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>89</td>
+                                        <td>Argument $object_type is missing from the Docblock of registered_taxonomy()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>183</td>
+                                        <td>No summary for method ignored_taxonomies()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>187</td>
+                                        <td>Argument $taxonomy is missing from the Docblock of is_taxonomy_translated()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>187</td>
+                                        <td>No summary for method is_taxonomy_translated()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>548</td>
+                                        <td>Argument $class is missing from the Docblock of admin_body_class()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>548</td>
+                                        <td>No summary for method admin_body_class()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>559</td>
+                                        <td>Argument $translated is missing from the Docblock of bbl_translated_taxonomy()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>559</td>
+                                        <td>Argument $taxonomy is missing from the Docblock of bbl_translated_taxonomy()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>559</td>
+                                        <td>No summary for method bbl_translated_taxonomy()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>583</td>
+                                        <td>Argument $origin_taxonomy is missing from the Docblock of translated_taxonomy()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>597</td>
+                                        <td>Argument $taxonomy is missing from the Docblock of get_term_translations()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>645</td>
+                                        <td>Argument $taxonomy is missing from the Docblock of get_term_in_lang()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>665</td>
+                                        <td>Argument $lang_code is missing from the Docblock of get_new_term_translation_url()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>665</td>
+                                        <td>Argument $taxonomy is missing from the Docblock of get_new_term_translation_url()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>786</td>
+                                        <td>Argument $origin_term is missing from the Docblock of initialise_translation()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>786</td>
+                                        <td>Argument $taxonomy is missing from the Docblock of initialise_translation()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>786</td>
+                                        <td>Argument $lang_code is missing from the Docblock of initialise_translation()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>786</td>
+                                        <td>No summary for method initialise_translation()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>895</td>
+                                        <td>Argument $transid is missing from the Docblock of set_transid()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>975</td>
+                                        <td>Argument $term_list is missing from the Docblock of the_tags()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>975</td>
+                                        <td>Argument $before is missing from the Docblock of the_tags()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>975</td>
+                                        <td>Argument $sep is missing from the Docblock of the_tags()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>975</td>
+                                        <td>Argument $after is missing from the Docblock of the_tags()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>975</td>
+                                        <td>Argument $id is missing from the Docblock of the_tags()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>975</td>
+                                        <td>No summary for method the_tags()</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="class-translator.php" id="class-translator.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            class-translator.php
+                            <small style="float: right;padding-right: 10px;">2</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>18</td>
+                                        <td>No summary for method __construct()</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="class-updates.php" id="class-updates.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            class-updates.php
+                            <small style="float: right;padding-right: 10px;">2</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>11</td>
+                                        <td>No summary for method __construct()</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="external-update-api/external-update-api/euapi.php" id="external-update-api/external-update-api/euapi.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            external-update-api/external-update-api/euapi.php
+                            <small style="float: right;padding-right: 10px;">2</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>12</td>
+                                        <td>No summary for property $handlers</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="external-update-api/external-update-api/handler-files.php" id="external-update-api/external-update-api/handler-files.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            external-update-api/external-update-api/handler-files.php
+                            <small style="float: right;padding-right: 10px;">1</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="external-update-api/external-update-api/handler-github.php" id="external-update-api/external-update-api/handler-github.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            external-update-api/external-update-api/handler-github.php
+                            <small style="float: right;padding-right: 10px;">1</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="external-update-api/external-update-api/handler.php" id="external-update-api/external-update-api/handler.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            external-update-api/external-update-api/handler.php
+                            <small style="float: right;padding-right: 10px;">1</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="external-update-api/external-update-api/info.php" id="external-update-api/external-update-api/info.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            external-update-api/external-update-api/info.php
+                            <small style="float: right;padding-right: 10px;">3</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>14</td>
+                                        <td>No summary for method __construct()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>12</td>
+                                        <td>No summary for property $external</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="external-update-api/external-update-api/item-plugin.php" id="external-update-api/external-update-api/item-plugin.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            external-update-api/external-update-api/item-plugin.php
+                            <small style="float: right;padding-right: 10px;">4</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>15</td>
+                                        <td>Argument $plugin is missing from the Docblock of __construct()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>15</td>
+                                        <td>No summary for method __construct()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>13</td>
+                                        <td>No summary for property $type</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="external-update-api/external-update-api/item-theme.php" id="external-update-api/external-update-api/item-theme.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            external-update-api/external-update-api/item-theme.php
+                            <small style="float: right;padding-right: 10px;">4</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>15</td>
+                                        <td>Argument $theme is missing from the Docblock of __construct()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>15</td>
+                                        <td>No summary for method __construct()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>13</td>
+                                        <td>No summary for property $type</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="external-update-api/external-update-api/item.php" id="external-update-api/external-update-api/item.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            external-update-api/external-update-api/item.php
+                            <small style="float: right;padding-right: 10px;">3</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>12</td>
+                                        <td>No summary for method get_version()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>16</td>
+                                        <td>No summary for method get_url()</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="external-update-api/external-update-api/update.php" id="external-update-api/external-update-api/update.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            external-update-api/external-update-api/update.php
+                            <small style="float: right;padding-right: 10px;">4</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>12</td>
+                                        <td>No summary for method __construct()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>22</td>
+                                        <td>No summary for method get_data_to_store()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>26</td>
+                                        <td>No summary for method get_new_version()</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="external-update-api/external-update-api.php" id="external-update-api/external-update-api.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            external-update-api/external-update-api.php
+                            <small style="float: right;padding-right: 10px;">1</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="languages/fa_IR.php" id="languages/fa_IR.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            languages/fa_IR.php
+                            <small style="float: right;padding-right: 10px;">1</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="miscellaneous.php" id="miscellaneous.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            miscellaneous.php
+                            <small style="float: right;padding-right: 10px;">14</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>358</td>
+                                        <td>Argument $type is missing from the Docblock of \acl_bbl_translation_post_meta_boxes()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>358</td>
+                                        <td>Argument $original is missing from the Docblock of \acl_bbl_translation_post_meta_boxes()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>358</td>
+                                        <td>Argument $translation is missing from the Docblock of \acl_bbl_translation_post_meta_boxes()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>358</td>
+                                        <td>No summary for function \acl_bbl_translation_post_meta_boxes()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>438</td>
+                                        <td>No summary for function \bbl_acf_admin_head()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>455</td>
+                                        <td>Argument $metabox_ids is missing from the Docblock of \bbl_acf_location_match_field_groups()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>455</td>
+                                        <td>Argument $filter is missing from the Docblock of \bbl_acf_location_match_field_groups()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>455</td>
+                                        <td>No summary for function \bbl_acf_location_match_field_groups()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>459</td>
+                                        <td>Argument $field_group is missing from the Docblock of \bbl_acf_get_field_groups()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>459</td>
+                                        <td>No summary for function \bbl_acf_get_field_groups()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>496</td>
+                                        <td>Argument $translated is missing from the Docblock of \bbl_acf_filter_translated_post_type()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>496</td>
+                                        <td>Argument $post_type is missing from the Docblock of \bbl_acf_filter_translated_post_type()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>496</td>
+                                        <td>No summary for function \bbl_acf_filter_translated_post_type()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>508</td>
+                                        <td>No summary for function \bbl_lock_translations_import()</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="templates-admin/options-available-languages.php" id="templates-admin/options-available-languages.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            templates-admin/options-available-languages.php
+                            <small style="float: right;padding-right: 10px;">1</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="templates-admin/switcher-interface.php" id="templates-admin/switcher-interface.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            templates-admin/switcher-interface.php
+                            <small style="float: right;padding-right: 10px;">1</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="templates-admin/translation-editor-post-excerpt.php" id="templates-admin/translation-editor-post-excerpt.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            templates-admin/translation-editor-post-excerpt.php
+                            <small style="float: right;padding-right: 10px;">1</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="templates-admin/translation-editor-terms.php" id="templates-admin/translation-editor-terms.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            templates-admin/translation-editor-terms.php
+                            <small style="float: right;padding-right: 10px;">1</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="templates-admin/translation-editor.php" id="templates-admin/translation-editor.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            templates-admin/translation-editor.php
+                            <small style="float: right;padding-right: 10px;">1</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="templates-admin/translation-groups.php" id="templates-admin/translation-groups.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            templates-admin/translation-groups.php
+                            <small style="float: right;padding-right: 10px;">1</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="translation-group-tool-sorter.php" id="translation-group-tool-sorter.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            translation-group-tool-sorter.php
+                            <small style="float: right;padding-right: 10px;">5</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>5</td>
+                                        <td>No summary for class \SortPosts</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>6</td>
+                                        <td>Argument $m is missing from the Docblock of post_type_descending()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>6</td>
+                                        <td>Argument $n is missing from the Docblock of post_type_descending()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>6</td>
+                                        <td>No summary for method post_type_descending()</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="translation-group-tool.php" id="translation-group-tool.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            translation-group-tool.php
+                            <small style="float: right;padding-right: 10px;">3</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>306</td>
+                                        <td>Argument $obj_id is missing from the Docblock of get_action_link()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>306</td>
+                                        <td>Argument $anchor is missing from the Docblock of get_action_link()</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                            <div class="package-contents">
+                                            <a name="widget.php" id="widget.php"></a>
+                        <h3>
+                            <i class="icon-file"></i>
+                            widget.php
+                            <small style="float: right;padding-right: 10px;">12</small>
+                        </h3>
+                        <div>
+                            <table class="table markers table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Line</th>
+                                    <th>Description</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>0</td>
+                                        <td>No summary was found for this file</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>4</td>
+                                        <td>No summary for function \babble_widget()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>8</td>
+                                        <td>No summary for class \Babble_Widget</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>10</td>
+                                        <td>No summary for method __construct()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>18</td>
+                                        <td>Argument $args is missing from the Docblock of widget()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>18</td>
+                                        <td>Argument $instance is missing from the Docblock of widget()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>18</td>
+                                        <td>No summary for method widget()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>116</td>
+                                        <td>Argument $new_instance is missing from the Docblock of update()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>116</td>
+                                        <td>Argument $old_instance is missing from the Docblock of update()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>116</td>
+                                        <td>No summary for method update()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>125</td>
+                                        <td>Argument $instance is missing from the Docblock of form()</td>
+                                    </tr>
+                                                                    <tr>
+                                        <td>error</td>
+                                        <td>125</td>
+                                        <td>No summary for method form()</td>
+                                    </tr>
+                                                            </tbody>
+                            </table>
+                        </div>
+                                    </div>
+                    </div>
+    </section>
+
+    <footer class="row-fluid">
+        <section class="span10 offset2">
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <section class="row-fluid footer-sections">
+                        <section class="span4">
+                                                        <h1><i class="icon-code"></i></h1>
+                            <div>
+                                <ul>
+                                                                    </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-bar-chart"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="../graphs/class.html">Class Hierarchy Diagram</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-pushpin"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="../reports/errors.html">Errors</a></li>
+                                    <li><a href="../reports/markers.html">Markers</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                    </section>
+                </section>
+            </section>
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <hr />
+                    Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
+                    on August 4th, 2014 at 12:53.
+                </section>
+            </section>
+        </section>
+    </footer>
+</div>
+
+</body>
+</html>

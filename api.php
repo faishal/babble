@@ -663,3 +663,8 @@ function bbl_is_locked(){
 	}
 	return false;
 }
+
+function tags_for_pages() {
+	register_taxonomy_for_object_type('post_tag', 'page');
+}
+add_action('init', 'tags_for_pages');

@@ -90,7 +90,7 @@ class Babble_Post_Public extends Babble_Plugin {
 		$this->add_action( 'deleted_post', 'clean_post_cache' );
 		$this->add_action( 'deleted_post_meta', null, null, 4 );
 		$this->add_action( 'init', 'init_late', 9999 );
-		$this->add_action( 'load-post-new.php', 'load_post_new' );
+		//$this->add_action( 'load-post-new.php', 'load_post_new' );
 		$this->add_action( 'manage_pages_custom_column', 'manage_posts_custom_column', null, 2 );
 		$this->add_action( 'manage_posts_custom_column', 'manage_posts_custom_column', null, 2 );
 		$this->add_action( 'parse_request' );
@@ -113,10 +113,13 @@ class Babble_Post_Public extends Babble_Plugin {
 		$this->add_filter( 'the_posts', null, null, 2 );
 		$this->add_filter( 'bbl_translated_taxonomy', null, null, 2 );
 		$this->add_filter( 'admin_body_class' );
-
+		$this->add_filter( 'hidden_meta_boxes', null, 10, 1 );
+		$this->add_filter( 'default_hidden_meta_boxes', null, 10, 2 );
 		$this->add_action( 'load-post.php', 'load_post_edit' );
+		$this->add_action( 'admin_head', null, 5, 10 );
 
 		$this->initiate();
+		//acf/location/match_field_groups
 	}
 	/**
 	 * Initiates 
@@ -169,15 +172,19 @@ class Babble_Post_Public extends Babble_Plugin {
 			return;
 		if ( ! bbl_is_translated_post_type( $translated_post->post_type ) )
 			return;
-		$canonical_post = bbl_get_default_lang_post( $translated_post );
+
+		$post_original_lang = get_post_meta( $translated_post->ID, 'bbl_post_original_lang', true );
+
+		$canonical_post = bbl_get_post_in_lang( $translated_post, $post_original_lang);
+
+
 		$lang_code = bbl_get_post_lang_code( $translated_post );
-		if ( bbl_get_default_lang_code() == $lang_code )
+		if ( $post_original_lang == $lang_code )
 			return;
 		// @TODO Check capabilities include editing a translation post
 		// - If not, the button shouldn't be on the Admin Bar
 		// - But we also need to not process at this point
 		global $bbl_jobs;
-		$existing_jobs = $bbl_jobs->get_incomplete_post_jobs( $canonical_post );
 		if ( isset( $existing_jobs[ $lang_code ] ) ) {
 			if ( null === bbl_get_post_in_lang( $translated_post, bbl_get_default_lang_code() ) ) {
 				return;
@@ -187,13 +194,6 @@ class Babble_Post_Public extends Babble_Plugin {
 				exit;
 			}
 		}
-		// Create a new translation job for the current language
-		$lang_codes = array( $lang_code );
-		$jobs = $bbl_jobs->create_post_jobs( $canonical_post, $lang_codes );
-		// Redirect to the translation job
-		$url = get_edit_post_link( $jobs[0], 'url' );
-		wp_redirect( $url );
-		exit;
 	}
 
 	/**
@@ -242,6 +242,7 @@ class Babble_Post_Public extends Babble_Plugin {
 		$new_post_id = wp_insert_post( array(
 			'post_type'   => $new_post_type,
 			'post_status' => 'draft',
+		    'post_content' =>'--',
 		), true );
 		$this->no_recursion = false;
 
@@ -257,6 +258,7 @@ class Babble_Post_Public extends Babble_Plugin {
 		$this->sync_properties( $origin_post->ID, $new_post->ID );
 
 		do_action( 'bbl_created_new_shadow_post', $new_post->ID, $origin_post->ID );
+
 		return $new_post;
 
 	}
@@ -317,8 +319,8 @@ class Babble_Post_Public extends Babble_Plugin {
 	 **/
 	public function registered_post_type( $post_type, $args ) {
 		// Don't bother with non-public post_types for now
-		// @FIXME: This may need to change for menus?
-		if ( false === $args->public ){
+
+		if ( false === $args->public || in_array( $post_type, array( 'attachment' ) ) ) {
 			return;
 		}
 
@@ -905,10 +907,12 @@ class Babble_Post_Public extends Babble_Plugin {
 					'post_modified'     => $target_post->post_modified,
 					'post_modified_gmt' => $target_post->post_modified_gmt,
 				);
+				$GLOBALS['acf_save_lock'] = true ;
 				wp_update_post( $post_data );
+				$GLOBALS['acf_save_lock'] = false ;
 			}
 		}
-		
+
 		$this->no_recursion = false;
 	}
 
@@ -932,12 +936,15 @@ class Babble_Post_Public extends Babble_Plugin {
 			return;
 		}
 		$this->no_recursion = 'transition_post_status';
-
 		if ( 'publish' == $new_status && $new_status != $old_status ) {
 			// Ensure the date of publication of a translation gets
 			// sync'd immediately with the original language post.
-			if ( bbl_get_default_lang_code() != bbl_get_post_lang_code( $post->ID ) ) {
-				$source_post = bbl_get_post_in_lang( $post->ID, bbl_get_default_lang_code() );
+			$post_lang_code = get_post_meta($post->ID, 'bbl_job_language_code' , true );
+			if( $post_lang_code == ''){
+				$post_lang_code = bbl_get_current_lang_code();
+			}
+			if ( $post_lang_code != bbl_get_post_lang_code( $post->ID ) ) {
+				$source_post = bbl_get_post_in_lang( $post->ID, $post_lang_code );
 				$postdata = array(
 					'ID' => $post->ID,
 					'post_date' =>$source_post->post_date,
@@ -958,12 +965,52 @@ class Babble_Post_Public extends Babble_Plugin {
 	 **/
 	public function add_menu_classes( $menu ) {
 		global $submenu;
+		global $self, $parent_file, $submenu_file, $plugin_page, $typenow;
+		$base_post_types = array_flip( $this->post_types );
+
 		// Remove "new post" links from submenu(s) for non-default languages
-		foreach ( $submenu as $parent => $items ) {
-			foreach ( $items as $key => $item ) {
+		foreach ( $submenu as $parent => &$items ) {
+			foreach ( $items as $key => &$item ) {
 				if ( bbl_get_current_lang_code() != bbl_get_default_lang_code() ) {
+					$vars     = array();
+					$url_info = parse_url( $item[ 2 ] );
+					if(! isset($url_info[ 'query' ] )){
+						$url_info[ 'query' ] = 	'';
+					}
+
+					parse_str( $url_info[ 'query' ], $vars );
+					if ( !isset( $vars[ 'post_type' ] ) ) {
+						$vars[ 'post_type' ] = 'post';
+					}
 					if ( 'post-new.php' == substr( $item[ 2 ], 0, 12 ) ) {
-						unset( $submenu[ $parent ][ $key ] );
+						//unset( $submenu[ $parent ][ $key ] );
+						if ( isset( $base_post_types[ $vars[ 'post_type' ] ] ) ) {
+
+							$item[ 2 ] = add_query_arg( array(
+								'post_type' => bbl_get_post_type_in_lang( $vars[ 'post_type' ], bbl_get_current_lang_code() ),
+								//'lang' => bbl_get_current_lang_code()
+							), 'post-new.php' );
+
+						}
+					} else if ( 'edit.php' == substr( $item[ 2 ], 0, 8 ) ) {
+						if ( isset( $base_post_types[ $vars[ 'post_type' ] ] ) ) {
+
+							$item[ 2 ] = add_query_arg( array(
+								'post_type' => bbl_get_post_type_in_lang( $vars[ 'post_type' ], bbl_get_current_lang_code() ),
+								//'lang' => bbl_get_current_lang_code()
+							), 'edit.php' );
+
+						}
+					} else if('edit-tags.php' === substr( $item[ 2 ], 0, 13 ) ){
+						if ( ! isset( $vars[ 'taxonomy' ] ) ) {
+							$vars[ 'taxonomy' ] = 'post_tag';
+						}
+
+						$item[ 2 ] = add_query_arg( array(
+							'post_type' => bbl_get_post_type_in_lang( $vars[ 'post_type' ], bbl_get_current_lang_code() ),
+							'taxonomy' => bbl_get_taxonomy_in_lang( $vars[ 'taxonomy' ], bbl_get_current_lang_code())
+						), 'edit-tags.php' );
+
 					}
 				}
 			}
@@ -1525,8 +1572,9 @@ class Babble_Post_Public extends Babble_Plugin {
 			$postdata[ 'comment_status' ] = $source_post->comment_status;
 
 		$postdata = apply_filters( 'bbl_pre_sync_properties', $postdata, $source_id );
-
+		$GLOBALS['acf_save_lock'] = true ;
 		wp_update_post( $postdata );
+		$GLOBALS['acf_save_lock'] = false ;
 	}
 
 	/**
@@ -1591,8 +1639,7 @@ class Babble_Post_Public extends Babble_Plugin {
 		}
 		if ( ! $post->ID )
 			return false;
-
-		if ( $transid = wp_cache_get( $post->ID, 'bbl_post_transids' ) ) {
+		if (  $transid = wp_cache_get( $post->ID, 'bbl_post_transids' ) ) {
 			return $transid;
 		}
 
@@ -1641,6 +1688,8 @@ class Babble_Post_Public extends Babble_Plugin {
 		}
 		$term = get_term($transid, 'post_translation');
 		$result = wp_set_object_terms( $post->ID, $term->slug, 'post_translation' );
+
+		update_post_meta( $post->ID, 'bbl_post_translation', $transid_name );
 
 		if ( is_wp_error( $result ) )
 			bbl_log( "Problem associating TransID with new posts: " . print_r( $result, true ) );
@@ -1794,8 +1843,51 @@ class Babble_Post_Public extends Babble_Plugin {
 		";
 		return (bool) count( $wpdb->get_results( $sql ) );
 	}
-	
 
+	function admin_head(){
+		global $current_screen;
+
+		if ( !class_exists( 'acf' ) ) {
+			return;
+		}
+
+		if ( !isset( $current_screen ) || !isset( $current_screen->post_type ) ) {
+			return;
+		}
+
+
+		if ( 'post' === $current_screen->base && isset( $this->post_types[ $current_screen->post_type ] ) ) {
+			add_filter( 'acf/location/match_field_groups', array( &$this, 'post_match_field_groups' ), 999, 2 );
+		}
+	}
+
+	function post_match_field_groups( $metabox_ids, $filter ) {
+		remove_filter( 'acf/location/match_field_groups', array( &$this, 'post_match_field_groups' ), 999, 2 );
+		global $post, $pagenow, $typenow;
+
+		$post_id = $post ? $post->ID : 0;
+
+		$filter      = array(
+			'post_id'   => $post_id,
+			'post_type' => bbl_get_base_post_type( $typenow ),
+		);
+		$metabox_ids = apply_filters( 'acf/location/match_field_groups', array(), $filter );
+		add_filter( 'acf/location/match_field_groups', array( &$this, 'post_match_field_groups' ), 999, 2 );
+
+		return $metabox_ids;
+	}
+	function hidden_meta_boxes( $hidden ) {
+		global $current_screen;
+		if ( is_string( $current_screen ) ){
+			$current_screen = convert_to_screen( $current_screen );
+		}
+
+		return $hidden;
+	}
+
+	function default_hidden_meta_boxes( $hidden, $screen ){
+
+	}
 }
 
 global $bbl_post_public;

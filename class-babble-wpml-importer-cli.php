@@ -100,9 +100,6 @@ if ( class_exists( "WP_CLI_Command" ) ):
 							if ( $menu_id === $default_language_menu_id ) {
 								continue;
 							}
-
-							//var_dump( wp_set_object_terms( $menu_post->ID, (array) $default_language_menu->slug, 'nav_menu' ) );
-							//exit;
 						}
 						if ( $menu_id !== $default_language_menu_id ) {
 							wp_delete_term( $menu_id, 'nav_menu', array( 'default' => $default_language_menu_id ) );
@@ -122,11 +119,21 @@ if ( class_exists( "WP_CLI_Command" ) ):
 					$wmpl_trasalated_posts_map = $this->_get_wpml_post_translations( $post );
 					if ( false === empty( $wmpl_trasalated_posts_map ) ) {
 						$default_language_post_id = $post->ID;
+						$default_language_post_code = false;
+						$default_last_language_post_code = '';
+
 						foreach ( $wmpl_trasalated_posts_map as $language_code => $wpml_single_post_map ) {
 							$lang_post_id           = $wpml_single_post_map->element_id;
 							if ( bbl_get_default_lang_code() === $wmpl_languages[ $language_code ]->default_locale ) {
 								$default_language_post_id = $lang_post_id;
+								$default_language_post_code = $wmpl_languages[ $language_code ]->default_locale;
+							} else {
+								$default_last_language_post_code = $wmpl_languages[ $language_code ]->default_locale;
 							}
+						}
+
+						if ( false === $default_language_post_code ) {
+							$default_language_post_code = $default_last_language_post_code;
 						}
 
 						$default_language_post = get_post( $default_language_post_id );
@@ -138,6 +145,7 @@ if ( class_exists( "WP_CLI_Command" ) ):
 							if ( 'done' === get_post_meta( $lang_post_id, '_bbl_wpml_transalated', true ) ) {
 								continue;
 							}
+							update_post_meta( $lang_post_id, 'bbl_post_original_lang', $default_language_post_code );
 
 							$bbl_post_public->set_transid( $lang_post_id, $transid );
 
@@ -163,6 +171,8 @@ if ( class_exists( "WP_CLI_Command" ) ):
 								$job->post_content = $lang_post->post_content;
 								$job->post_status = 'complete';
 								$post_meta = get_post_meta($lang_post->ID);
+
+								update_post_meta( $job->ID, 'bbl_post_original_lang', $default_language_post_code );
 
 								foreach( $post_meta as $meta_key => $val ){
 									foreach($val as $meta_value){
@@ -201,6 +211,7 @@ if ( class_exists( "WP_CLI_Command" ) ):
 								}
 
 								wp_update_post( $lang_post, true );
+
 
 
 								update_post_meta( $job->ID, "bbl_post_{$default_language_post_id}", $lang_post );

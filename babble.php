@@ -76,5 +76,6 @@ require_once 'class-updates.php';
 require_once 'class-menu.php';
 
 require_once 'miscellaneous.php';
+require_once 'class-advanced-custom-fields.php';
 
 require_once 'class-babble-wpml-importer-cli.php';

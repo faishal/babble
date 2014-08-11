@@ -1,11 +1,9 @@
 <?php
-//wp_insert_post_data
-
 /**
- * Manages the translations for taxonomies.
+ * Manages the translations for Menu.
  *
  * @package Babble
- * @since   Alpha 1.2
+ * @since   1.5
  */
 class Babble_Menus extends Babble_Plugin {
 

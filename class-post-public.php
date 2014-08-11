@@ -114,7 +114,7 @@ class Babble_Post_Public extends Babble_Plugin {
 		$this->add_filter( 'bbl_translated_taxonomy', null, null, 2 );
 		$this->add_filter( 'admin_body_class' );
 		$this->add_filter( 'hidden_meta_boxes', null, 10, 1 );
-		$this->add_filter( 'default_hidden_meta_boxes', null, 10, 2 );
+		//$this->add_filter( 'default_hidden_meta_boxes', null, 10, 2 );
 		$this->add_action( 'load-post.php', 'load_post_edit' );
 		$this->add_action( 'admin_head', null, 5, 10 );
 
@@ -379,8 +379,8 @@ class Babble_Post_Public extends Babble_Plugin {
 			if ( false !== $args[ 'rewrite' ] ) {
 				if ( ! is_array( $new_args[ 'rewrite' ] ) )
 					$new_args[ 'rewrite' ] = array();
-				$new_args[ 'query_var' ] = $new_args[ 'rewrite' ][ 'slug' ] = $this->get_slug_in_lang( $slug, $lang, $args );
-				$new_args[ 'has_archive' ] = $this->get_slug_in_lang( $archive_slug, $lang );
+				$new_args[ 'query_var' ] = $new_args[ 'rewrite' ][ 'slug' ] = $slug ; //$this->get_slug_in_lang( $slug, $lang, $args );
+				$new_args[ 'has_archive' ] = $archive_slug; //$this->get_slug_in_lang( $archive_slug, $lang );
 			}
 			$this->slugs_and_vars[ $lang->code . '_' . $post_type ] = array( 
 				'query_var' => $new_args[ 'query_var' ],
@@ -1190,14 +1190,12 @@ class Babble_Post_Public extends Babble_Plugin {
 			}
 
 		}
-//		if(!empty( $query_vars[ 's' ] )){
-//			return $query_vars;
-//		}
-
+		if(!empty( $query_vars[ 's' ] )){
+			return $query_vars;
+		}
 		// Detect language specific homepages
 		if ( $request == $lang_url_prefix ) {
 			unset( $query_vars[ 'error' ] );
-
 			// @FIXME: Cater for front pages which don't list the posts
 			if ( 'page' == get_option('show_on_front') && $page_on_front = get_option('page_on_front') ) {
 				// @TODO: Get translated page ID
@@ -1207,9 +1205,6 @@ class Babble_Post_Public extends Babble_Plugin {
 				return $query_vars;
 			}
 
-			// Trigger the archive listing for the relevant shadow post type
-			// of 'post' for this language.
-
 			if ( bbl_get_default_lang_code() != $lang && empty( $query_vars['s'] ) ) {
 				$post_type = isset( $query_vars[ 'post_type' ] ) ? $query_vars[ 'post_type' ] : 'post';
 
@@ -1218,6 +1213,15 @@ class Babble_Post_Public extends Babble_Plugin {
 			}
 
 			return $query_vars;
+		}
+
+
+		// Trigger the archive listing for the relevant shadow post type
+		// of 'post' for this language.
+
+		if ( isset( $query_vars[ 'post_type' ] ) && empty( $query_vars['s'] ) ) {
+			$post_type = isset( $query_vars[ 'post_type' ] ) ? $query_vars[ 'post_type' ] : 'post';
+			$query_vars[ 'post_type' ] = $this->get_post_type_in_lang( $post_type, bbl_get_current_lang_code() );
 		}
 
 		// If we're asking for the default content, it's fine
@@ -1689,7 +1693,7 @@ class Babble_Post_Public extends Babble_Plugin {
 		$term = get_term($transid, 'post_translation');
 		$result = wp_set_object_terms( $post->ID, $term->slug, 'post_translation' );
 
-		update_post_meta( $post->ID, 'bbl_post_translation', $transid_name );
+		update_post_meta( $post->ID, 'bbl_post_translation', $term->name );
 
 		if ( is_wp_error( $result ) )
 			bbl_log( "Problem associating TransID with new posts: " . print_r( $result, true ) );
@@ -1882,8 +1886,8 @@ class Babble_Post_Public extends Babble_Plugin {
 			$current_screen = convert_to_screen( $current_screen );
 		}
 
-		return $hidden;
-	}
+			return $hidden;
+		}
 
 	function default_hidden_meta_boxes( $hidden, $screen ){
 

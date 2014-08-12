@@ -15,12 +15,11 @@ class Babble_ACF extends Babble_Plugin {
 		$this->add_action( 'admin_head', null, 5, 10 );
 		$this->add_filter( 'bbl_translated_post_type', null, 10, 2 );
 		$this->add_filter( 'bbl_sync_meta_key', null, 10, 2 );
-
-
 	}
 
 	/**
-	 * Add Metabox for job queue,
+	 * Add Metabox for job queue editor view
+	 *
 	 */
 
 	function bbl_translation_post_meta_boxes( $type, $original, $translation ) {
@@ -133,10 +132,23 @@ class Babble_ACF extends Babble_Plugin {
 
 	}
 
+	/**
+	 *
+	 * @param $metabox_ids
+	 * @param $filter
+	 *
+	 * @return array
+	 */
 	function bbl_acf_location_match_field_groups( $metabox_ids, $filter ) {
 		return array();
 	}
 
+	/**
+	 *
+	 * @param $field_group
+	 *
+	 * @return array
+	 */
 	function bbl_acf_get_field_groups( $field_group ) {
 		return array();
 	}
@@ -170,8 +182,13 @@ class Babble_ACF extends Babble_Plugin {
 		return $value;
 	}
 
+
 	/**
 	 * remove acf post type from translated post types
+	 * @param $translated
+	 * @param $post_type
+	 *
+	 * @return bool
 	 */
 
 	function bbl_translated_post_type( $translated, $post_type ) {
@@ -183,10 +200,11 @@ class Babble_ACF extends Babble_Plugin {
 	}
 
 	/**
-	 * @param $return
-	 * @param $meta_key
+	 * @param $sync boolean flag to allow sync meta key
+	 * @param $meta_key string name of the meta_key
 	 *
-	 * @fixme Identify acf meta key and only ignore that keys
+	 * @internal param bool $return true if you want to sync meta key
+	 * @fixme    Identify acf meta key and only ignore that keys
 	 * @return bool
 	 */
 	function bbl_sync_meta_key( $sync, $meta_key ) {

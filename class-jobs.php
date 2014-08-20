@@ -650,13 +650,6 @@ class Babble_Jobs extends Babble_Plugin {
 
 		if ( ! bbl_is_translated_post_type( $post->post_type ) )
 			return;
-		//Sync post if it is not original post
-		$post_original_lang = get_post_meta( $post_id, 'bbl_post_original_lang', true );
-
-//		if ( bbl_get_post_lang_code( $post ) != $post_original_lang ) {
-//			//Sync Job post
-//			$this->get_completed_post_jobs( bbl_get_post_in_lang( $post, $post_original_lang ) );
-//		}
 
 		$nonce = isset( $_POST[ '_bbl_ready_for_translation' ] ) ? $_POST[ '_bbl_ready_for_translation' ] : false;
 
@@ -673,7 +666,10 @@ class Babble_Jobs extends Babble_Plugin {
 		$lang_codes  = wp_list_pluck( $langs, 'code' );
 		$this->create_post_jobs( $post->ID, $lang_codes );
 
-		$this->no_recursion = true;
+		// Add ACF action to save acf post meta
+		do_action('acf/save_post', $post->ID);
+
+		$this->no_recursion = false ;
 	}
 
 	/**

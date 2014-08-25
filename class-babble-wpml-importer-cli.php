@@ -231,6 +231,54 @@ if ( class_exists( "WP_CLI_Command" ) ):
 									if ( in_array( $tax, $bbl_taxonomies->ignored_taxonomies() ) ) {
 										continue;
 									}
+
+									$post_terms = wp_get_post_terms($lang_post_id, $tax );
+
+									foreach($post_terms  as  $p_term){
+										$translated_terms = $this->_get_wpml_tax_translations( $p_term );
+										$default_language_term_id = 0;
+
+										if(! is_array( $translated_terms) ){
+											continue;
+										}
+										foreach($translated_terms  as $t_language_code => $p_term){
+											if ( bbl_get_default_lang_code() === $wmpl_languages[ $t_language_code ]->default_locale ) {
+												$default_language_term_id = $p_term->element_id;
+											} else {
+												$default_last_language_term_id = $p_term->element_id;
+											}
+										}
+
+										if ( 0 === $default_language_term_id ) {
+											$default_language_term_id = $default_last_language_term_id;
+										}
+										if( null == $default_language_term_id) {
+											continue;
+										}
+										global $bbl_taxonomies;
+										$t_trans_id = $bbl_taxonomies->get_transid( intval( $default_language_term_id ) );
+
+										foreach( $translated_terms  as $t_language_code => $t_term ){
+											if ( $wmpl_languages[ $language_code ]->default_locale  === $wmpl_languages[ $t_language_code ]->default_locale ) {
+
+												$t_current_term_id = intval( $t_term->element_id );
+												$term              = get_term( intval( $t_term->element_id ), $tax );
+												if ( is_wp_error( $term ) ) {
+													continue;
+												}
+												if ( null == $term ) {
+													continue;
+												}
+
+												$bbl_taxonomies->set_transid( $t_current_term_id, $t_trans_id );
+
+												$translated_taxonomy = bbl_get_taxonomy_in_lang( $tax, $wmpl_languages[ $language_code ]->default_locale);
+
+												$wpdb->update( $wpdb->term_taxonomy, array( 'taxonomy' => $translated_taxonomy ), array( 'term_taxonomy_id' => $term->term_taxonomy_id ) );
+											}
+
+										}
+									}
 									//Pending Tax migration
 
 								}

@@ -1194,7 +1194,7 @@ class Babble_Post_Public extends Babble_Plugin {
 			return $query_vars;
 		}
 		// Detect language specific homepages
-		if ( $request == $lang_url_prefix ) {
+		if ( $request === $lang_url_prefix ) {
 			unset( $query_vars[ 'error' ] );
 			// @FIXME: Cater for front pages which don't list the posts
 			if ( 'page' == get_option('show_on_front') && $page_on_front = get_option('page_on_front') ) {
@@ -1224,10 +1224,12 @@ class Babble_Post_Public extends Babble_Plugin {
 			$query_vars[ 'post_type' ] = $this->get_post_type_in_lang( $post_type, bbl_get_current_lang_code() );
 		}
 
+
 		// If we're asking for the default content, it's fine
 		if ( bbl_get_default_lang_code() == $lang ) {
 			return $query_vars;
 		}
+
 
 		// Now swap the query vars so we get the content in the right language post_type
 

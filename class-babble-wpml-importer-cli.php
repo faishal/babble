@@ -91,6 +91,15 @@ if ( class_exists( "WP_CLI_Command" ) ):
 							continue;
 						}
 						foreach ( $menu_items as $menu_post ) {
+
+							$menu_classes = get_post_meta($menu_post->ID, '_menu_item_classes', true);
+							if(is_array($menu_classes)){
+								$menu_classes[] = $lang ;
+							} else {
+								$menu_classes= array( $lang ) ;
+							}
+							update_post_meta( $menu_post->ID, '_menu_item_classes', $menu_classes );
+
 							if ( '' !== get_post_meta( $menu_post->ID, '_menu_lang_code', true ) ) {
 								continue;
 							}
@@ -239,6 +248,24 @@ if ( class_exists( "WP_CLI_Command" ) ):
 										$default_language_term_id = 0;
 
 										if(! is_array( $translated_terms) ){
+											global $bbl_taxonomies;
+											$t_trans_id = $bbl_taxonomies->get_transid( $p_term->term_id );
+											$new_term = bbl_get_term_in_lang( $p_term->term_id,$p_term->taxonomy, $wmpl_languages[ $language_code ]->default_locale );
+											$translated_taxonomy = bbl_get_taxonomy_in_lang( $tax, $wmpl_languages[ $language_code ]->default_locale);
+
+											if($new_term->taxonomy !== $translated_taxonomy){
+												$new_term = wp_insert_term($p_term->name,$translated_taxonomy, array('description'=>$p_term->description, 'slug' =>$p_term->slug) ) ;
+												$new_term = get_term($new_term['term_id'],$translated_taxonomy ) ;
+												$bbl_taxonomies->set_transid( $new_term->term_id, $t_trans_id );
+											}
+
+											if ( is_wp_error( $new_term ) ) {
+												exit;
+												continue;
+											}
+											wp_set_object_terms( $lang_post_id, $new_term->slug,  $translated_taxonomy, true );
+
+											wp_delete_object_term_relationships( $lang_post_id, $tax );
 											continue;
 										}
 										foreach($translated_terms  as $t_language_code => $p_term){
@@ -257,10 +284,11 @@ if ( class_exists( "WP_CLI_Command" ) ):
 										}
 										global $bbl_taxonomies;
 										$t_trans_id = $bbl_taxonomies->get_transid( intval( $default_language_term_id ) );
+										$found_terms = false;
 
 										foreach( $translated_terms  as $t_language_code => $t_term ){
 											if ( $wmpl_languages[ $language_code ]->default_locale  === $wmpl_languages[ $t_language_code ]->default_locale ) {
-
+												$found_terms = true;
 												$t_current_term_id = intval( $t_term->element_id );
 												$term              = get_term( intval( $t_term->element_id ), $tax );
 												if ( is_wp_error( $term ) ) {
@@ -278,7 +306,35 @@ if ( class_exists( "WP_CLI_Command" ) ):
 											}
 
 										}
+										if( $found_terms == false ){
+											foreach( $translated_terms  as $t_language_code => $t_term ){
+												if ( bbl_get_default_lang_code()  === $wmpl_languages[ $t_language_code ]->default_locale ) {
+													$t_current_term_id = intval( $t_term->element_id );
+													$term              = get_term( intval( $t_term->element_id ), $tax );
+													if ( is_wp_error( $term ) ) {
+														continue;
+													}
+													if ( null == $term ) {
+														continue;
+													}
+													$translated_taxonomy = bbl_get_taxonomy_in_lang( $tax, $wmpl_languages[ $language_code ]->default_locale);
+
+													$new_term = wp_insert_term($term->name,$translated_taxonomy, array('description'=>$term->description, 'slug' =>$term->slug) ) ;
+
+													if ( is_wp_error( $new_term ) ) {
+														continue;
+													}
+													if ( null == $new_term ) {
+														continue;
+													}
+
+													$bbl_taxonomies->set_transid( $new_term['term_id'], $t_trans_id );
+												}
+
+											}
+										}
 									}
+
 									//Pending Tax migration
 
 								}

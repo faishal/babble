@@ -1250,6 +1250,14 @@ class Babble_Post_Public extends Babble_Plugin {
 					$query_vars[ 'post_type' ] = bbl_get_post_type_in_lang( 'post', bbl_get_current_lang_code() );
 					unset( $query_vars[ 'name' ] );
 					unset( $query_vars[ bbl_get_post_type_in_lang( 'page', $query_vars[ 'lang' ] ) ] );
+				} else {
+					$query_vars[ 'p' ] = $current_post->ID;
+					$query_vars[ 'post_type' ] = $this->get_post_type_in_lang( $current_post->post_type, bbl_get_current_lang_code() );
+					unset( $query_vars[ 'page' ] );
+					unset( $query_vars[ 'name' ] );
+					unset( $query_vars[ 'pagename' ] );
+					unset($query_vars[ bbl_get_post_type_in_lang( 'page', $query_vars[ 'lang' ] ) ]);
+					return $query_vars;
 				}
 			}
 			unset( $query_vars[ 'page' ] );

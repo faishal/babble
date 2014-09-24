@@ -348,7 +348,6 @@ class Babble_Jobs extends Babble_Plugin {
 				$vars['origin_taxonomy'] = $term->taxonomy;
 
 			}
-
 		} else {
 
 			$objects = $this->get_job_objects( $job );
@@ -359,6 +358,9 @@ class Babble_Jobs extends Babble_Plugin {
 
 			$post = $objects['post'];
 			$post_translation = get_post_meta( $job->ID, "bbl_post_{$post->ID}", true );
+			if ( empty( $post_translation ) ) {
+				$post_translation = bbl_get_post_in_lang( $post->ID, get_post_meta( $job->ID, 'bbl_job_language_code', true ) );
+			}
 
 			if ( empty( $post_translation ) ) {
 				$post_translation = get_default_post_to_edit( $post->post_type );
@@ -705,7 +707,7 @@ class Babble_Jobs extends Babble_Plugin {
 			'labels'             => $labels,
 			'can_export'         => true,
 			'supports'           => false,
-			'capability_type'    => 'bbl_job',
+			'capability_type'    => 'post',
 			'map_meta_cap'       => true,
 		);
 		register_post_type( 'bbl_job', $args );

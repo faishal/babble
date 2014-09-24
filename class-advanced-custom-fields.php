@@ -15,6 +15,8 @@ class Babble_ACF extends Babble_Plugin {
 		$this->add_action( 'admin_head', null, 5, 10 );
 		$this->add_filter( 'bbl_translated_post_type', null, 10, 2 );
 		$this->add_filter( 'bbl_sync_meta_key', null, 10, 2 );
+
+
 	}
 
 	/**

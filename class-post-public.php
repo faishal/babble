@@ -110,6 +110,7 @@ class Babble_Post_Public extends Babble_Plugin {
 		$this->add_filter( 'post_type_link', null, null, 3 );
 		$this->add_filter( 'get_sample_permalink', null, null, 5 );
 		$this->add_filter( 'single_template' );
+		$this->add_filter( 'archive_template' );
 		$this->add_filter( 'the_posts', null, null, 2 );
 		$this->add_filter( 'bbl_translated_taxonomy', null, null, 2 );
 		$this->add_filter( 'admin_body_class' );
@@ -1040,7 +1041,10 @@ class Babble_Post_Public extends Babble_Plugin {
 	public function single_template( $template ) {
 //		if( bbl_is_default_lang() )
 //			return $template;
-
+		if( $this->no_recursion ){
+			return $template;
+		}
+		$this->no_recursion = true;
 		// Deal with the language front pages and custom page templates
 		$post = get_post( get_the_ID() );
 		if ( 'page' == get_option('show_on_front') ) {
@@ -1075,10 +1079,34 @@ class Babble_Post_Public extends Babble_Plugin {
 		$templates[] = "single-{$this->get_base_post_type($post->post_type)}.php";
 		$templates[] = "single.php";
 		$template = get_query_template( 'single-posts', $templates );
-
+		$this->no_recursion = false;
 		return $template;
 	}
 
+	function archive_template( $template ) {
+		if( bbl_is_default_lang() )
+			return $template;
+		if( $this->no_recursion ){
+			return $template;
+		}
+		$this->no_recursion = true;
+
+		$post_types = $this->get_base_post_type( array_filter( (array) get_query_var( 'post_type' ) ) );
+
+		$templates = array();
+
+		if ( count( $post_types ) == 1 ) {
+			$post_type = reset( $post_types );
+			$templates[] = "archive-{$post_type}.php";
+		}
+		$templates[] = 'archive.php';
+
+		$template =  get_query_template( 'archive', $templates );
+		$this->no_recursion = false;
+		return $template;
+
+
+	}
 	/**
 	 * Hooks the bbl_sync_meta_key filter from this class which checks 
 	 * if a meta_key should be synced. If we return false, it won't be.
@@ -1191,6 +1219,7 @@ class Babble_Post_Public extends Babble_Plugin {
 
 		}
 		if(!empty( $query_vars[ 's' ] )){
+			unset( $query_vars[ 'error' ] ); // Fix for search result
 			return $query_vars;
 		}
 		// Detect language specific homepages
@@ -1229,6 +1258,18 @@ class Babble_Post_Public extends Babble_Plugin {
 		if ( bbl_get_default_lang_code() == $lang ) {
 			return $query_vars;
 		}
+		//fix taxonomy slug issue
+		global $bbl_taxonomies;
+		$base_taxonomies = array_keys( $bbl_taxonomies->get_base_taxonomies() );
+		foreach ( $base_taxonomies as $base_taxonomy ) {
+			if ( isset( $query_vars[ $base_taxonomy ] ) && false != $query_vars[ $base_taxonomy ] ) {
+				$translated_taxonomy = bbl_get_taxonomy_in_lang($base_taxonomy, bbl_get_current_lang_code() );
+				if( $query_vars[ $base_taxonomy ] ) {
+					$query_vars[ $translated_taxonomy ] = $query_vars[ $base_taxonomy ];
+					unset( $query_vars[ $base_taxonomy ] );
+				}
+			}
+		}
 
 
 		// Now swap the query vars so we get the content in the right language post_type
@@ -1242,10 +1283,17 @@ class Babble_Post_Public extends Babble_Plugin {
 			$query_vars[ 'post_type' ] = bbl_get_post_type_in_lang( 'page', bbl_get_current_lang_code() );
 			// Trigger a listing of translated posts if this is meant to
 			// be the blog page.
+
 			if ( 'page' == get_option( 'show_on_front' ) ) {
 				// Test if the current page is in the same translation group as
 				// the 'page_for_posts.
 				$current_post = get_page_by_path( $query_vars[ 'pagename' ], null, $query_vars[ 'post_type' ] );
+
+				if ( null === $current_post ){
+					$query_vars[ 'error' ] = '404'; //Set 404 page on non-default language if not found other wise will show latest post
+					return $query_vars;
+				}
+
 				if ( $this->get_transid( get_option( 'page_for_posts' ) ) == $this->get_transid( $current_post ) ) {
 					$query_vars[ 'post_type' ] = bbl_get_post_type_in_lang( 'post', bbl_get_current_lang_code() );
 					unset( $query_vars[ 'name' ] );

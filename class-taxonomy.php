@@ -56,8 +56,35 @@ class Babble_Taxonomies extends Babble_Plugin {
 		$this->add_filter( 'bbl_translated_taxonomy', null, null, 2 );
 		$this->add_filter( 'admin_body_class' );
 		$this->add_filter( 'the_tags', null, null, 5 );
+		$this->add_filter( 'taxonomy_template' );
 
 	}
+
+	function taxonomy_template($template){
+		if( bbl_is_default_lang() )
+			return $template;
+		if( $this->no_recursion ){
+			return $template;
+		}
+		$this->no_recursion = true;
+
+		$term = get_queried_object();
+
+		$templates = array();
+
+		if ( ! empty( $term->slug ) ) {
+			$taxonomy = $this-> get_base_taxonomy( $term->taxonomy );
+			$templates[] = "taxonomy-$taxonomy-{$term->slug}.php";
+			$templates[] = "taxonomy-$taxonomy.php";
+		}
+		$templates[] = 'taxonomy.php';
+
+		$template = get_query_template( 'taxonomy', $templates );
+		$this->no_recursion = false;
+		return $template;
+
+	}
+
 	
 	// WP HOOKS
 	// ========

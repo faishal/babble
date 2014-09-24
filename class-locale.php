@@ -196,13 +196,13 @@ class Babble_Locale {
 			}
 		}
 
-		#if ( is_admin() ) {
+		if ( is_admin() ) {
 			if ( isset( $this->interface_lang ) )
 				return $this->interface_lang;
-		#} else {
-		#	if ( isset( $this->content_lang ) )
-		#		return $this->content_lang;
-		#}
+		} else {
+			if ( isset( $this->content_lang ) )
+				return $this->content_lang;
+		}
 
 		if ( is_admin() ) {
 			// @FIXME: At this point a mischievous XSS "attack" could set a user's admin area language for them
@@ -234,10 +234,11 @@ class Babble_Locale {
 		if ( ! isset( $this->interface_lang ) || ! $this->interface_lang )
 			$this->set_interface_lang( bbl_get_default_lang_code() );
 
-		#if ( is_admin() )
+		if ( is_admin() )
 			return $this->interface_lang;
-		#else
-		#	return $this->content_lang;
+		else
+			return $this->content_lang;
+
 	}
 
 	/**

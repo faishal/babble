@@ -492,7 +492,7 @@ class Babble_Switcher_Menu {
 		} else { // Translation does not exist
 			// Generate a URL to create the translation
 			$default_term = $this->translations[ bbl_get_default_lang_code() ];
-			$href = bbl_get_new_term_translation_url( $default_term->term_id, $lang->code, $default_term->taxonomy );
+			$href = bbl_get_new_term_translation_url( $queried_object->term_id, $lang->code, $queried_object->taxonomy );
 			$title = sprintf( __( 'Create for %s', 'babble' ), $lang->display_name );
 			$classes[] = 'bbl-add';
 			$classes[] = 'bbl-add-term';

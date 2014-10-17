@@ -57,30 +57,67 @@ class Babble_Taxonomies extends Babble_Plugin {
 		$this->add_filter( 'admin_body_class' );
 		$this->add_filter( 'the_tags', null, null, 5 );
 		$this->add_filter( 'taxonomy_template' );
+		$this->add_filter( 'widget_tag_cloud_args', null, null, 1 );
+		$this->add_filter( 'widget_categories_args', 'widget_tag_cloud_args', null, 1 );
+
+
 
 	}
 
+
+	/**
+	 * Traslate tag cloud and category widget
+	 * @param $args
+	 *
+	 * @return mixed
+	 */
+	function widget_tag_cloud_args( $args ){
+		if ( empty( $args[ 'taxonomy' ] ) ){
+			$args[ 'taxonomy' ] = 'category';
+		}
+
+		if( false === bbl_is_default_lang() ){
+			if( isset( $this->lang_map[bbl_get_current_lang_code()] ) && isset( $this->lang_map[bbl_get_current_lang_code()][$args['taxonomy']])){
+				$args['taxonomy'] = $this->lang_map[bbl_get_current_lang_code()][$args['taxonomy']];
+			}
+		}
+
+		return $args;
+	}
 	function taxonomy_template($template){
-		if( bbl_is_default_lang() )
-			return $template;
-		if( $this->no_recursion ){
+		if( bbl_is_default_lang() ) {
 			return $template;
 		}
-		$this->no_recursion = true;
 
-		$term = get_queried_object();
+		$term          = get_queried_object();
+		$base_taxonomy = $this->get_base_taxonomy( $term->taxonomy );
 
-		$templates = array();
+		if ( 'category' == $base_taxonomy ) {
+			if ( ! empty( $term->slug ) ) {
+				$templates[] = "category-{$term->slug}.php";
+				$templates[] = "category-{$term->term_id}.php";
+			}
 
-		if ( ! empty( $term->slug ) ) {
-			$taxonomy = $this-> get_base_taxonomy( $term->taxonomy );
-			$templates[] = "taxonomy-$taxonomy-{$term->slug}.php";
-			$templates[] = "taxonomy-$taxonomy.php";
+			$templates[] = 'category.php';
 		}
-		$templates[] = 'taxonomy.php';
+		else if ( 'post_tag' == $base_taxonomy ) {
+			if ( ! empty( $term->slug ) ) {
+				$templates[] = "tag-{$term->slug}.php";
+				$templates[] = "tag-{$term->term_id}.php";
+			}
+			$templates[] = 'tag.php';
+		}
+		else {
+			if ( ! empty( $term->slug ) ) {
+				$taxonomy    = $term->taxonomy;
+				$templates[] = "taxonomy-$taxonomy-{$term->slug}.php";
+				$templates[] = "taxonomy-$taxonomy.php";
+			}
+			$templates[] = 'taxonomy.php';
+		}
 
-		$template = get_query_template( 'taxonomy', $templates );
-		$this->no_recursion = false;
+		$template = get_query_template( 'bbl-taxonomy', $templates );
+
 		return $template;
 
 	}

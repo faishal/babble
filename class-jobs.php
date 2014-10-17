@@ -44,6 +44,8 @@ class Babble_Jobs extends Babble_Plugin {
 		$this->add_filter( 'admin_title', null, null, 2 );
 		$this->add_filter( 'bbl_translated_post_type', null, null, 2 );
 		$this->add_filter( 'bbl_translated_taxonomy', null, null, 2 );
+		$this->add_filter( 'page_row_actions', null, null, 2 );
+		$this->add_filter( 'post_row_actions', 'page_row_actions', null, 2 );
 		$this->add_filter( 'get_edit_post_link', null, null, 3 );
 		$this->add_filter( 'manage_bbl_job_posts_columns', 'filter_columns' );
 		$this->add_filter( 'post_updated_messages' );
@@ -53,6 +55,8 @@ class Babble_Jobs extends Babble_Plugin {
 
 		$this->version = 1.1;
 	}
+
+
 
 	public function add_meta_boxes_bbl_job( WP_Post $post ) {
 
@@ -286,6 +290,7 @@ class Babble_Jobs extends Babble_Plugin {
 	 * @author Simon Wheatley
 	 **/
 	public function get_edit_post_link( $url, $post_ID, $context ) {
+
 		if ( $this->no_recursion ) {
 			return $url;
 		}
@@ -312,6 +317,25 @@ class Babble_Jobs extends Babble_Plugin {
 		$this->no_recursion = false;
 		return $url;
 	}
+
+	function page_row_actions($actions, $post){
+
+		$post_original_lang = get_post_meta( $post->ID, 'bbl_post_original_lang', true );
+		$post_current_lang_code = bbl_get_post_lang_code( $post->ID );
+
+		if ( $post_original_lang == $post_current_lang_code ) {
+			return $actions;
+		}
+
+		$this->no_recursion = true ;
+		$actions['direct_edit'] = '<a href="' . get_edit_post_link( $post->ID, true ) . '" title="' . esc_attr( __( 'Edit Original item' ) ) . '">' . __( 'Edit Post' ) . '</a>';
+		$this->no_recursion = false;
+
+
+		return $actions;
+
+	}
+
 
 	public function edit_form_after_title() {
 
@@ -1028,6 +1052,10 @@ class Babble_Jobs extends Babble_Plugin {
 
 			add_post_meta( $job, 'bbl_post_original_lang', $original_post_lang_code );
 
+			//Sync Featured Image
+			$thumbnail_post_meta =  get_post_meta($post->ID, '_thumbnail_id', true ) ;
+
+			add_post_meta( $job, '_thumbnail_id', $thumbnail_post_meta );
 
 			wp_set_object_terms( $job, $lang_code, 'bbl_job_language' );
 

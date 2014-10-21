@@ -119,17 +119,11 @@ class Babble_Post_Public extends Babble_Plugin {
 		$this->add_action( 'load-post.php', 'load_post_edit' );
 		$this->add_action( 'admin_head', null, 5, 10 );
 
-		$this->add_filter( 'template_include', null, null, 1 );
-
 
 		$this->initiate();
 		//acf/location/match_field_groups
 	}
 
-	function template_include( $template ){
-		$GLOBALS['bbl_current_theme_template'] = basename($template);
-		return $t;
-	}
 	/**
 	 * Initiates 
 	 *
@@ -671,9 +665,6 @@ class Babble_Post_Public extends Babble_Plugin {
 			$classes[] = 'post-type-archive-' . bbl_get_post_type_in_lang( get_query_var( 'post_type' ), bbl_get_default_lang_code() );
 		if ( is_single() )
 			$classes[] = 'single-' . bbl_get_base_post_type( get_post_type() );
-
-		global $bbl_current_theme_template;
-		$classes[] = sanitize_html_class( $bbl_current_theme_template );
 
 		return $classes;
 	}

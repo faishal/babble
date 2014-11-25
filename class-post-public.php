@@ -803,7 +803,9 @@ class Babble_Post_Public extends Babble_Plugin {
 	public function page_link( $link, $post_id ) {
 		if ( $this->no_recursion )
 			return $link;
-
+		if(false !== strpos($link,'%')){
+			return $link;
+		}
 		// Deal with the language front pages
 		if ( 'page' == get_option('show_on_front') && $page_on_front = get_option( 'page_on_front' ) ) {
 			$front_page_transid = $this->get_transid( $page_on_front );
@@ -1087,21 +1089,20 @@ class Babble_Post_Public extends Babble_Plugin {
 	}
 
 	function archive_template( $template ) {
+
 		if( bbl_is_default_lang() )
 			return $template;
 		if( $this->no_recursion ){
 			return $template;
 		}
 		$this->no_recursion = true;
-
-		$post_types = $this->get_base_post_type( array_filter( (array) get_query_var( 'post_type' ) ) );
+		$original_post_type = reset( array_filter( (array) get_query_var( 'post_type' ) ) );
+		$post_types = $this->get_base_post_type( $original_post_type );
 
 		$templates = array();
 
-		if ( count( $post_types ) == 1 ) {
-			$post_type = reset( $post_types );
-			$templates[] = "archive-{$post_type}.php";
-		}
+		$templates[] = "archive-{$post_types}.php";
+		$templates[] = "archive-{$original_post_type}.php";
 		$templates[] = 'archive.php';
 
 		$template =  get_query_template( 'archive', $templates );

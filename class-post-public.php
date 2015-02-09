@@ -331,6 +331,15 @@ class Babble_Post_Public extends Babble_Plugin {
 			if ( $lang->code != $current_lang_code ) {
 				$new_args['exclude_from_search'] = true;
 			}
+			// Add language display name at the end of shadow post type
+			// Some plugin list all the post types in thier setting, same name for
+			// all shadow post type can confuse the user
+			// for e.g if there are there languages are activated in babble, it is showing
+			// three times POST and Pages
+			if ( isset( $new_args[ 'labels' ] ) && is_array( $new_args[ 'labels' ] ) ){
+				$new_args[ 'labels' ][ 'name' ] = $args[ 'labels' ][ 'name' ] . ' : ' . $lang->display_name;
+				unset( $new_args[ 'label' ] );
+			}
 
 			$result = register_post_type( $new_post_type, $new_args );
 			if ( is_wp_error( $result ) ) {

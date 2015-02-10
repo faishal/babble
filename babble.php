@@ -72,6 +72,6 @@ require_once 'class-switcher-interface.php';
 require_once 'class-admin-bar.php';
 require_once 'class-translator.php';
 require_once 'class-updates.php';
-
+require_once 'class-babble-notification.php';
 require_once 'miscellaneous.php';
 require_once 'class-babble-wpml-importer-cli.php';

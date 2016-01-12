@@ -1,8 +1,10 @@
 <?php
 /**
  * WPML to Babble import
- * Note: Deactivate WPML plugin
- **/
+ * User: faishal
+ * Date: 16/07/14
+ * Time: 7:45 PM
+ */
 
 if ( class_exists( "WP_CLI_Command" ) ):
 
@@ -26,7 +28,7 @@ if ( class_exists( "WP_CLI_Command" ) ):
 		 *
 		 * ## EXAMPLES
 		 *
-		 *     wp babble import
+		 *     wp exploit-scanner scan
 		 *
 		 * @synopsis
 		 */
@@ -51,7 +53,7 @@ if ( class_exists( "WP_CLI_Command" ) ):
 			}
 			WP_CLI::warning( "Star Importer..." );
 
-			// Migrate Menu
+			//Migrate Menu
 
 			$nav_menus        = wp_get_nav_menus( array( 'orderby' => 'name', 'bbl_translate' => false ) );
 			$translated_menus = array();
@@ -90,11 +92,11 @@ if ( class_exists( "WP_CLI_Command" ) ):
 						}
 						foreach ( $menu_items as $menu_post ) {
 
-							$menu_classes = get_post_meta( $menu_post->ID, '_menu_item_classes', true );
-							if ( is_array( $menu_classes ) ) {
-								$menu_classes[ ] = $lang;
+							$menu_classes = get_post_meta($menu_post->ID, '_menu_item_classes', true);
+							if(is_array($menu_classes)){
+								$menu_classes[] = $lang ;
 							} else {
-								$menu_classes = array( $lang );
+								$menu_classes= array( $lang ) ;
 							}
 							update_post_meta( $menu_post->ID, '_menu_item_classes', $menu_classes );
 
@@ -115,7 +117,6 @@ if ( class_exists( "WP_CLI_Command" ) ):
 					}
 				}
 			}
-			
 			//Migrate Post
 			$posts = $this->_get_post();
 
@@ -126,14 +127,14 @@ if ( class_exists( "WP_CLI_Command" ) ):
 					//get post current language
 					$wmpl_trasalated_posts_map = $this->_get_wpml_post_translations( $post );
 					if ( false === empty( $wmpl_trasalated_posts_map ) ) {
-						$default_language_post_id        = $post->ID;
-						$default_language_post_code      = false;
+						$default_language_post_id = $post->ID;
+						$default_language_post_code = false;
 						$default_last_language_post_code = '';
 
 						foreach ( $wmpl_trasalated_posts_map as $language_code => $wpml_single_post_map ) {
-							$lang_post_id = $wpml_single_post_map->element_id;
+							$lang_post_id           = $wpml_single_post_map->element_id;
 							if ( bbl_get_default_lang_code() === $wmpl_languages[ $language_code ]->default_locale ) {
-								$default_language_post_id   = $lang_post_id;
+								$default_language_post_id = $lang_post_id;
 								$default_language_post_code = $wmpl_languages[ $language_code ]->default_locale;
 							} else {
 								$default_last_language_post_code = $wmpl_languages[ $language_code ]->default_locale;
@@ -145,7 +146,7 @@ if ( class_exists( "WP_CLI_Command" ) ):
 						}
 
 						$default_language_post = get_post( $default_language_post_id );
-						$transid               = $bbl_post_public->get_transid( $post->ID );
+						$transid                  = $bbl_post_public->get_transid( $post->ID );
 						foreach ( $wmpl_trasalated_posts_map as $language_code => $wpml_single_post_map ) {
 							$bbl_jobs->no_recursion = false;
 							$lang_post_id           = $wpml_single_post_map->element_id;
@@ -170,21 +171,21 @@ if ( class_exists( "WP_CLI_Command" ) ):
 								if ( isset( $existing_jobs[ $lang_code ] ) ) {
 									$job = get_post( $existing_jobs[ $lang_code ] );
 								} else {
-									$jobs = $bbl_jobs->create_post_jobs( $default_language_post_id, (array) $lang_code );
-									$job  = get_post( $jobs[ 0 ] );
+									$jobs             = $bbl_jobs->create_post_jobs( $default_language_post_id, (array) $lang_code );
+									$job = get_post( $jobs[ 0 ] );
 								}
 
-								$job->post_title   = $lang_post->post_title;
-								$job->post_name    = $lang_post->post_name;
+								$job->post_title = $lang_post->post_title;
+								$job->post_name = $lang_post->post_name;
 								$job->post_content = $lang_post->post_content;
-								$job->post_status  = 'complete';
-								$post_meta         = get_post_meta( $lang_post->ID );
+								$job->post_status = 'complete';
+								$post_meta = get_post_meta($lang_post->ID);
 
 								update_post_meta( $job->ID, 'bbl_post_original_lang', $default_language_post_code );
 
-								foreach ( $post_meta as $meta_key => $val ) {
-									foreach ( $val as $meta_value ) {
-										update_post_meta( $job->ID, $meta_key, $meta_value );
+								foreach( $post_meta as $meta_key => $val ){
+									foreach($val as $meta_value){
+										update_post_meta($job->ID , $meta_key , $meta_value);
 									}
 								}
 								wp_update_post( $job, true );
@@ -210,15 +211,16 @@ if ( class_exists( "WP_CLI_Command" ) ):
 								$lang_post->post_type = bbl_get_post_type_in_lang( $post->post_type, $wmpl_languages[ $language_code ]->default_locale );
 
 
-								if ( $lang_post->post_date == '0000-00-00 00:00:00' ) {
-									$lang_post->post_date     = $default_language_post->post_date;
-									$lang_post->post_date_gmt = $default_language_post->post_date_gmt;
-									if ( $lang_post->post_date == '0000-00-00 00:00:00' ) {
-										$lang_post->post_date = $lang_post->post_date_gmt;
+								if( $lang_post->post_date == '0000-00-00 00:00:00'){
+									$lang_post->post_date  = $default_language_post->post_date;
+									$lang_post->post_date_gmt  = $default_language_post->post_date_gmt;
+									if( $lang_post->post_date == '0000-00-00 00:00:00'){
+										$lang_post->post_date  = $lang_post->post_date_gmt;
 									}
 								}
 
 								wp_update_post( $lang_post, true );
+
 
 
 								update_post_meta( $job->ID, "bbl_post_{$default_language_post_id}", $lang_post );
@@ -229,7 +231,7 @@ if ( class_exists( "WP_CLI_Command" ) ):
 
 								if ( 'page' == $base_post_type ) {
 									$custom_page_template = get_post_meta( $default_language_post_id, '_wp_page_template', true );
-									update_post_meta( $lang_post_id, '_wp_page_template', $custom_page_template );
+									update_post_meta($lang_post_id,'_wp_page_template', $custom_page_template );
 								}
 
 								$taxonomies = get_object_taxonomies( $base_post_type );
@@ -239,24 +241,21 @@ if ( class_exists( "WP_CLI_Command" ) ):
 										continue;
 									}
 
-									$post_terms = wp_get_post_terms( $lang_post_id, $tax );
+									$post_terms = wp_get_post_terms($lang_post_id, $tax );
 
-									foreach ( $post_terms as $p_term ) {
-										$translated_terms         = $this->_get_wpml_tax_translations( $p_term );
+									foreach($post_terms  as  $p_term){
+										$translated_terms = $this->_get_wpml_tax_translations( $p_term );
 										$default_language_term_id = 0;
 
-										if ( !is_array( $translated_terms ) ) {
+										if(! is_array( $translated_terms) ){
 											global $bbl_taxonomies;
-											$t_trans_id          = $bbl_taxonomies->get_transid( $p_term->term_id );
-											$new_term            = bbl_get_term_in_lang( $p_term->term_id, $p_term->taxonomy, $wmpl_languages[ $language_code ]->default_locale );
-											$translated_taxonomy = bbl_get_taxonomy_in_lang( $tax, $wmpl_languages[ $language_code ]->default_locale );
+											$t_trans_id = $bbl_taxonomies->get_transid( $p_term->term_id );
+											$new_term = bbl_get_term_in_lang( $p_term->term_id,$p_term->taxonomy, $wmpl_languages[ $language_code ]->default_locale );
+											$translated_taxonomy = bbl_get_taxonomy_in_lang( $tax, $wmpl_languages[ $language_code ]->default_locale);
 
-											if ( $new_term->taxonomy !== $translated_taxonomy ) {
-												$new_term = wp_insert_term( $p_term->name, $translated_taxonomy, array(
-													'description' => $p_term->description,
-													'slug'        => $p_term->slug
-												) );
-												$new_term = get_term( $new_term[ 'term_id' ], $translated_taxonomy );
+											if($new_term->taxonomy !== $translated_taxonomy){
+												$new_term = wp_insert_term($p_term->name,$translated_taxonomy, array('description'=>$p_term->description, 'slug' =>$p_term->slug) ) ;
+												$new_term = get_term($new_term['term_id'],$translated_taxonomy ) ;
 												$bbl_taxonomies->set_transid( $new_term->term_id, $t_trans_id );
 											}
 
@@ -264,12 +263,12 @@ if ( class_exists( "WP_CLI_Command" ) ):
 												exit;
 												continue;
 											}
-											wp_set_object_terms( $lang_post_id, $new_term->slug, $translated_taxonomy, true );
+											wp_set_object_terms( $lang_post_id, $new_term->slug,  $translated_taxonomy, true );
 
 											wp_delete_object_term_relationships( $lang_post_id, $tax );
 											continue;
 										}
-										foreach ( $translated_terms as $t_language_code => $p_term ) {
+										foreach($translated_terms  as $t_language_code => $p_term){
 											if ( bbl_get_default_lang_code() === $wmpl_languages[ $t_language_code ]->default_locale ) {
 												$default_language_term_id = $p_term->element_id;
 											} else {
@@ -280,16 +279,16 @@ if ( class_exists( "WP_CLI_Command" ) ):
 										if ( 0 === $default_language_term_id ) {
 											$default_language_term_id = $default_last_language_term_id;
 										}
-										if ( null == $default_language_term_id ) {
+										if( null == $default_language_term_id) {
 											continue;
 										}
 										global $bbl_taxonomies;
-										$t_trans_id  = $bbl_taxonomies->get_transid( intval( $default_language_term_id ) );
+										$t_trans_id = $bbl_taxonomies->get_transid( intval( $default_language_term_id ) );
 										$found_terms = false;
 
-										foreach ( $translated_terms as $t_language_code => $t_term ) {
-											if ( $wmpl_languages[ $language_code ]->default_locale === $wmpl_languages[ $t_language_code ]->default_locale ) {
-												$found_terms       = true;
+										foreach( $translated_terms  as $t_language_code => $t_term ){
+											if ( $wmpl_languages[ $language_code ]->default_locale  === $wmpl_languages[ $t_language_code ]->default_locale ) {
+												$found_terms = true;
 												$t_current_term_id = intval( $t_term->element_id );
 												$term              = get_term( intval( $t_term->element_id ), $tax );
 												if ( is_wp_error( $term ) ) {
@@ -301,15 +300,15 @@ if ( class_exists( "WP_CLI_Command" ) ):
 
 												$bbl_taxonomies->set_transid( $t_current_term_id, $t_trans_id );
 
-												$translated_taxonomy = bbl_get_taxonomy_in_lang( $tax, $wmpl_languages[ $language_code ]->default_locale );
+												$translated_taxonomy = bbl_get_taxonomy_in_lang( $tax, $wmpl_languages[ $language_code ]->default_locale);
 
 												$wpdb->update( $wpdb->term_taxonomy, array( 'taxonomy' => $translated_taxonomy ), array( 'term_taxonomy_id' => $term->term_taxonomy_id ) );
 											}
 
 										}
-										if ( $found_terms == false ) {
-											foreach ( $translated_terms as $t_language_code => $t_term ) {
-												if ( bbl_get_default_lang_code() === $wmpl_languages[ $t_language_code ]->default_locale ) {
+										if( $found_terms == false ){
+											foreach( $translated_terms  as $t_language_code => $t_term ){
+												if ( bbl_get_default_lang_code()  === $wmpl_languages[ $t_language_code ]->default_locale ) {
 													$t_current_term_id = intval( $t_term->element_id );
 													$term              = get_term( intval( $t_term->element_id ), $tax );
 													if ( is_wp_error( $term ) ) {
@@ -318,12 +317,9 @@ if ( class_exists( "WP_CLI_Command" ) ):
 													if ( null == $term ) {
 														continue;
 													}
-													$translated_taxonomy = bbl_get_taxonomy_in_lang( $tax, $wmpl_languages[ $language_code ]->default_locale );
+													$translated_taxonomy = bbl_get_taxonomy_in_lang( $tax, $wmpl_languages[ $language_code ]->default_locale);
 
-													$new_term = wp_insert_term( $term->name, $translated_taxonomy, array(
-														'description' => $term->description,
-														'slug'        => $term->slug
-													) );
+													$new_term = wp_insert_term($term->name,$translated_taxonomy, array('description'=>$term->description, 'slug' =>$term->slug) ) ;
 
 													if ( is_wp_error( $new_term ) ) {
 														continue;
@@ -332,7 +328,7 @@ if ( class_exists( "WP_CLI_Command" ) ):
 														continue;
 													}
 
-													$bbl_taxonomies->set_transid( $new_term[ 'term_id' ], $t_trans_id );
+													$bbl_taxonomies->set_transid( $new_term['term_id'], $t_trans_id );
 												}
 
 											}
@@ -351,7 +347,7 @@ if ( class_exists( "WP_CLI_Command" ) ):
 				//Next Posts
 				$posts = $this->_get_post();
 			}
-			WP_CLI::success( 'Imported' );
+			WP_CLI::success( 'Imported scanned' );
 		}
 
 		protected function _get_wpml_post_translations( $post ) {

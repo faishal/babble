@@ -3,7 +3,7 @@
 Plugin Name: Babble
 Plugin URI:  http://babbleplugin.com/
 Description: Multilingual WordPress done right
-Version:     1.4.4
+Version:     1.4.3.2
 Author:      Code For The People
 Author URI:  http://codeforthepeople.com/
 Text Domain: babble
@@ -48,8 +48,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 /**
  * Main plugin information and requires.
  *
- * @package Babble
- * @since Alpha 1
+ * @package   Babble
+ * @since     Alpha 1
  * @copyright Copyright (c) Simon Wheatley & Code For The People Ltd (except where noted)
  */
 
@@ -72,6 +72,10 @@ require_once 'class-switcher-interface.php';
 require_once 'class-admin-bar.php';
 require_once 'class-translator.php';
 require_once 'class-updates.php';
-require_once 'class-babble-notification.php';
+
+require_once 'class-menu.php';
+
 require_once 'miscellaneous.php';
+require_once 'class-advanced-custom-fields.php';
+
 require_once 'class-babble-wpml-importer-cli.php';

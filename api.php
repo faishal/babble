@@ -4,6 +4,8 @@
  * Translations and languages API.
  *
  * @package Babble
+ * @subpackage API
+ * @api
  * @since Alpha 1
  */
 
@@ -30,7 +32,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * Returns the current content language code.
  *
  * @FIXME: Currently does not check for language validity, though perhaps we should check that elsewhere and redirect?
- *
  * @return string A language code
  * @access public
  **/
@@ -369,7 +370,7 @@ function bbl_get_post_type_slug_in_lang( $slug, $lang_code = null ) {
  * @return void
  **/
 function bbl_the_title_in_lang( $post = null, $lang_code = null, $fallback = false ) {
-	echo bbl_get_the_title_in_lang( $post, $lang_code, $fallback );
+	echo esc_html( bbl_get_the_title_in_lang( $post, $lang_code, $fallback ) );
 }
 
 /**
@@ -402,7 +403,7 @@ function bbl_get_the_title_in_lang( $post = null, $lang_code = null, $fallback =
  * @return void
  **/
 function bbl_the_permalink_in_lang( $post = null, $lang_code = null, $fallback = false ) {
-	echo bbl_get_the_permalink_in_lang( $post, $lang_code, $fallback );
+	echo esc_html( bbl_get_the_permalink_in_lang( $post, $lang_code, $fallback ) );
 }
 
 /**
@@ -650,4 +651,20 @@ function bbl_is_logging() {
 	return $bbl_log->logging;
 }
 
-?>
+/**
+ * To check if babble translation is locked or not
+ * It will required During content import
+ *
+ * @return bool
+ */
+function bbl_is_locked(){
+	if(isset($GLOBALS['bbl_global_lock']) && true === $GLOBALS['bbl_global_lock'] ){
+		return true;
+	}
+	return false;
+}
+
+function tags_for_pages() {
+	register_taxonomy_for_object_type('post_tag', 'page');
+}
+add_action('init', 'tags_for_pages');

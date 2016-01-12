@@ -7,11 +7,6 @@ function babble_widget() {
 
 class Babble_Widget extends WP_Widget {
 
-	public $defaults = array(
-		'show_if_unavailable' => 'off',
-		'show_as'             => 'dropdown',
-	);
-
 	function __construct() {
 		parent::__construct(
 			'bbl_widget', // Base ID
@@ -120,36 +115,36 @@ class Babble_Widget extends WP_Widget {
 
 	function update( $new_instance, $old_instance ) {
 
-		$new_instance = array_merge( $this->defaults, $new_instance );
-		$new_instance['show_as'] = strip_tags( $new_instance['show_as'] );
-		$new_instance['show_if_unavailable'] = strip_tags( $new_instance['show_if_unavailable'] );
-
-		return $new_instance;
+		$instance = $old_instance;
+		$instance['show_as'] = strip_tags( $new_instance['show_as'] );
+		$instance['show_if_unavailable'] = strip_tags( $new_instance['show_if_unavailable'] );
+		return $instance;
 
 	}
 
 	function form( $instance ) {
 
 		global $wpdb;
-		$instance = wp_parse_args( $instance, $this->defaults );
+		$defaults = array( 'show_if_unavailable' => 'off' );
+		$instance = wp_parse_args( $instance, $defaults );
 
 		?>
 		<p>
 			<?php _e('Show as:','babble'); ?>
-			<select id="<?php echo $this->get_field_id('show_as'); ?>" name="<?php echo $this->get_field_name('show_as'); ?>">
-				<option value="dropdown" <?php selected( $instance['show_as'],'dropdown' ); ?>><?php _e('Dropdown','babble'); ?></option>
-				<option value="list" <?php selected( $instance['show_as'],'list' ); ?>><?php _e('List','babble'); ?></option>
+			<select id="<?php echo esc_attr( $this->get_field_id('show_as') ); ?>" name="<?php echo esc_attr( $this->get_field_name('show_as') ); ?>">
+				<option value="dropdown" <?php selected( $instance['show_as'],'dropdown' ); ?>><?php esc_html_e('Dropdown','babble'); ?></option>
+				<option value="list" <?php selected( $instance['show_as'],'list' ); ?>><?php esc_html_e('List','babble'); ?></option>
 			</select>
 		</p>
 		<p>
-			<input id="<?php echo $this->get_field_id('show_if_unavailable'); ?>" name="<?php echo $this->get_field_name('show_if_unavailable'); ?>" type="checkbox" <?php checked( 'on', $instance['show_if_unavailable'] ); ?> />
-			<label for="<?php echo $this->get_field_id('show_if_unavailable'); ?>"><?php _e('Show all languages in widget, even if there is no translation', 'babble'); ?></label>
+			<input id="<?php echo esc_attr( $this->get_field_id('show_if_unavailable') ); ?>" name="<?php echo esc_attr( $this->get_field_name('show_if_unavailable') ); ?>" type="checkbox" <?php checked( 'on', $instance['show_if_unavailable'] ); ?> />
+			<label for="<?php echo esc_attr( $this->get_field_id('show_if_unavailable') ); ?>"><?php esc_html_e('Show all languages in widget, even if there is no translation / equivalent page?', 'babble'); ?></label>
 		</p>
 		<p class="description">
-			<?php _e("Don't worry: if there's no equivalent page, the link won't be clickable.","babble"); ?>
+			<?php esc_html_e("Don't worry: if there's no equivalent page, the link won't be clickable.","babble"); ?>
 		</p>
 		<p class="description">
-			<?php _e("Links allowing logged-in administrators to add translations will always be shown.","babble"); ?>
+			<?php esc_html_e("Links allowing logged-in administrators to add translations will always be shown.","babble"); ?>
 		</p>
 
 		<?php

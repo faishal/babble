@@ -74,11 +74,11 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 	 * @return void
 	 **/
 	public function load_tools_page() {
-		if ( ! $action = ( isset( $_GET[ 'btgt_action' ] ) ) ? $_GET[ 'btgt_action' ] : false )
+		if ( ! $action = ( isset( $_GET[ 'btgt_action' ] ) ) ? sanitize_text_field( $_GET[ 'btgt_action' ] ) : false )
 			return;
 		
-		$obj_id = ( isset( $_GET[ 'obj_id' ] ) ) ? $_GET[ 'obj_id' ] : false;
-		$wp_nonce = ( isset( $_GET[ '_wpnonce' ] ) ) ? $_GET[ '_wpnonce' ] : false;
+		$obj_id = ( isset( $_GET[ 'obj_id' ] ) ) ? intval( $_GET[ 'obj_id' ] ) : false;
+		$wp_nonce = ( isset( $_GET[ '_wpnonce' ] ) ) ? sanitize_text_field( $_GET[ '_wpnonce' ] ) : false;
 		switch ( $action ) {
 			case 'delete_from_groups':
 				if ( ! wp_verify_nonce( $wp_nonce, "btgt_delete_from_groups_$obj_id" ) ) {
@@ -101,9 +101,9 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 			'page' => 'btgt',
 			'lang' => bbl_get_default_lang_code(),
 		);
-		$url = add_query_arg( $args, admin_url( 'tools.php' ) );
-		$url .= '#' . $_GET[ 'anchor' ];
-		wp_redirect( $url );
+		$url = esc_url(add_query_arg( $args, admin_url( 'tools.php' ) ));
+		$url .= '#' . sanitize_text_field( $_GET[ 'anchor' ] );
+		wp_safe_redirect( $url );
 	}
 
 	/**
@@ -116,7 +116,7 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 	 **/
 	public function load_post() {
 		$screen = get_current_screen();
-		if ( ! $post_id = isset( $_GET[ 'post' ] ) ? $_GET[ 'post' ] : false )
+		if ( ! $post_id = isset( $_GET[ 'post' ] ) ? intval( $_GET[ 'post' ] ) : false )
 			return;
 		$post = get_post( $post_id );
 		if ( ! in_array( $post->post_status, array( 'draft', 'pending', 'publish' ) ) )
@@ -142,24 +142,82 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 		if ( ! isset( $_POST[ '_bbl_reconnect_nonce' ] ) )
 			return;
 			
-		$posted_id = isset( $_POST[ 'post_ID' ] ) ? $_POST[ 'post_ID' ] : 0;
+		$posted_id = isset( $_POST[ 'post_ID' ] ) ? intval( $_POST[ 'post_ID' ] ) : 0;
 		if ( $posted_id != $post_id )
 			return;
 		// While we're at it, let's check the nonce
 		check_admin_referer( "bbl_reconnect_translation_$post_id", '_bbl_reconnect_nonce' );
 			
 		// Check the user has set a transid
-		if ( ! $transid = isset( $_POST[ 'bbl_transid' ] ) ? (int) $_POST[ 'bbl_transid' ] : false )
+		if ( ! $transid = isset( $_POST[ 'bbl_transid' ] ) ? intval( $_POST[ 'bbl_transid' ] ) : false )
 			return;
 
 		// Check the transid the user has set actually exists
 		if ( ! term_exists( $transid, 'post_translation' ) ) {
-			$this->set_admin_error( __( 'The TransID you want to reconnect this content to does not exist. Please check the Translation Group information and try again.', 'babble' ) );
+			$this->set_admin_error( esc_html__( 'The TransID you want to reconnect this content to does not exist. Please check the Translation Group information and try again.', 'babble' ) );
 			return;
 		}
 		
 		global $bbl_post_public;
+
+		$old_trans_id = $bbl_post_public->get_transid($post);
+
 		$bbl_post_public->set_transid( $post, $transid );
+
+
+		//$original post
+		//Translated post
+		//Create a job and make it complete
+		global $bbl_jobs;
+		$lang_post = get_post( $post );
+		$translations = bbl_get_post_translations($post);
+		if( isset( $translations[bbl_get_default_lang_code()] )) {
+			$original_post = $translations[ bbl_get_default_lang_code() ];
+			$lang_code     = bbl_get_post_lang_code( $post );
+			$existing_jobs = $bbl_jobs->get_incomplete_post_jobs( $original_post );
+
+			if ( isset( $existing_jobs[ $lang_code ] ) ) {
+				$job = get_post( $existing_jobs[ $lang_code ] );
+			} else {
+				$jobs = $bbl_jobs->create_post_jobs( $original_post->ID, (array) $lang_code );
+				$job  = get_post( $jobs[ 0 ] );
+			}
+			$job->post_title   = $lang_post->post_title;
+			$job->post_name    = $lang_post->post_name;
+			$job->post_content = $lang_post->post_content;
+			$job->post_status  = 'complete';
+			$post_meta         = get_post_meta( $lang_post->ID );
+
+			foreach ( $post_meta as $meta_key => $val ) {
+				foreach ( $val as $meta_value ) {
+					update_post_meta( $job->ID, $meta_key, $meta_value );
+				}
+			}
+			wp_update_post( $job, true );
+			wp_set_object_terms( $job->ID, stripslashes( $lang_code ), 'bbl_job_language', false );
+			$language = get_the_terms( $job, 'bbl_job_language' );
+
+			if ( empty( $language ) ) {
+				return false;
+			} else {
+				$lang_code = reset( $language )->name;
+			}
+
+			update_post_meta( $job->ID, 'bbl_job_post', "{$original_post->post_type}|{$original_post->ID}", true );
+
+
+			update_post_meta( $job->ID, "bbl_post_{$original_post->ID}", $lang_post );
+
+
+			//bbl_get_base_post_type($post->post_type)
+			$base_post_type = bbl_get_base_post_type( $post->post_type );
+
+			if ( 'page' == $base_post_type ) {
+				$custom_page_template = get_post_meta( $original_post->ID, '_wp_page_template', true );
+				update_post_meta( $lang_post->ID, '_wp_page_template', $custom_page_template );
+			}
+		}
+
 	}
 
 	/**
@@ -260,5 +318,3 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 } // END BabbleTranslationGroupTool class 
 
 $bbl_translation_group_tool = new BabbleTranslationGroupTool();
-
-?>

@@ -50,22 +50,22 @@ class Babble_Languages extends Babble_Plugin {
 	 * @var string
 	 **/
 	protected $default_lang;
-	
+
 	/**
-	 * The current version for purposes of rewrite rules, any 
+	 * The current version for purposes of rewrite rules, any
 	 * DB updates, cache busting, etc
 	 *
 	 * @var int
 	 **/
 	protected $version = 1;
-	
+
 	/**
 	 * Any fields to show errors on, currently only used by URL Prefix fields.
 	 *
 	 * @var array
 	 **/
 	protected $errors;
-	
+
 	/**
 	 * Setup any add_action or add_filter calls. Initiate properties.
 	 *
@@ -133,7 +133,7 @@ class Babble_Languages extends Babble_Plugin {
 	 * @return void
 	 **/
 	public function load_options() {
-		wp_enqueue_style( 'babble_languages_options', $this->url( '/css/languages-options.css' ), null, filemtime( $this->dir( 'css/languages-options.css' ) ) );
+		wp_enqueue_style( 'babble_languages_options', $this->url( '/css/languages-options.css' ), null, $this->version );
 		$this->maybe_process_languages();
 	}
 	
@@ -153,22 +153,22 @@ class Babble_Languages extends Babble_Plugin {
 		$langs = $this->merge_lang_sets( $this->available_langs, $this->lang_prefs );
 		// Merge in any POSTed field values
 		foreach ( $langs as $code => & $lang ) {
-			$lang->url_prefix = ( @ isset( $_POST[ 'url_prefix_' . $code ] ) ) ? $_POST[ "url_prefix_$code" ] : @ $lang->url_prefix;
+			$lang->url_prefix = ( isset( $_POST[ 'url_prefix_' . $code ] ) ) ? sanitize_text_field( $_POST[ "url_prefix_$code" ] ) : $lang->url_prefix;
 			if ( ! $lang->url_prefix )
 				$lang->url_prefix = $lang->url_prefix;
 			$lang->text_direction = $lang->text_direction;
 			// This line must come after the text direction value is set
 			$lang->input_lang_class = ( 'rtl' == $lang->text_direction ) ? 'lang-rtl' : 'lang-ltr' ;
-			$lang->display_name = ( @ isset( $_POST[ "display_name_$code" ] ) ) ? $_POST[ "display_name_$code" ] : @ $lang->display_name;
+			$lang->display_name = ( isset( $_POST[ "display_name_$code" ] ) ) ? sanitize_text_field( $_POST[ "display_name_$code" ] ) : $lang->display_name;
 			if ( ! $lang->display_name )
 				$lang->display_name = $lang->name;
 			// Note any url_prefix errors
-			$lang->url_prefix_error = ( @ $this->errors[ "url_prefix_$code" ] ) ? 'babble-error' : '0' ;
+			$lang->url_prefix_error = ( isset( $this->errors[ "url_prefix_$code" ] ) && $this->errors[ "url_prefix_$code" ] ) ? 'babble-error' : '0';
 			// Flag the active languages
 			$lang->active = false;
 			if ( in_array( $code, $this->active_langs ) )
 				$lang->active = true;
-			
+
 		}
 		$vars = array();
 		$vars[ 'langs' ] = $langs;
@@ -176,14 +176,14 @@ class Babble_Languages extends Babble_Plugin {
 		$vars[ 'active_langs' ] = $this->get_active_langs();
 		$this->render_admin( 'options-available-languages.php', $vars );
 	}
-	
+
 	// PUBLIC METHODS
 	// ==============
 
 	/**
 	 * Set the active language objects for the current site, keyed
 	 * by URL prefix.
-	 * 
+	 *
 	 * @return array An array of Babble language objects
 	 **/
 	public function set_active_langs( $lang_codes ) {
@@ -195,14 +195,14 @@ class Babble_Languages extends Babble_Plugin {
  	/**
 	 * Return the active language objects for the current site, keyed
 	 * by URL prefix. A language object looks like:
-	 * 'ar' => 
+	 * 'ar' =>
 	 * 		object(stdClass)
 	 * 			public 'name' => string 'Arabic'
 	 * 			public 'code' => string 'ar'
 	 * 			public 'url_prefix' => string 'ar'
 	 * 			public 'text_direction' => string 'rtl'
 	 * 			public 'display_name' => string 'Arabic'
-	 * 
+	 *
 	 * @return array An array of Babble language objects
 	 **/
 	public function get_active_langs() {
@@ -215,7 +215,7 @@ class Babble_Languages extends Babble_Plugin {
 	/**
 	 * Given a lang object or lang code, this checks whether the
 	 * language is public or not.
-	 * 
+	 *
 	 * @param string $lang_code A language code
 	 * @return boolean True if public
 	 **/
@@ -228,7 +228,7 @@ class Babble_Languages extends Babble_Plugin {
 	/**
  	 * Returns the requested language object.
 	 *
-	 * @param string $code A language code, e.g. "fr_BE" 
+	 * @param string $code A language code, e.g. "fr_BE"
 	 * @return object|boolean A Babble language object
 	 **/
 	public function get_lang( $lang_code ) {
@@ -267,11 +267,11 @@ class Babble_Languages extends Babble_Plugin {
 	public function get_default_lang() {
 		return bbl_get_lang( $this->default_lang );
 	}
-	
+
 	/**
 	 * Given a language code, return the URL prefix.
 	 *
-	 * @param string $code A language code, e.g. "fr_BE" 
+	 * @param string $code A language code, e.g. "fr_BE"
 	 * @return bool|string A URL prefix, as set by the admin when editing the lang prefs, or false if no language
 	 **/
 	public function get_url_prefix_from_code( $code ) {
@@ -279,7 +279,7 @@ class Babble_Languages extends Babble_Plugin {
 			return false;
 		return $this->langs[ $code ]->url_prefix;
 	}
-	
+
 	/**
 	 * Given a URL prefix, return the language code.
 	 *
@@ -291,16 +291,16 @@ class Babble_Languages extends Babble_Plugin {
 			return false;
 		return $this->active_langs[ $url_prefix ];
 	}
-	
+
 	// PRIVATE/PROTECTED METHODS
 	// =========================
 
 	/**
 	 * Merge two arrays of language objects. If a language exists in
-	 * $langs_b that doesn't in $langs_a, it will be added to the 
+	 * $langs_b that doesn't in $langs_a, it will be added to the
 	 * final array. If a language has a property in both arrays, the
 	 * property value from $langs_b will overwrite the property value
-	 * in $langs_a. If a language in $langs_b has a property that 
+	 * in $langs_a. If a language in $langs_b has a property that
 	 * doesn't exist in $langs_a then it will be added to that
 	 * language in the final array.
 	 *
@@ -324,7 +324,7 @@ class Babble_Languages extends Babble_Plugin {
 		}
 		return $langs;
 	}
-	
+
 	/**
 	 * Checks if there is a POSTed request to process. Checks it's properly
 	 * nonced up. Processes it. Redirects if there's no errors.
@@ -342,8 +342,8 @@ class Babble_Languages extends Babble_Plugin {
 		$url_prefixes = array();
 		foreach ( $this->available_langs as $code => $lang ) {
 			$lang_pref = new stdClass;
-			$lang_pref->display_name = @ $_POST[ 'display_name_' . $code ];
-			$lang_pref->url_prefix = @ $_POST[ 'url_prefix_' . $code ];
+			$lang_pref->display_name = isset( $_POST[ 'display_name_' . $code ] ) ? sanitize_text_field( $_POST[ 'display_name_' . $code ] ) : '';
+			$lang_pref->url_prefix = isset( $_POST[ 'url_prefix_' . $code ] ) ? sanitize_text_field( $_POST[ 'url_prefix_' . $code ] ) : '';
 			// Check we don't have more than one language using the same url prefix
 			if ( array_key_exists( $lang_pref->url_prefix, $url_prefixes ) ) {
 				$lang_1 = $this->format_code_lang( $code );
@@ -360,13 +360,17 @@ class Babble_Languages extends Babble_Plugin {
 
 		bbl_log( "SW: Available langs: " . print_r( $this->available_langs, true ) );
 		bbl_log( "SW: Lang prefs: " . print_r( $lang_prefs, true ) );
-		
+
 		// Now save the active languages, i.e. the selected languages
-		
+
 		if ( ! $this->errors ) {
 			$langs = $this->merge_lang_sets( $this->available_langs, $this->lang_prefs );
 			$active_langs = array();
-			foreach ( (array) @ $_POST[ 'active_langs' ] as $code )
+			$post_active_langs =  array();
+			if ( isset( $_POST[ 'active_langs' ] ) && is_array( $_POST[ 'active_langs' ] ) ) {
+				$post_active_langs = array_map( 'sanitize_text_field', $_POST[ 'active_langs' ] );
+			}
+			foreach ( $post_active_langs as $code )
 				$active_langs[ $langs[ $code ]->url_prefix ] = $code;
 			if ( count( $active_langs ) < 2 ) {
 				$this->set_admin_error( __( 'You must set at least two languages as active.', 'babble' ) );
@@ -379,8 +383,9 @@ class Babble_Languages extends Babble_Plugin {
 			if ( ! isset( $_POST[ 'public_langs' ] ) ) {
 				$this->set_admin_error( __( 'You must set at least your default language as public.', 'babble' ) );
 			} else {
-				$public_langs = (array) $_POST[ 'public_langs' ];
-				if ( ! in_array( @ $_POST[ 'default_lang' ], $public_langs ) )
+				$public_langs = $post_active_langs = array_map( 'sanitize_text_field', $_POST[ 'public_langs' ] );
+				$default_lang = ( isset( $_POST[ 'default_lang' ] ) ) ? sanitize_text_field( $_POST[ 'default_lang' ] ) : false;
+				if ( $default_lang && ! in_array( $default_lang, $public_langs ) )
 					$this->set_admin_error( __( 'You must set your default language as public.', 'babble' ) );
 			}
 		}
@@ -388,9 +393,9 @@ class Babble_Languages extends Babble_Plugin {
 		if ( ! $this->errors ) {
 			// Save the public languages
 			$this->update_option( 'public_langs', $public_langs );
-			
+
 			// First the default language
-			$default_lang = @ $_POST[ 'default_lang' ];
+			$default_lang = ( isset( $_POST[ 'default_lang' ] ) ) ? sanitize_text_field( $_POST[ 'default_lang' ] ) : false;
 			$this->update_option( 'default_lang', $default_lang );
 			// Now the prefs
 			$this->update_option( 'lang_prefs', $lang_prefs );
@@ -401,18 +406,18 @@ class Babble_Languages extends Babble_Plugin {
 			exit;
 		}
 	}
-	
+
 	/**
-	 * Parse the files in wp-content/languages and work out what 
+	 * Parse the files in wp-content/languages and work out what
 	 * languages we've got available. Populates self::available_langs
 	 * with an array of language objects which look like:
-  	 * 'ar' => 
+  	 * 'ar' =>
   	 * 		object(stdClass)
   	 * 			public 'name' => string 'Arabic'
   	 * 			public 'code' => string 'ar'
   	 * 			public 'url_prefix' => string 'ar'
   	 * 			public 'text_direction' => string 'rtl'
- 	 * 
+ 	 *
 	 * @return void
 	 **/
 	protected function parse_available_languages() {
@@ -459,21 +464,21 @@ class Babble_Languages extends Babble_Plugin {
 		}
 		return 'ltr';
 	}
-	
+
 	/**
 	 * Return the language name for the provided language code.
 	 *
-	 * This method is an identical copy of format_code_lang 
+	 * This method is an identical copy of format_code_lang
 	 * in wp-admin/includes/ms.php which is only available on Multisite.
 	 *
 	 * @FIXME: We end up with a load of anglicised names, which doesn't seem super-friendly, internationally speaking.
-	 * 
+	 *
 	 * @see format_code_lang()
 	 *
 	 * @param string $lang_short The language short code, e.g. 'en' (not 'en_GB')
 	 * @return string The language name, e.g. 'English'
 	 **/
-	public function format_code_lang( $code ) {
+	static function format_code_lang( $code ) {
 		$code = strtolower( substr( $code, 0, 2 ) );
 		$lang_codes = array(
 			'aa' => 'Afar', 'ab' => 'Abkhazian', 'af' => 'Afrikaans', 'ak' => 'Akan', 'sq' => 'Albanian', 'am' => 'Amharic', 'ar' => 'Arabic', 'an' => 'Aragonese', 'hy' => 'Armenian', 'as' => 'Assamese', 'av' => 'Avaric', 'ae' => 'Avestan', 'ay' => 'Aymara', 'az' => 'Azerbaijani', 'ba' => 'Bashkir', 'bm' => 'Bambara', 'eu' => 'Basque', 'be' => 'Belarusian', 'bn' => 'Bengali',
@@ -488,7 +493,7 @@ class Babble_Languages extends Babble_Plugin {
 			'sv' => 'Swedish', 'ty' => 'Tahitian', 'ta' => 'Tamil', 'tt' => 'Tatar', 'te' => 'Telugu', 'tg' => 'Tajik', 'tl' => 'Tagalog', 'th' => 'Thai', 'bo' => 'Tibetan', 'ti' => 'Tigrinya', 'to' => 'Tonga (Tonga Islands)', 'tn' => 'Tswana', 'ts' => 'Tsonga', 'tk' => 'Turkmen', 'tr' => 'Turkish', 'tw' => 'Twi', 'ug' => 'Uighur; Uyghur', 'uk' => 'Ukrainian', 'ur' => 'Urdu', 'uz' => 'Uzbek',
 			've' => 'Venda', 'vi' => 'Vietnamese', 'vo' => 'Volapük', 'cy' => 'Welsh','wa' => 'Walloon','wo' => 'Wolof', 'xh' => 'Xhosa', 'yi' => 'Yiddish', 'yo' => 'Yoruba', 'za' => 'Zhuang; Chuang', 'zu' => 'Zulu' );
 		$lang_codes = apply_filters( 'lang_codes', $lang_codes, $code );
-		$lang_codes = apply_filters( 'bbl_lang_codes', $lang_codes, $code );
+		$lang_codes = apply_filters( 'bbl_lang_codes', $lang_codes );
 		return strtr( $code, $lang_codes );
 	}
 
@@ -499,21 +504,22 @@ class Babble_Languages extends Babble_Plugin {
 	 * @return void
 	 **/
 	protected function set_defaults() {
-
-		$locale = get_option( 'WPLANG' );
-
-		if ( empty( $locale ) and is_multisite() ) {
-			$locale = get_site_option( 'WPLANG' );
-		}
-
-		if ( empty( $locale ) and defined( 'WPLANG' ) ) {
-			// The WPLANG constant is deprecated since WordPress 4.0.
+		// WPLANG is defined in wp-config.
+		if ( defined( 'WPLANG' ) )
 			$locale = WPLANG;
+
+		// If multisite, check options.
+		if ( is_multisite() && !defined('WP_INSTALLING') ) {
+			$ms_locale = get_option('WPLANG');
+			if ( $ms_locale === false )
+				$ms_locale = get_site_option('WPLANG');
+
+			if ( $ms_locale !== false )
+				$locale = $ms_locale;
 		}
 
-		if ( empty( $locale ) ) {
+		if ( empty( $locale ) )
 			$locale = 'en_US';
-		}
 
 		$url_prefix = strtolower( substr( $locale, 0, 2 ) );
 

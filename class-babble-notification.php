@@ -75,7 +75,7 @@ class Babble_Notification {
 		$body .= sprintf( __( 'Author: %1$s (%2$s)', 'babble' ), $post_author->display_name, $post_author->user_email ) . "\r\n";
 
 		$edit_link = htmlspecialchars_decode( get_edit_post_link( $post_id ) );
-		if ( $post->post_status != 'publish' ) {
+		if ( 'publish' !== $post->post_status ) {
 			$view_link = add_query_arg( array( 'preview' => 'true' ), wp_get_shortlink( $post_id ) );
 		} else {
 			$view_link = htmlspecialchars_decode( get_permalink( $post_id ) );
@@ -145,7 +145,7 @@ class Babble_Notification {
 		                                                                            id="<?php echo esc_attr( self::$option_name ); ?>_is_enable"
 		                                                                            name='<?php echo esc_attr( self::$option_name ); ?>[is_enable]' <?php checked( self::is_notificaion_enable() ); ?>
 		                                                                            value='1'>Enable</label>
-		<p class="description"><?php _e( 'Send out an email to the site admin(s) whenever a post is marked as ready for translation', 'babble' ); ?></p>
+		<p class="description"><?php esc_html_e( 'Send out an email to the site admin(s) whenever a post is marked as ready for translation', 'babble' ); ?></p>
 	<?php
 	}
 

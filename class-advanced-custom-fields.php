@@ -60,8 +60,10 @@ class Babble_ACF extends Babble_Plugin {
 
 		$languages = get_the_terms( $post, 'bbl_job_language' );
 		if ( empty( $languages ) ) {
+			// @codingStandardsIgnoreStart
 			if ( isset( $_GET['lang'] ) ) {
 				$lang = sanitize_term_field( $_GET['lang'] );
+				// @codingStandardsIgnoreEnd
 				if ( bbl_get_lang( $lang ) ) {
 					bbl_switch_to_lang( $lang );
 				} else {
@@ -83,7 +85,7 @@ class Babble_ACF extends Babble_Plugin {
 				// vars
 				$show     = in_array( $acf['id'], $metabox_ids ) ? 1 : 0;
 				$priority = 'high';
-				if ( $acf['options']['position'] == 'side' ) {
+				if ( 'side' === $acf['options']['position'] ) {
 					$priority = 'core';
 				}
 

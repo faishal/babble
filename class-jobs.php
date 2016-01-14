@@ -68,19 +68,19 @@ class Babble_Jobs extends Babble_Plugin {
 
 	public function wp_insert_post_empty_content( $maybe_empty, $postarr ) {
 		// Allow translations to have empty content
-		if ( bbl_get_base_post_type( $postarr['post_type'] ) != $postarr['post_type'] ) {
+		if ( bbl_get_base_post_type( $postarr['post_type'] ) !== $postarr['post_type'] ) {
 			return false; }
 		return $maybe_empty;
 	}
 
 	public function bbl_translated_post_type( $translated, $post_type ) {
-		if ( 'bbl_job' == $post_type ) {
+		if ( 'bbl_job' === $post_type ) {
 			return false; }
 		return $translated;
 	}
 
 	public function bbl_translated_taxonomy( $translated, $taxonomy ) {
-		if ( 'bbl_job_language' == $taxonomy ) {
+		if ( 'bbl_job_language' === $taxonomy ) {
 			return false; }
 		return $translated;
 	}
@@ -139,12 +139,14 @@ class Babble_Jobs extends Babble_Plugin {
 	 **/
 	public function admin_title( $admin_title, $title ) {
 		$screen = get_current_screen();
-		if ( 'post' == $screen->base && 'bbl_job' == $screen->post_type ) {
+		if ( 'post' === $screen->base && 'bbl_job' === $screen->post_type ) {
 			$pto = get_post_type_object( 'bbl_job' );
 			$job = get_post();
-			if ( 'add' == $screen->action ) {
+			if ( 'add' === $screen->action ) {
+				// @codingStandardsIgnoreStart
 				if ( isset( $_GET['lang'] ) ) {
 					$lang = sanitize_text_field( $_GET['lang'] );
+					// @codingStandardsIgnoreEnd
 					$lang = bbl_get_lang( $lang );
 					$admin_title = sprintf( $pto->labels->add_item_context, $lang->display_name );
 				}
@@ -201,7 +203,7 @@ class Babble_Jobs extends Babble_Plugin {
 
 				$job = get_post( $args[2] );
 
-				if ( ! $job or ( 'bbl_job' != $job->post_type ) ) {
+				if ( ! $job or ( 'bbl_job' !== $job->post_type ) ) {
 					break;
 				}
 
@@ -209,7 +211,7 @@ class Babble_Jobs extends Babble_Plugin {
 				$pto     = get_post_type_object( $job->post_type );
 				$cap     = str_replace( 'bbl_job', 'post', $args[0] );
 
-				if ( isset( $objects['post'] ) && $objects['post']->post_type != 'bbl_job' ) {
+				if ( isset( $objects['post'] ) && $objects['post']->post_type !== 'bbl_job' ) {
 
 					// This directly maps the ability to edit/delete/publish the job with the ability to do the same to the job's post:
 					$can = user_can( $user, $cap, $objects['post']->ID );
@@ -234,7 +236,7 @@ class Babble_Jobs extends Babble_Plugin {
 				// Cycle through post types with show_ui true, give edit_bbl_jobs cap to the user if they can edit any of the post types
 				foreach ( get_post_types( array( 'show_ui' => true ), 'objects' ) as $pto ) {
 					// Don't check the capability we already checked.
-					if ( $args[0] == $pto->cap->edit_posts ) {
+					if ( $args[0] === $pto->cap->edit_posts ) {
 						continue;
 					}
 
@@ -293,7 +295,7 @@ class Babble_Jobs extends Babble_Plugin {
 		$post_original_lang = get_post_meta( $post_ID, 'bbl_post_original_lang', true );
 		$post_current_lang_code = bbl_get_post_lang_code( $post_ID );
 
-		if ( $post_original_lang == $post_current_lang_code ) {
+		if ( $post_original_lang === $post_current_lang_code ) {
 			return $url;
 		}
 
@@ -319,7 +321,7 @@ class Babble_Jobs extends Babble_Plugin {
 		$post_original_lang = get_post_meta( $post->ID, 'bbl_post_original_lang', true );
 		$post_current_lang_code = bbl_get_post_lang_code( $post->ID );
 
-		if ( $post_original_lang == $post_current_lang_code ) {
+		if ( $post_original_lang === $post_current_lang_code ) {
 			return $actions;
 		}
 
@@ -336,21 +338,18 @@ class Babble_Jobs extends Babble_Plugin {
 
 		$screen = get_current_screen();
 
-		if ( 'bbl_job' != $screen->post_type ) {
+		if ( 'bbl_job' !== $screen->post_type ) {
 			return;
 		}
 
 		$job   = get_post();
 		$items = $objects = $vars = array();
-
-		if ( ( 'add' == $screen->action ) and isset( $_GET['lang'] ) ) {
-
+		// @codingStandardsIgnoreStart
+		if ( ( 'add' === $screen->action ) and isset( $_GET['lang'] ) ) {
 			$vars['lang_code'] = sanitize_text_field( $_GET['lang'] );
-			;
-
 			if ( isset( $_GET['bbl_origin_post'] ) ) {
-
 				$post  = get_post( absint( $_GET['bbl_origin_post'] ) );
+				// @codingStandardsIgnoreEnd
 				$terms = $this->get_post_terms_to_translate( $post, $vars['lang_code'] );
 				$objects['post'] = $post;
 
@@ -359,10 +358,11 @@ class Babble_Jobs extends Babble_Plugin {
 				}
 
 				$vars['origin_post'] = $post->ID;
-
+				// @codingStandardsIgnoreStart
 			} else if ( isset( $_GET['bbl_origin_term'] ) and isset( $_GET['bbl_origin_taxonomy'] ) ) {
 				$term     = absint( $_GET['bbl_origin_term'] );
 				$taxonomy = sanitize_text_field( $_GET['bbl_origin_taxonomy'] );
+				// @codingStandardsIgnoreEnd
 				$term     = get_term( $term, $taxonomy );
 				$objects['terms'][ $term->taxonomy ][ $term->term_id ] = $term;
 				$vars['origin_term']     = $term->term_id;
@@ -419,7 +419,7 @@ class Babble_Jobs extends Babble_Plugin {
 			'in-progress' => get_post_status_object( 'in-progress' )->label,
 		);
 
-		if ( ( 'pending' == $job->post_status ) or ! current_user_can( 'publish_post', $job->ID ) ) {
+		if ( ( 'pending' === $job->post_status ) or ! current_user_can( 'publish_post', $job->ID ) ) {
 			$statuses['pending'] = get_post_status_object( 'pending' )->label;
 		}
 
@@ -519,9 +519,9 @@ class Babble_Jobs extends Babble_Plugin {
 		if ( $this->no_recursion ) {
 			return;
 		}
-		if ( 'bbl_job' != $job->post_type ) {
+		if ( 'bbl_job' !== $job->post_type ) {
 			return; }
-
+		// @codingStandardsIgnoreStart
 		$edit_post_nonce   = isset( $_POST['_bbl_translation_edit_post'] ) ? $_POST['_bbl_translation_edit_post'] : false;
 		$edit_terms_nonce  = isset( $_POST['_bbl_translation_edit_terms'] ) ? $_POST['_bbl_translation_edit_terms'] : false;
 		$origin_post_nonce = isset( $_POST['_bbl_translation_origin_post'] ) ? $_POST['_bbl_translation_origin_post'] : false;
@@ -531,6 +531,7 @@ class Babble_Jobs extends Babble_Plugin {
 		if ( $lang_code_nonce and wp_verify_nonce( $lang_code_nonce, "bbl_translation_lang_code_{$job->ID}" ) ) {
 			wp_set_object_terms( $job->ID, stripslashes( $_POST['bbl_lang_code'] ), 'bbl_job_language', false );
 		}
+		// @codingStandardsIgnoreEnd
 
 		$language = get_the_terms( $job, 'bbl_job_language' );
 
@@ -539,7 +540,7 @@ class Babble_Jobs extends Babble_Plugin {
 		} else { 			$lang_code = reset( $language )->name; }
 
 		if ( $origin_post_nonce and wp_verify_nonce( $origin_post_nonce, "bbl_translation_origin_post_{$job->ID}" ) ) {
-			if ( $origin_post = get_post( absint( $_POST['bbl_origin_post'] ) ) ) {
+			if ( $origin_post = get_post( absint( $_POST['bbl_origin_post'] ) ) ) { // @codingStandardsIgnoreLine
 				add_post_meta( $job->ID, 'bbl_job_post', "{$origin_post->post_type}|{$origin_post->ID}", true );
 
 				foreach ( $this->get_post_terms_to_translate( $origin_post->ID, $lang_code ) as $taxo => $terms ) {
@@ -552,28 +553,28 @@ class Babble_Jobs extends Babble_Plugin {
 
 		// @TODO not implemented:
 		if ( $origin_term_nonce and wp_verify_nonce( $origin_term_nonce, "bbl_translation_origin_term_{$job->ID}" ) ) {
-			if ( $origin_term = get_term( absint( $_POST['bbl_origin_term'] ), $_POST['bbl_origin_taxonomy'] ) ) {
+			if ( $origin_term = get_term( absint( $_POST['bbl_origin_term'] ), $_POST['bbl_origin_taxonomy'] ) ) { // @codingStandardsIgnoreLine
 				add_post_meta( $job->ID, 'bbl_job_term', "{$origin_term->taxonomy}|{$origin_term->term_id}", false ); }
 			// @TODO else wp_die()?
 		}
 
 		if ( $edit_post_nonce and wp_verify_nonce( $edit_post_nonce, "bbl_translation_edit_post_{$job->ID}" ) ) {
 
-			$post_data = stripslashes_deep( $_POST['bbl_translation']['post'] );
+			$post_data = wp_unslash( $_POST['bbl_translation']['post'] ); // @codingStandardsIgnoreLine
 			if ( $post_data['post_name'] ) {
 				$post_data['post_name'] = sanitize_title( $post_data['post_name'] ); }
 			$post_info = get_post_meta( $job->ID, 'bbl_job_post', true );
 			list( $post_type, $post_id ) = explode( '|', $post_info );
 			$post = get_post( $post_id );
 
-			if ( 'pending' == $job->post_status ) {
+			if ( 'pending' === $job->post_status ) {
 
 				// Nothing.
 			}
 			update_post_meta( $job->ID, 'bbl_acf_load_value', 'self' );
 
 			wp_cache_set( 'bbl_acf_load_value/post_id=' . $job->ID , 'self', 'babble' );
-			if ( 'complete' == $job->post_status ) {
+			if ( 'complete' === $job->post_status ) {
 
 				// The ability to complete a translation of a post directly
 				// maps to the ability to publish the origin post.
@@ -618,7 +619,7 @@ class Babble_Jobs extends Babble_Plugin {
 
 		if ( $edit_terms_nonce and wp_verify_nonce( $edit_terms_nonce, "bbl_translation_edit_terms_{$job->ID}" ) ) {
 
-			$terms_data = stripslashes_deep( $_POST['bbl_translation']['terms'] );
+			$terms_data = wp_unslash( $_POST['bbl_translation']['terms'] ); // @codingStandardsIgnoreLine
 			$terms      = get_post_meta( $job->ID, 'bbl_job_term', false );
 
 			foreach ( $terms as $term_info ) {
@@ -629,7 +630,7 @@ class Babble_Jobs extends Babble_Plugin {
 
 				update_post_meta( $job->ID, "bbl_term_{$term_id}", $terms_data[ $term_id ] );
 
-				if ( 'complete' == $job->post_status ) {
+				if ( 'complete' === $job->post_status ) {
 
 					// @TODO if current user can edit term
 					$trans = $bbl_taxonomies->get_term_in_lang( $term, $taxo, $lang_code, false );
@@ -660,13 +661,13 @@ class Babble_Jobs extends Babble_Plugin {
 		if ( ! bbl_is_translated_post_type( $post->post_type ) ) {
 			return; }
 
-		$nonce = isset( $_POST['_bbl_ready_for_translation'] ) ? $_POST['_bbl_ready_for_translation'] : false;
+		$nonce = isset( $_POST['_bbl_ready_for_translation'] ) ? $_POST['_bbl_ready_for_translation'] : false; // @codingStandardsIgnoreLine
 
 		if ( ! $nonce ) {
 			return; }
 		if ( ! wp_verify_nonce( $nonce, "bbl_ready_for_translation-{$post->ID}" ) ) {
 			return; }
-		if ( ! isset( $_POST['babble_ready_for_translation'] ) ) {
+		if ( ! isset( $_POST['babble_ready_for_translation'] ) ) { // @codingStandardsIgnoreLine
 			return; }
 		// @TODO individual language selection when marking post as translation ready
 		$this->no_recursion = true;
@@ -754,7 +755,7 @@ class Babble_Jobs extends Babble_Plugin {
 	public function filter_columns( $cols ) {
 		$new_cols = array();
 		foreach ( $cols as $col_id => $col ) {
-			if ( 'date' != $col_id ) {
+			if ( 'date' !== $col_id ) {
 				$new_cols[ $col_id ] = $col;
 			} else {
 				$new_cols['bbl_language'] = __( 'Language', 'babble' );
@@ -792,7 +793,7 @@ class Babble_Jobs extends Babble_Plugin {
 	public function metabox_post_translations( WP_Post $post, array $metabox ) {
 		global $bbl_post_public;
 
-		if ( $post->post_status == 'publish' ) {
+		if ( $post->post_status === 'publish' ) {
 			$trans_id = $bbl_post_public->get_transid( $post );
 			?> <!-- <p><?php echo esc_html( $trans_id ); ?></p> --> <?php
 		}
@@ -817,19 +818,19 @@ class Babble_Jobs extends Babble_Plugin {
 			foreach ( $completed_jobs as $lang_code => $job ) {
 				$lang = bbl_get_lang( $lang_code );
 				?>
-				<p><?php printf( '%s: <a href="%s">%s</a>', $lang->display_name, get_edit_post_link( $job->ID ), esc_html__( 'View', 'babble' ) ); ?>
+				<p><?php printf( '%s: <a href="%s">%s</a>', esc_html( $lang->display_name ), esc_url( get_edit_post_link( $job->ID ) ), esc_html__( 'View', 'babble' ) ); ?>
 			<?php
 			}
 		}
 
 		if ( ! empty( $incomplete_jobs ) and $capable ) {
 
-			?><h4><?php _e( 'Pending:', 'babble' ); ?></h4><?php
+			?><h4><?php esc_html_e( 'Pending:', 'babble' ); ?></h4><?php
 foreach ( $incomplete_jobs as $job ) {
 	$lang = $this->get_job_language( $job );
 	$status = get_post_status_object( $job->post_status );
 	?>
-	<p><?php printf( '%s (%s)', $lang->display_name, $status->label ); ?>
+	<p><?php printf( '%s (%s)', esc_html( $lang->display_name ), esc_html( $status->label ) ); ?>
 			<?php
 }
 
@@ -915,9 +916,9 @@ foreach ( $incomplete_jobs as $job ) {
 			'bbl_translate'  => false,
 			'post_type'      => 'bbl_job',
 			'post_status'    => $statuses,
-			'meta_key'       => "bbl_job_{$type}",
-			'meta_value'     => "{$name}|{$id}",
-			'posts_per_page' => 100,
+			'meta_key'       => "bbl_job_{$type}", // @codingStandardsIgnoreLine
+			'meta_value'     => "{$name}|{$id}", // @codingStandardsIgnoreLine
+			'posts_per_page' => 50,
 		) );
 
 		if ( empty( $jobs ) ) {
@@ -1009,7 +1010,7 @@ foreach ( $incomplete_jobs as $job ) {
 		$original_post_lang_code = bbl_get_post_lang_code( $post );
 
 		foreach ( $lang_codes as $lang_code ) {
-			if ( $original_post_lang_code == $lang_code ) {
+			if ( $original_post_lang_code === $lang_code ) {
 				update_post_meta( $post_id, 'bbl_post_original_lang', $original_post_lang_code );
 				continue;
 			}

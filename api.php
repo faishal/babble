@@ -310,14 +310,14 @@ add_filter( 'bbl_get_content_post_type', 'bbl_get_post_type_in_lang' );
 function bbl_is_page( $page = '' ) {
 	$base_page = bbl_get_post_in_lang( get_the_ID(), bbl_get_default_lang_code() );
 	if ( ! $page ) {
-		return 'page' == $base_page->post_type; }
+		return 'page' === $base_page->post_type; }
 	if ( is_int( $page ) ) {
-		return $page == $base_page->ID; }
-	if ( $page == $base_page->post_name ) {
+		return $page === $base_page->ID; }
+	if ( $page === $base_page->post_name ) {
 		return true; }
-	if ( $page == $base_page->post_title ) {
+	if ( $page === $base_page->post_title ) {
 		return true; }
-	if ( $page == (string) $base_page->ID ) {
+	if ( (string) $base_page->ID === $page ) {
 		return true; }
 	return false;
 }
@@ -560,7 +560,7 @@ function bbl_is_default_lang( $lang_code = null ) {
 	if ( is_null( $lang_code ) ) {
 		$lang = bbl_get_current_lang(); } else if ( is_string( $lang_code ) ) { // In case someone passes a lang object
 		$lang = bbl_get_lang( $lang_code ); }
-		return ( bbl_get_default_lang_code() == $lang->code );
+		return ( bbl_get_default_lang_code() === $lang->code );
 }
 
 /**

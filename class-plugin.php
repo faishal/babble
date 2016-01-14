@@ -181,7 +181,7 @@ class Babble_Plugin {
 	function add_action( $action, $function = '', $priority = 10, $accepted_args = 1 ) {
 		if ( null === $priority ) {
 			$priority = 10; }
-		add_action( $action, array( &$this, '' === $function ? $action : $function ), $priority, $accepted_args );
+		add_action( $action, array( &$this, ( '' === $function || null === $function) ? $action : $function ), $priority, $accepted_args );
 	}
 
 
@@ -196,7 +196,7 @@ class Babble_Plugin {
 	 * @author © John Godley
 	 **/
 	function add_filter( $filter, $function = '', $priority = 10, $accepted_args = 1 ) {
-		add_filter( $filter, array( &$this, '' === $function ? $filter : $function ), $priority, $accepted_args );
+		add_filter( $filter, array( &$this, ( '' === $function || null === $function) ? $filter : $function ), $priority, $accepted_args );
 	}
 
 
@@ -211,7 +211,7 @@ class Babble_Plugin {
 	 * @author © John Godley
 	 **/
 	function remove_filter( $filter, $function = '', $priority = 10, $accepted_args = 1 ) {
-		remove_filter( $filter, array( &$this, '' === $function ? $filter : $function ), $priority, $accepted_args );
+		remove_filter( $filter, array( &$this, ( '' === $function || null === $function) ? $filter : $function ), $priority, $accepted_args );
 	}
 
 
@@ -261,7 +261,7 @@ class Babble_Plugin {
 	 * @author © John Godley
 	 **/
 	function register_deactivation( $pluginfile, $function = '' ) {
-		add_action( 'deactivate_'.basename( dirname( $pluginfile ) ).'/'.basename( $pluginfile ), array( &$this, '' === $function ? 'deactivate' : $function ) );
+		add_action( 'deactivate_'.basename( dirname( $pluginfile ) ).'/'.basename( $pluginfile ), array( &$this, ( '' === $function || null === $function) ? 'deactivate' : $function ) );
 	}
 
 	/**
@@ -463,7 +463,7 @@ class Babble_Plugin {
 	function add_meta_box( $id, $title, $function = '', $page, $context = 'advanced', $priority = 'default', $args = null ) {
 
 		require_once( ABSPATH . 'wp-admin/includes/template.php' );
-		add_meta_box( $id, $title, array( &$this, '' === $function ? $id : $function ), $page, $context, $priority, $args );
+		add_meta_box( $id, $title, array( &$this, ( '' === $function || null === $function) ? $id : $function ), $page, $context, $priority, $args );
 	}
 
 	/**
@@ -477,7 +477,7 @@ class Babble_Plugin {
 	 * @param callable $func Hook to run when shortcode is found.
 	 */
 	protected function add_shortcode( $tag, $function = null ) {
-		add_shortcode( $tag, array( &$this, '' === $function ? $tag : $function ) );
+		add_shortcode( $tag, array( &$this, ( '' === $function || null === $function) ? $tag : $function ) );
 	}
 
 	/**

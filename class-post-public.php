@@ -764,7 +764,7 @@ class Babble_Post_Public extends Babble_Plugin {
 				return $post_link;
 			}
 		} else if ( 'page' === $base_post_type ) {
-			return get_page_link( $post->ID, $leavename );
+			return get_page_link( $post->ID, false );
 		}
 
 		return user_trailingslashit( $post_link );
@@ -784,7 +784,7 @@ class Babble_Post_Public extends Babble_Plugin {
 	 * @return array The array, like array( $permalink, $post_name )
 	 */
 	public function get_sample_permalink( $permalink, $title, $name, $id, $post ) {
-		$permalink[0] = $this->post_type_link( $permalink[0], $post, $leavename );
+		$permalink[0] = $this->post_type_link( $permalink[0], $post, false );
 		return $permalink;
 	}
 
@@ -966,11 +966,11 @@ class Babble_Post_Public extends Babble_Plugin {
 		global $submenu;
 		global $self, $parent_file, $submenu_file, $plugin_page, $typenow;
 		$base_post_types = array_flip( $this->post_types );
-
+		if ( bbl_get_current_lang_code() !== bbl_get_default_lang_code() ) {
 		// Remove "new post" links from submenu(s) for non-default languages
 		foreach ( $submenu as $parent => &$items ) {
 			foreach ( $items as $key => &$item ) {
-				if ( bbl_get_current_lang_code() !== bbl_get_default_lang_code() ) {
+
 					$vars     = array();
 					$url_info = parse_url( $item[2] );
 					if ( ! isset( $url_info['query'] ) ) {
@@ -1014,6 +1014,7 @@ class Babble_Post_Public extends Babble_Plugin {
 				}
 			}
 		}
+
 		// Remove links to shadow post types
 		foreach ( $menu as $key => $item ) {
 			$vars = array();

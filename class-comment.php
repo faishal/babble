@@ -77,11 +77,8 @@ class Babble_Comment extends Babble_Plugin {
 
 	// PUBLIC METHODS
 	// ==============
-
-
 	// PRIVATE/PROTECTED METHODS
 	// =========================
-
 }
 
 global $bbl_comment;

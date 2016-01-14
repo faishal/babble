@@ -236,7 +236,8 @@ class Babble_Locale {
 			$this->set_interface_lang( bbl_get_default_lang_code() ); }
 
 		if ( is_admin() ) {
-			return $this->interface_lang; } else { 			return $this->content_lang; }
+			return $this->interface_lang;
+		} else { 			return $this->content_lang; }
 
 	}
 
@@ -267,7 +268,7 @@ class Babble_Locale {
 	 * @return array An array of the public query vars
 	 **/
 	public function query_vars( array $query_vars ) {
-		# @TODO why is this here?
+		// @TODO why is this here?
 		add_filter( 'home_url', array( $this, 'home_url' ), null, 2 );
 		return array_merge( $query_vars, array( 'lang', 'lang_url_prefix' ) );
 	}
@@ -279,7 +280,7 @@ class Babble_Locale {
 	 * @return void
 	 **/
 	public function pre_comment_on_post() {
-		# @TODO why is this here?
+		// @TODO why is this here?
 		add_filter( 'home_url', array( $this, 'home_url' ), null, 2 );
 	}
 
@@ -288,12 +289,13 @@ class Babble_Locale {
 	 *
 	 * Hackity hack: this function is attached with add_filter within
 	 * the query_vars filter and the pre_comment_on_post action.
+	 *
 	 * @TODO: Can't remember why this is attached like this… investigate.
 	 *
 	 * @param string $url The URL
 	 * @param string $path The path
 	 * @param string $orig_scheme The original scheme
-	 * @param int $blog_id The ID of the blog
+	 * @param int    $blog_id The ID of the blog
 	 * @return string The URL
 	 **/
 	public function home_url( $url, $path ) {
@@ -316,11 +318,11 @@ class Babble_Locale {
 		$lang = bbl_get_current_lang();
 		$classes[] = 'bbl-' . $lang->text_direction;
 		$classes[] = 'bbl-' . $lang->text_direction;
-		# @TODO I don't think this class should be included:
+		// @TODO I don't think this class should be included:
 		$classes[] = 'bbl-' . sanitize_title( $lang->name );
 		$classes[] = 'bbl-' . sanitize_title( $lang->url_prefix );
 		$classes[] = 'bbl-' . sanitize_title( $lang->code );
-		# @TODO I don't think this class should be included:
+		// @TODO I don't think this class should be included:
 		$classes[] = 'bbl-' . sanitize_title( $lang->display_name );
 		return $classes;
 	}
@@ -330,7 +332,7 @@ class Babble_Locale {
 	 *
 	 * @param array $classes The post classes
 	 * @param array $class One or more classes which have been added to the class list.
-	 * @param int $post_id The ID of the post we're providing classes for
+	 * @param int   $post_id The ID of the post we're providing classes for
 	 * @return array The body classes
 	 **/
 	public function post_class( array $classes, $class, $post_id ) {
@@ -343,18 +345,17 @@ class Babble_Locale {
 		} else {
 			$classes[] = 'bbl-post-' . $lang->text_direction;
 		}
-		# @TODO I don't think this class should be included:
+		// @TODO I don't think this class should be included:
 		$classes[] = 'bbl-post-' . sanitize_title( $lang->name );
 		$classes[] = 'bbl-post-' . sanitize_title( $lang->url_prefix );
 		$classes[] = 'bbl-post-' . sanitize_title( $lang->code );
-		# @TODO I don't think this class should be included:
+		// @TODO I don't think this class should be included:
 		$classes[] = 'bbl-post-' . sanitize_title( $lang->display_name );
 		return $classes;
 	}
 
 	// Public Methods
 	// --------------
-
 	/**
 	 * Get the current (content) lang for this class, which is also the
 	 * current lang in the Query Vars.
@@ -413,7 +414,6 @@ class Babble_Locale {
 
 	// Non-public Methods
 	// ------------------
-
 	/**
 	 * Set the content language code and URL prefix for any
 	 * subsequent requests.
@@ -465,7 +465,8 @@ class Babble_Locale {
 		// @FIXME: Copying a huge hunk of code from WP->parse_request here, feels ugly.
 		// START: Huge hunk of WP->parse_request
 		if ( isset( $_SERVER['PATH_INFO'] ) ) {
-			$pathinfo = $_SERVER['PATH_INFO']; } else { 			$pathinfo = ''; }
+			$pathinfo = $_SERVER['PATH_INFO'];
+		} else { 			$pathinfo = ''; }
 		$pathinfo_array = explode( '?', $pathinfo );
 		$pathinfo = str_replace( '%', '%25', $pathinfo_array[0] );
 		$req_uri = $_SERVER['REQUEST_URI'];
@@ -474,7 +475,8 @@ class Babble_Locale {
 		$self = $_SERVER['PHP_SELF'];
 		$home_path = parse_url( home_url() );
 		if ( isset( $home_path['path'] ) ) {
-			$home_path = $home_path['path']; } else { 			$home_path = ''; }
+			$home_path = $home_path['path'];
+		} else { 			$home_path = ''; }
 		$home_path = trim( $home_path, '/' );
 
 		// Trim path info from the end and the leading home path from the
@@ -493,7 +495,7 @@ class Babble_Locale {
 		$self = trim( $self, '/' );
 
 		// The requested permalink is in $pathinfo for path info requests and
-		//  $req_uri for other requests.
+		// $req_uri for other requests.
 		if ( ! empty( $pathinfo ) && ! preg_match( '|^.*' . $wp_rewrite->index . '$|', $pathinfo ) ) {
 			$request = $pathinfo;
 		} else {

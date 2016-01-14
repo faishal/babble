@@ -33,7 +33,7 @@ if ( class_exists( 'WP_CLI_Command' ) ) :
 		 * @synopsis
 		 */
 		function import( $args, $assoc_args ) {
-			//Can't use get_posts as babble plugin will filter the post
+			// Can't use get_posts as babble plugin will filter the post
 			global $wpdb, $bbl_languages, $bbl_post_public, $bbl_taxonomies;
 			global $bbl_jobs;
 
@@ -53,8 +53,7 @@ if ( class_exists( 'WP_CLI_Command' ) ) :
 			}
 			WP_CLI::warning( 'Star Importer...' );
 
-			//Migrate Menu
-
+			// Migrate Menu
 			$nav_menus        = wp_get_nav_menus( array( 'orderby' => 'name', 'bbl_translate' => false ) );
 			$translated_menus = array();
 
@@ -115,14 +114,14 @@ if ( class_exists( 'WP_CLI_Command' ) ) :
 					}
 				}
 			}
-			//Migrate Post
+			// Migrate Post
 			$posts = $this->_get_post();
 
 			$file_progress = new \cli\progress\Bar( 'Progress', $posts->found_posts );
 
 			while ( count( $posts->posts ) > 0 ) {
 				foreach ( $posts->posts as $post ) {
-					//get post current language
+					// get post current language
 					$wmpl_trasalated_posts_map = $this->_get_wpml_post_translations( $post );
 					if ( false === empty( $wmpl_trasalated_posts_map ) ) {
 						$default_language_post_id = $post->ID;
@@ -219,7 +218,7 @@ if ( class_exists( 'WP_CLI_Command' ) ) :
 
 								update_post_meta( $job->ID, "bbl_post_{$default_language_post_id}", $lang_post );
 
-								//bbl_get_base_post_type($post->post_type)
+								// bbl_get_base_post_type($post->post_type)
 								$base_post_type = bbl_get_base_post_type( $post->post_type );
 
 								if ( 'page' == $base_post_type ) {
@@ -326,8 +325,7 @@ if ( class_exists( 'WP_CLI_Command' ) ) :
 										}
 									}
 
-									//Pending Tax migration
-
+									// Pending Tax migration
 								}
 							}
 							update_post_meta( $lang_post_id, '_bbl_wpml_transalated', 'done' );
@@ -335,7 +333,7 @@ if ( class_exists( 'WP_CLI_Command' ) ) :
 					}
 					$file_progress->tick();
 				}
-				//Next Posts
+				// Next Posts
 				$posts = $this->_get_post();
 			}
 			WP_CLI::success( 'Imported scanned' );

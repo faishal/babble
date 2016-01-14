@@ -31,7 +31,7 @@ class Babble_Translator extends Babble_Plugin {
 	 **/
 	public function maybe_upgrade() {
 
-		# @TODO should we amalgamate each class' version numbers into one?
+		// @TODO should we amalgamate each class' version numbers into one?
 		$option    = 'bbl-translator-version';
 		$role_name = _x( 'Translator', 'Translator role', 'babble' );
 

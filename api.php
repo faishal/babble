@@ -9,7 +9,8 @@
  * @since Alpha 1
  */
 
-/*  Copyright 2013 Code for the People
+/*
+   Copyright 2013 Code for the People
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -135,8 +136,8 @@ function bbl_get_term_jobs( $term, $taxonomy ) {
  * particular language.
  *
  * @param int|object $default_term The term in the default language to create a new translation for, either WP Post object or post ID
- * @param string $lang The language code
- * @param string $taxonomy The taxonomy
+ * @param string     $lang The language code
+ * @param string     $taxonomy The taxonomy
  * @return string The admin URL to create the new translation
  * @access public
  **/
@@ -269,7 +270,7 @@ function bbl_get_post_lang_code( $post ) {
  * particular language.
  *
  * @param int|object $default_post The post in the default language to create a new translation for, either WP Post object or post ID
- * @param string $lang The language code
+ * @param string     $lang The language code
  * @return string The admin URL to create the new translation
  * @access public
  **/
@@ -325,8 +326,8 @@ function bbl_is_page( $page = '' ) {
  * Returns the post in a particular language
  *
  * @param int|object $post Either a WP Post object, or a post ID
- * @param string $lang_code The language code for the required language
- * @param boolean $fallback If true: if a post is not available, fallback to the default language content (defaults to true)
+ * @param string     $lang_code The language code for the required language
+ * @param boolean    $fallback If true: if a post is not available, fallback to the default language content (defaults to true)
  * @return object|boolean The WP Post object, or if $fallback was false and no post then returns false
  **/
 function bbl_get_post_in_lang( $post, $lang_code, $fallback = true ) {
@@ -338,9 +339,9 @@ function bbl_get_post_in_lang( $post, $lang_code, $fallback = true ) {
  * Returns the term in a particular language
  *
  * @param int|object $term Either a term object, or a term ID
- * @param string $taxonomy The term taxonomy
- * @param string $lang_code The language code for the required language
- * @param boolean $fallback If true: if a term is not available, fallback to the default language content (defaults to true)
+ * @param string     $taxonomy The term taxonomy
+ * @param string     $lang_code The language code for the required language
+ * @param boolean    $fallback If true: if a term is not available, fallback to the default language content (defaults to true)
  * @return object|boolean The term object, or if $fallback was false and no term then returns false
  **/
 function bbl_get_term_in_lang( $term, $taxonomy, $lang_code, $fallback = true ) {
@@ -365,8 +366,8 @@ function bbl_get_post_type_slug_in_lang( $slug, $lang_code = null ) {
  * Echoes the title of a post, in the requested language (if available).
  *
  * @param int|object $post Either a WP Post object, or a post ID
- * @param string $lang_code The code for the language the title is requested in
- * @param bool $fallback Whether to provide a fallback title in the default language if the requested language is unavailable (defaults to false)
+ * @param string     $lang_code The code for the language the title is requested in
+ * @param bool       $fallback Whether to provide a fallback title in the default language if the requested language is unavailable (defaults to false)
  * @return void
  **/
 function bbl_the_title_in_lang( $post = null, $lang_code = null, $fallback = false ) {
@@ -377,8 +378,8 @@ function bbl_the_title_in_lang( $post = null, $lang_code = null, $fallback = fal
  * Returns the title of a post, in the requested language (if available).
  *
  * @param int|object $post Either a WP Post object, or a post ID
- * @param string $lang_code The code for the language the title is requested in
- * @param bool $fallback Whether to provide a fallback title in the default language if the requested language is unavailable (defaults to false)
+ * @param string     $lang_code The code for the language the title is requested in
+ * @param bool       $fallback Whether to provide a fallback title in the default language if the requested language is unavailable (defaults to false)
  * @return void
  **/
 function bbl_get_the_title_in_lang( $post = null, $lang_code = null, $fallback = false ) {
@@ -398,8 +399,8 @@ function bbl_get_the_title_in_lang( $post = null, $lang_code = null, $fallback =
  * Echoes the permalink of a post, in the requested language (if available).
  *
  * @param int|object $post Either a WP Post object, or a post ID
- * @param string $lang_code The code for the language the title is requested in
- * @param bool $fallback Whether to provide a fallback title in the default language if the requested language is unavailable (defaults to false)
+ * @param string     $lang_code The code for the language the title is requested in
+ * @param bool       $fallback Whether to provide a fallback title in the default language if the requested language is unavailable (defaults to false)
  * @return void
  **/
 function bbl_the_permalink_in_lang( $post = null, $lang_code = null, $fallback = false ) {
@@ -410,8 +411,8 @@ function bbl_the_permalink_in_lang( $post = null, $lang_code = null, $fallback =
  * Returns the permalink of a post, in the requested language (if available).
  *
  * @param int|object $post Either a WP Post object, or a post ID
- * @param string $lang_code The code for the language the title is requested in
- * @param bool $fallback Whether to provide a fallback title in the default language if the requested language is unavailable (defaults to false)
+ * @param string     $lang_code The code for the language the title is requested in
+ * @param bool       $fallback Whether to provide a fallback title in the default language if the requested language is unavailable (defaults to false)
  * @return void
  **/
 function bbl_get_the_permalink_in_lang( $post = null, $lang_code = null, $fallback = false ) {
@@ -635,7 +636,8 @@ function bbl_stop_logging() {
 function bbl_log( $msg ) {
 	global $bbl_log;
 	if ( $bbl_log ) {
-		$bbl_log->log( $msg ); } else { 		error_log( "Full Babble logging unavailable: $msg" ); }
+		$bbl_log->log( $msg );
+	} else { 		error_log( "Full Babble logging unavailable: $msg" ); }
 }
 
 /**

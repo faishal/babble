@@ -20,18 +20,16 @@
 // 1.01    - Added add_shortcode
 // 1.10    - Added code to allow the base class to be used in a theme
 // 1.2     - Truncate helper method, admin notices/errors, throw error if not provided
-//           with name in setup method call, default $pluginfile to __FILE__, bugfix around
-//           option key in delete_option method.
+// with name in setup method call, default $pluginfile to __FILE__, bugfix around
+// option key in delete_option method.
 // 1.3     - Locale stuff
-//         - Fix for get_option
+// - Fix for get_option
 // 1.31    - Attempt to cope with Win32 directory separators
 // 1.32    - Add a remove_filter method
 // 1.33    - Add `sil_plugins_dir` and `sil_plugins_url` filters, to allow placement
-//           outside the `wp-content/plugins/` folder, for example using `require_once`
-//           to include from the theme `functions.php`.
+// outside the `wp-content/plugins/` folder, for example using `require_once`
+// to include from the theme `functions.php`.
 // ======================================================================================
-
-
 /**
  * Wraps up several useful functions for WordPress plugins and provides a method to separate
  * display HTML from PHP code.
@@ -175,8 +173,8 @@ class Babble_Plugin {
 	 *
 	 * @param string $action Name of the action
 	 * @param string $function Function name (optional)
-	 * @param int $priority WordPress priority (optional)
-	 * @param int $accepted_args Number of arguments the function accepts (optional)
+	 * @param int    $priority WordPress priority (optional)
+	 * @param int    $accepted_args Number of arguments the function accepts (optional)
 	 * @return void
 	 * @author © John Godley
 	 **/
@@ -192,8 +190,8 @@ class Babble_Plugin {
 	 *
 	 * @param string $action Name of the action
 	 * @param string $function Function name (optional)
-	 * @param int $priority WordPress priority (optional)
-	 * @param int $accepted_args Number of arguments the function accepts (optional)
+	 * @param int    $priority WordPress priority (optional)
+	 * @param int    $accepted_args Number of arguments the function accepts (optional)
 	 * @return void
 	 * @author © John Godley
 	 **/
@@ -207,8 +205,8 @@ class Babble_Plugin {
 	 *
 	 * @param string $action Name of the action
 	 * @param string $function Function name (optional)
-	 * @param int $priority WordPress priority (optional)
-	 * @param int $accepted_args Number of arguments the function accepts (optional)
+	 * @param int    $priority WordPress priority (optional)
+	 * @param int    $accepted_args Number of arguments the function accepts (optional)
 	 * @return void
 	 * @author © John Godley
 	 **/
@@ -448,11 +446,11 @@ class Babble_Plugin {
 	 *
 	 * @param string $id ID for the box, also used as a function name if none is given
 	 * @param string $title Title for the box
-	 * @param int $page The type of edit page on which to show the box (post, page, link).
+	 * @param int    $page The type of edit page on which to show the box (post, page, link).
 	 * @param string $function Function name (optional)
 	 * @param string $context e.g. 'advanced' or 'core' (optional)
-	 * @param int $priority Priority, rough effect on the ordering (optional)
-	 * @param mixed $args Some arguments to pass to the callback function as part of a larger object (optional)
+	 * @param int    $priority Priority, rough effect on the ordering (optional)
+	 * @param mixed  $args Some arguments to pass to the callback function as part of a larger object (optional)
 	 * @return void
 	 * @author © John Godley
 	 **/
@@ -469,7 +467,7 @@ class Babble_Plugin {
 	 * plugin has a similar shortcode, it will override yours or yours will override
 	 * theirs depending on which order the plugins are included and/or ran.
 	 *
-	 * @param string $tag Shortcode tag to be searched in post content.
+	 * @param string   $tag Shortcode tag to be searched in post content.
 	 * @param callable $func Hook to run when shortcode is found.
 	 */
 	protected function add_shortcode( $tag, $function = null ) {
@@ -536,7 +534,7 @@ class Babble_Plugin {
 	 * Sets the value on an array index on an option named as per this plugin.
 	 *
 	 * @param string $key A string
-	 * @param mixed $value Whatever
+	 * @param mixed  $value Whatever
 	 * @return bool False if option was not updated and true if option was updated.
 	 * @author Simon Wheatley
 	 **/
@@ -578,7 +576,7 @@ class Babble_Plugin {
 	 * Truncates a string in a human friendly way.
 	 *
 	 * @param string $str The string to truncate
-	 * @param int $num_words The number of words to truncate to
+	 * @param int    $num_words The number of words to truncate to
 	 * @return string The truncated string
 	 * @author Simon Wheatley
 	 **/

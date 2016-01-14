@@ -60,8 +60,7 @@ class Babble_Jobs extends Babble_Plugin {
 
 	public function add_meta_boxes_bbl_job( WP_Post $post ) {
 
-		# Unapologetically remove all meta boxes from the translation screen:
-
+		// Unapologetically remove all meta boxes from the translation screen:
 		global $wp_meta_boxes;
 		unset( $wp_meta_boxes['bbl_job'] );
 
@@ -124,7 +123,7 @@ class Babble_Jobs extends Babble_Plugin {
 	 * @return void
 	 **/
 	public function admin_init() {
-		# @TODO use filemtime everywhere
+		// @TODO use filemtime everywhere
 		wp_enqueue_style( 'bbl-jobs-admin', $this->url( 'css/jobs-admin.css' ), array(), $this->version );
 	}
 
@@ -212,15 +211,14 @@ class Babble_Jobs extends Babble_Plugin {
 
 				if ( isset( $objects['post'] ) && $objects['post']->post_type != 'bbl_job' ) {
 
-					# This directly maps the ability to edit/delete/publish the job with the ability to do the same to the job's post:
-
+					// This directly maps the ability to edit/delete/publish the job with the ability to do the same to the job's post:
 					$can = user_can( $user, $cap, $objects['post']->ID );
 					foreach ( $required_caps as $required ) {
 						if ( ! isset( $user_caps[ $required ] ) ) {
 							$user_caps[ $required ] = $can;
 						}
 					}
-				} else { # else if isset object terms
+				} else { // else if isset object terms
 
 				}
 
@@ -228,14 +226,12 @@ class Babble_Jobs extends Babble_Plugin {
 
 			case 'edit_bbl_jobs':
 
-				# Special case for displaying the admin menu:
-
-				# By default, Translators will have this cap:
+				// Special case for displaying the admin menu:
+				// By default, Translators will have this cap:
 				if ( isset( $user_caps[ $args[0] ] ) ) {
 					break; }
 
-				# Cycle through post types with show_ui true, give edit_bbl_jobs cap to the user if they can edit any of the post types
-
+				// Cycle through post types with show_ui true, give edit_bbl_jobs cap to the user if they can edit any of the post types
 				foreach ( get_post_types( array( 'show_ui' => true ), 'objects' ) as $pto ) {
 					// Don't check the capability we already checked.
 					if ( $args[0] == $pto->cap->edit_posts ) {
@@ -283,7 +279,7 @@ class Babble_Jobs extends Babble_Plugin {
 	 *
 	 * @filter get_edit_post_link
 	 * @param string $url The edit post link URL
-	 * @param int $post_ID The ID of the post to edit
+	 * @param int    $post_ID The ID of the post to edit
 	 * @param string $context The link context.
 	 *
 	 * @return string The edit post link URL
@@ -349,7 +345,8 @@ class Babble_Jobs extends Babble_Plugin {
 
 		if ( ( 'add' == $screen->action ) and isset( $_GET['lang'] ) ) {
 
-			$vars['lang_code'] = sanitize_text_field( $_GET['lang'] );;
+			$vars['lang_code'] = sanitize_text_field( $_GET['lang'] );
+			;
 
 			if ( isset( $_GET['bbl_origin_post'] ) ) {
 
@@ -441,13 +438,13 @@ class Babble_Jobs extends Babble_Plugin {
 	}
 
 	public function admin_menu() {
-		# Remove the 'Add New' submenu for Translations.
-		//remove_submenu_page( 'edit.php?post_type=bbl_job', 'post-new.php?post_type=bbl_job' );
+		// Remove the 'Add New' submenu for Translations.
+		// remove_submenu_page( 'edit.php?post_type=bbl_job', 'post-new.php?post_type=bbl_job' );
 	}
 
 	public function wp_before_admin_bar_render() {
 		global $wp_admin_bar;
-		# Remove the '+New -> Translation Job' admin bar menu.
+		// Remove the '+New -> Translation Job' admin bar menu.
 		$wp_admin_bar->remove_node( 'new-bbl_job' );
 	}
 
@@ -538,7 +535,8 @@ class Babble_Jobs extends Babble_Plugin {
 		$language = get_the_terms( $job, 'bbl_job_language' );
 
 		if ( empty( $language ) ) {
-			return false; } else { 			$lang_code = reset( $language )->name; }
+			return false;
+		} else { 			$lang_code = reset( $language )->name; }
 
 		if ( $origin_post_nonce and wp_verify_nonce( $origin_post_nonce, "bbl_translation_origin_post_{$job->ID}" ) ) {
 			if ( $origin_post = get_post( absint( $_POST['bbl_origin_post'] ) ) ) {
@@ -549,14 +547,14 @@ class Babble_Jobs extends Babble_Plugin {
 						add_post_meta( $job->ID, 'bbl_job_term', "{$taxo}|{$term_id}", false ); }
 				}
 			}
-			# @TODO else wp_die()?
+			// @TODO else wp_die()?
 		}
 
-		# @TODO not implemented:
+		// @TODO not implemented:
 		if ( $origin_term_nonce and wp_verify_nonce( $origin_term_nonce, "bbl_translation_origin_term_{$job->ID}" ) ) {
 			if ( $origin_term = get_term( absint( $_POST['bbl_origin_term'] ), $_POST['bbl_origin_taxonomy'] ) ) {
 				add_post_meta( $job->ID, 'bbl_job_term', "{$origin_term->taxonomy}|{$origin_term->term_id}", false ); }
-			# @TODO else wp_die()?
+			// @TODO else wp_die()?
 		}
 
 		if ( $edit_post_nonce and wp_verify_nonce( $edit_post_nonce, "bbl_translation_edit_post_{$job->ID}" ) ) {
@@ -570,17 +568,15 @@ class Babble_Jobs extends Babble_Plugin {
 
 			if ( 'pending' == $job->post_status ) {
 
-				# Nothing.
-
+				// Nothing.
 			}
 			update_post_meta( $job->ID, 'bbl_acf_load_value', 'self' );
 
 			wp_cache_set( 'bbl_acf_load_value/post_id=' . $job->ID , 'self', 'babble' );
 			if ( 'complete' == $job->post_status ) {
 
-				# The ability to complete a translation of a post directly
-				# maps to the ability to publish the origin post.
-
+				// The ability to complete a translation of a post directly
+				// maps to the ability to publish the origin post.
 				if ( current_user_can( 'publish_post', $job->ID ) ) {
 
 					$this->no_recursion = true;
@@ -601,14 +597,12 @@ class Babble_Jobs extends Babble_Plugin {
 
 					do_action( 'acf/save_post', $trans->ID );
 					$this->no_recursion = false;
-					//save post meta for new post
-
+					// save post meta for new post
 				} else {
 
-					# Just in case. Switch the job back to in-progress status.
-					# It would be nice to be able to use the 'publish' status because then we get the built-in
-					# publish_post cap checks, but we can't control the post status label on a per-post-type basis yet.
-
+					// Just in case. Switch the job back to in-progress status.
+					// It would be nice to be able to use the 'publish' status because then we get the built-in
+					// publish_post cap checks, but we can't control the post status label on a per-post-type basis yet.
 					$this->no_recursion = true;
 					wp_update_post( array(
 						'ID'          => $job->ID,
@@ -637,8 +631,7 @@ class Babble_Jobs extends Babble_Plugin {
 
 				if ( 'complete' == $job->post_status ) {
 
-					# @TODO if current user can edit term
-
+					// @TODO if current user can edit term
 					$trans = $bbl_taxonomies->get_term_in_lang( $term, $taxo, $lang_code, false );
 					if ( ! $trans ) {
 						$trans = $bbl_taxonomies->initialise_translation( $term, $taxo, $lang_code ); }
@@ -675,7 +668,7 @@ class Babble_Jobs extends Babble_Plugin {
 			return; }
 		if ( ! isset( $_POST['babble_ready_for_translation'] ) ) {
 			return; }
-		# @TODO individual language selection when marking post as translation ready
+		// @TODO individual language selection when marking post as translation ready
 		$this->no_recursion = true;
 
 		$langs       = bbl_get_active_langs();
@@ -716,7 +709,7 @@ class Babble_Jobs extends Babble_Plugin {
 			'publicly_queryable' => false,
 			'show_ui'            => true,
 			'show_in_menu'       => true,
-			//'menu_icon'          => 'dashicons-clipboard',
+			// 'menu_icon'          => 'dashicons-clipboard',
 			'query_var'          => false,
 			'labels'             => $labels,
 			'can_export'         => true,
@@ -758,7 +751,6 @@ class Babble_Jobs extends Babble_Plugin {
 
 	// CALLBACKS
 	// =========
-
 	public function filter_columns( $cols ) {
 		$new_cols = array();
 		foreach ( $cols as $col_id => $col ) {
@@ -810,8 +802,8 @@ class Babble_Jobs extends Babble_Plugin {
 		$completed_jobs    = $this->get_completed_post_jobs( $post );
 		$default = bbl_get_default_lang_code();
 
-		# The ability to create a translation of a post directly
-		# maps to the ability to publish the canonical post.
+		// The ability to create a translation of a post directly
+		// maps to the ability to publish the canonical post.
 		$capable = current_user_can( 'publish_post', $post->ID );
 
 		unset( $trans[ $default ] );
@@ -869,7 +861,6 @@ foreach ( $incomplete_jobs as $job ) {
 
 	// PUBLIC METHODS
 	// ==============
-
 	/**
 	 * Return the array of incomplete jobs for a Post, keyed
 	 * by lang code.
@@ -914,8 +905,8 @@ foreach ( $incomplete_jobs as $job ) {
 	 * by lang code.
 	 *
 	 * @param int The ID of the object (eg. post ID or term ID)
-	 * @param string $type Either 'term' or 'post'
-	 * @param string $name The post type name or the term's taxonomy name
+	 * @param string                                            $type Either 'term' or 'post'
+	 * @param string                                            $name The post type name or the term's taxonomy name
 	 * @return array An array of translation job WP_Post objects
 	 */
 	public function get_object_jobs( $id, $type, $name, $statuses = array( 'new', 'in-progress', 'complete' ) ) {
@@ -986,8 +977,8 @@ foreach ( $incomplete_jobs as $job ) {
 
 		if ( ! empty( $post ) ) {
 			list( $post_type, $post_id ) = explode( '|', $post );
-			# @TODO in theory a translation job could actually include more than one post.
-			# we should implement this earlier rather than later to save potential headaches down the road.
+			// @TODO in theory a translation job could actually include more than one post.
+			// we should implement this earlier rather than later to save potential headaches down the road.
 			$return['post'] = get_post( $post_id );
 		}
 
@@ -1006,7 +997,7 @@ foreach ( $incomplete_jobs as $job ) {
 	/**
 	 * Create some translation jobs.
 	 *
-	 * @param int $post_id The ID of the post to create translation jobs for
+	 * @param int   $post_id The ID of the post to create translation jobs for
 	 * @param array $lang_codes The language codes to create translation jobs of this post for
 	 * @return array An array of Translation Job posts
 	 **/
@@ -1014,7 +1005,6 @@ foreach ( $incomplete_jobs as $job ) {
 		$post = get_post( $post_id );
 
 		// @TODO Validate that the $post is in the default language, otherwise fail
-
 		$jobs = array();
 		$original_post_lang_code = bbl_get_post_lang_code( $post );
 
@@ -1038,7 +1028,7 @@ foreach ( $incomplete_jobs as $job ) {
 
 			add_post_meta( $job, 'bbl_post_original_lang', $original_post_lang_code );
 
-			//Sync Featured Image
+			// Sync Featured Image
 			$thumbnail_post_meta = get_post_meta( $post->ID, '_thumbnail_id', true );
 
 			add_post_meta( $job, '_thumbnail_id', $thumbnail_post_meta );
@@ -1085,7 +1075,6 @@ foreach ( $incomplete_jobs as $job ) {
 
 	// PRIVATE/PROTECTED METHODS
 	// =========================
-
 	/**
 	 * Called by admin_init, this method ensures we are all up to date and
 	 * so on.

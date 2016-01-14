@@ -66,6 +66,7 @@ class Babble_Taxonomies extends Babble_Plugin {
 
 	/**
 	 * Traslate tag cloud and category widget
+	 *
 	 * @param $args
 	 *
 	 * @return mixed
@@ -122,7 +123,6 @@ class Babble_Taxonomies extends Babble_Plugin {
 
 	// WP HOOKS
 	// ========
-
 	/**
 	 * Hooks the WP init action early
 	 *
@@ -132,8 +132,8 @@ class Babble_Taxonomies extends Babble_Plugin {
 		// This translation will connect each term with it's translated equivalents
 		register_taxonomy( 'term_translation', 'term', array(
 			'rewrite' => false,
-			'public' => true,  # ?
-			'show_ui' => true, # ?
+			'public' => true,  // ?
+			'show_ui' => true, // ?
 			'show_in_nav_menus' => false,
 			'label' => __( 'Term Translation ID', 'babble' ),
 		) );
@@ -142,9 +142,9 @@ class Babble_Taxonomies extends Babble_Plugin {
 	/**
 	 * Hooks the WP registered_taxonomy action
 	 *
-	 * @param string $taxonomy The name of the newly registered taxonomy
+	 * @param string       $taxonomy The name of the newly registered taxonomy
 	 * @param string|array $args The object_type(s)
-	 * @param array $args The args passed to register the taxonomy
+	 * @param array        $args The args passed to register the taxonomy
 	 * @return void
 	 **/
 	public function registered_taxonomy( $taxonomy, $object_type, $args ) {
@@ -177,7 +177,7 @@ class Babble_Taxonomies extends Babble_Plugin {
 			// of all of the base post_types it applies to.
 			foreach ( $object_type as $ot ) {
 				if ( ! ( $base_post_type = bbl_get_base_post_type( $ot ) ) ) {
-					//continue;
+					// continue;
 				}
 				$shadow_post_types = bbl_get_shadow_post_types( $base_post_type );
 				foreach ( $shadow_post_types as $shadow_post_type ) {
@@ -204,7 +204,7 @@ class Babble_Taxonomies extends Babble_Plugin {
 				unset( $args[ $key ] ); }
 		}
 
-		#$args[ 'rewrite' ] = false;
+		// $args[ 'rewrite' ] = false;
 		unset( $args['name'] );
 		unset( $args['object_type'] );
 
@@ -237,7 +237,6 @@ class Babble_Taxonomies extends Babble_Plugin {
 
 		}
 		// bbl_stop_logging();
-
 		$this->no_recursion = false;
 	}
 
@@ -251,10 +250,9 @@ class Babble_Taxonomies extends Babble_Plugin {
 		}
 
 		// @FIXME: Remove this when menu's are translatable
-		//		if( 'nav_menu' == $taxonomy ) {
-		//			return false;
-		//		}
-
+		// if( 'nav_menu' == $taxonomy ) {
+		// return false;
+		// }
 		return apply_filters( 'bbl_translated_taxonomy', true, $taxonomy );
 	}
 
@@ -327,7 +325,7 @@ class Babble_Taxonomies extends Babble_Plugin {
 	 * Hooks the WP save_post action to resync data
 	 * when requested.
 	 *
-	 * @param int $post_id The ID of the WP post
+	 * @param int    $post_id The ID of the WP post
 	 * @param object $post The WP Post object
 	 * @return void
 	 **/
@@ -411,7 +409,6 @@ class Babble_Taxonomies extends Babble_Plugin {
 			$termlink = home_url( user_trailingslashit( $termlink, 'category' ) );
 		}
 		// STOP copying from get_term_link
-
 		return $termlink;
 	}
 
@@ -528,11 +525,11 @@ class Babble_Taxonomies extends Babble_Plugin {
 	 * Hooks the WP set_object_terms action to sync any untranslated
 	 * taxonomies across to the translations.
 	 *
-	 * @param int $object_id The object to relate to
-	 * @param array $terms The slugs or ids of the terms
-	 * @param array $tt_ids The term_taxonomy_ids
+	 * @param int    $object_id The object to relate to
+	 * @param array  $terms The slugs or ids of the terms
+	 * @param array  $tt_ids The term_taxonomy_ids
 	 * @param string $taxonomy The name of the taxonomy for which terms are being set
-	 * @param bool $append If false will delete difference of terms
+	 * @param bool   $append If false will delete difference of terms
 	 * @return void
 	 **/
 	public function set_object_terms( $object_id, $terms, $tt_ids, $taxonomy, $append ) {
@@ -600,10 +597,8 @@ class Babble_Taxonomies extends Babble_Plugin {
 
 	// CALLBACKS
 	// =========
-
 	// PUBLIC METHODS
 	// ==============
-
 	public function admin_body_class( $class ) {
 
 		$taxonomy = get_current_screen() ? get_current_screen()->taxonomy : null;
@@ -619,9 +614,9 @@ class Babble_Taxonomies extends Babble_Plugin {
 		if ( 'term_translation' == $taxonomy ) {
 			return false;
 		}
-		//		if ( 'nav_menu' == $taxonomy ) {
-		//			return false;
-		//		}
+		// if ( 'nav_menu' == $taxonomy ) {
+		// return false;
+		// }
 		if ( 'link_category' == $taxonomy ) {
 			return false;
 		}
@@ -697,8 +692,8 @@ class Babble_Taxonomies extends Babble_Plugin {
 	 * if there's no term available.
 	 *
 	 * @param int|object $term Either a WP Term object, or a term_id
-	 * @param string $lang_code The language code for the required language
-	 * @param boolean $fallback If true: if a term is not available, fallback to the default language content (defaults to true)
+	 * @param string     $lang_code The language code for the required language
+	 * @param boolean    $fallback If true: if a term is not available, fallback to the default language content (defaults to true)
 	 * @return object|boolean The WP Term object, or if $fallback was false and no post then returns false
 	 **/
 	public function get_term_in_lang( $term, $taxonomy, $lang_code, $fallback = true ) {
@@ -717,7 +712,7 @@ class Babble_Taxonomies extends Babble_Plugin {
 	 * particular language.
 	 *
 	 * @param int|object $default_term The term in the default language to create a new translation for, either WP Post object or post ID
-	 * @param string $lang The language code
+	 * @param string     $lang The language code
 	 * @return string The admin URL to create the new translation
 	 * @access public
 	 **/
@@ -864,7 +859,6 @@ class Babble_Taxonomies extends Babble_Plugin {
 
 	// PRIVATE/PROTECTED METHODS
 	// =========================
-
 	/**
 	 * Will update term count based on object types of the current
 	 * taxonomy. Will only count the post(s) in the default language.
@@ -872,7 +866,7 @@ class Babble_Taxonomies extends Babble_Plugin {
 	 * Private function for the default callback for post_tag and category
 	 * taxonomies.
 	 *
-	 * @param array $terms List of Term taxonomy IDs
+	 * @param array  $terms List of Term taxonomy IDs
 	 * @param object $taxonomy Current taxonomy object of terms
 	 */
 	function update_post_term_count( $terms, $taxonomy ) {
@@ -980,7 +974,7 @@ class Babble_Taxonomies extends Babble_Plugin {
 	 * Checks for the relevant POSTed field, then
 	 * resyncs the terms.
 	 *
-	 * @param int $post_id The ID of the WP post
+	 * @param int    $post_id The ID of the WP post
 	 * @param object $post The WP Post object
 	 * @return void
 	 **/
@@ -1048,11 +1042,11 @@ class Babble_Taxonomies extends Babble_Plugin {
 	 * Many calls to get_term_by (with name or slug lookup) across on a single pageload can easily add up the query count.
 	 * This function helps prevent that by adding a layer of caching.
 	 *
-	 * @param string $field Either 'slug', 'name', or 'id'
+	 * @param string     $field Either 'slug', 'name', or 'id'
 	 * @param string|int $value Search for this term value
-	 * @param string $taxonomy Taxonomy Name
-	 * @param string $output Optional. Constant OBJECT, ARRAY_A, or ARRAY_N
-	 * @param string $filter Optional. Default is 'raw' or no WordPress defined filter will applied.
+	 * @param string     $taxonomy Taxonomy Name
+	 * @param string     $output Optional. Constant OBJECT, ARRAY_A, or ARRAY_N
+	 * @param string     $filter Optional. Default is 'raw' or no WordPress defined filter will applied.
 	 * @return mixed|null|bool Term Row from database in the type specified by $filter. Will return false if $taxonomy does not exist or $term was not found.
 	 */
 	function cached_get_term_by( $field, $value, $taxonomy, $output = OBJECT, $filter = 'raw' ) {
@@ -1066,8 +1060,9 @@ class Babble_Taxonomies extends Babble_Plugin {
 		if ( false === $term_id ) {
 			$term = get_term_by( $field, $value, $taxonomy );
 			if ( $term && ! is_wp_error( $term ) ) {
-				wp_cache_set( $cache_key, $term->term_id, 'get_term_by' ); } else { 				wp_cache_set( $cache_key, 0, 'get_term_by' ); // if we get an invalid value, let's cache it anyway
-				}
+				wp_cache_set( $cache_key, $term->term_id, 'get_term_by' );
+			} else { 				wp_cache_set( $cache_key, 0, 'get_term_by' ); // if we get an invalid value, let's cache it anyway
+			}
 		} else {
 			$term = get_term( $term_id, $taxonomy, $output, $filter );
 		}

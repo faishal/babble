@@ -8,7 +8,8 @@ Author: Simon Wheatley
 Author URI: http://simonwheatley.co.uk/wordpress/
 */
 
-/*  Copyright 2012 Simon Wheatley
+/*
+   Copyright 2012 Simon Wheatley
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -56,7 +57,6 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 
 	// HOOKS AND ALL THAT
 	// ==================
-
 	/**
 	 * Hooks the WP admin_menu action to add a menu to
 	 * the Tools section.
@@ -131,7 +131,7 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 	/**
 	 * Hooks the WP save_post action
 	 *
-	 * @param int $post_id The ID of the post being saved
+	 * @param int    $post_id The ID of the post being saved
 	 * @param object $post The WordPress post object being saved
 	 * @return void
 	 **/
@@ -164,9 +164,9 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 
 		$bbl_post_public->set_transid( $post, $transid );
 
-		//$original post
-		//Translated post
-		//Create a job and make it complete
+		// $original post
+		// Translated post
+		// Create a job and make it complete
 		global $bbl_jobs;
 		$lang_post = get_post( $post );
 		$translations = bbl_get_post_translations( $post );
@@ -206,7 +206,7 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 
 			update_post_meta( $job->ID, "bbl_post_{$original_post->ID}", $lang_post );
 
-			//bbl_get_base_post_type($post->post_type)
+			// bbl_get_base_post_type($post->post_type)
 			$base_post_type = bbl_get_base_post_type( $post->post_type );
 
 			if ( 'page' == $base_post_type ) {
@@ -224,7 +224,7 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 	 * debug purposes.
 	 *
 	 * @param array $postdata The data which will be applied to the post as part of the sync
-	 * @param int $origin_id The ID of the post we are syncing from
+	 * @param int   $origin_id The ID of the post we are syncing from
 	 * @return array The data which will be applied to the post as part of the sync
 	 **/
 	public function pre_sync_properties( $postdata, $origin_id ) {
@@ -256,7 +256,6 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 
 	// CALLBACKS
 	// =========
-
 	/**
 	 * The callback function which provides HTML for the Babble
 	 * Translation Reconnection metabox, which allows an admin
@@ -264,7 +263,7 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 	 * default language.
 	 *
 	 * @param object $post The WP Post object being edited
-	 * @param array $metabox The args and params for this metabox
+	 * @param array  $metabox The args and params for this metabox
 	 * @return void (echoes HTML)
 	 **/
 	public function metabox_reconnect( $post, $metabox ) {
@@ -292,11 +291,10 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 
 	// UTILITIES
 	// =========
-
 	/**
 	 * Get a link to trash a particular post.
 	 *
-	 * @param int $post_id The ID of the post to trash
+	 * @param int    $post_id The ID of the post to trash
 	 * @param string $action The action for this link
 	 * @return string A Nonced action URL
 	 **/

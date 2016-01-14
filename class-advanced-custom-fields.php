@@ -20,19 +20,17 @@ class Babble_ACF extends Babble_Plugin {
 
 	/**
 	 * Add Metabox for job queue editor view
-	 *
 	 */
 
 	function bbl_translation_post_meta_boxes( $type, $original, $translation ) {
 		// return if acf is not activate
-
 		if ( ! class_exists( 'acf' ) ) {
 			return;
 		}
 
 		/**
 		 * Remove own filter for Advance Custom Field Hooks to avoid duplicate metaboxes
-		 **/
+		 */
 		remove_filter( 'acf/location/match_field_groups', array(
 			$this,
 			'bbl_acf_location_match_field_groups',
@@ -52,7 +50,7 @@ class Babble_ACF extends Babble_Plugin {
 			'post_type' => bbl_get_base_post_type( $original->post_type ),
 		);
 		$metabox_ids = array();
-		//Fetch metabox ids for original posts
+		// Fetch metabox ids for original posts
 		$metabox_ids = apply_filters( 'acf/location/match_field_groups', $metabox_ids, $filter );
 
 		// get field groups
@@ -92,18 +90,18 @@ class Babble_ACF extends Babble_Plugin {
 				// add meta box
 				$acf['options']['layout'] = 'box';
 				if ( 1 === $show ) {
-					add_meta_box( 'acf_' . $acf['id'], //id
-						$acf['title'], //title
-						array( $acf_input, 'meta_box_input' ), //callback
-						'bbl_translation_editor_post', //$original->post_type, //screen
-						'post', //$acf['options']['position'], //context
+					add_meta_box( 'acf_' . $acf['id'], // id
+						$acf['title'], // title
+						array( $acf_input, 'meta_box_input' ), // callback
+						'bbl_translation_editor_post', // $original->post_type, //screen
+						'post', // $acf['options']['position'], //context
 						$priority, // priority
 						array(
 						              'layout'      => 'box',
 						              'field_group' => $acf,
 						              'show'        => true,
 						              'post_id'     => $post->ID,
-					              ) //args
+					              ) // args
 					);
 				}
 			}
@@ -182,7 +180,7 @@ class Babble_ACF extends Babble_Plugin {
 			}
 			if ( 'self' !== $bbl_acf_load_value ) {
 				remove_filter( 'acf/load_value', array( $this, 'bbl_acf_load_value' ), 6, 3 );
-				//get value from original post type
+				// get value from original post type
 				$value = apply_filters( 'acf/load_value', $value, $GLOBALS['bbl_job_edit_original_post'], $field );
 				add_filter( 'acf/load_value', array( $this, 'bbl_acf_load_value' ), 6, 3 );
 			}

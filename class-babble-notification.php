@@ -20,7 +20,7 @@ class Babble_Notification {
 			'babble_post_ready_for_translation',
 		), 10, 3 );
 
-		//Register setting page
+		// Register setting page
 		add_action( 'admin_menu', array( get_called_class(), 'admin_menu' ) );
 		add_action( 'admin_init', array( get_called_class(), 'admin_init' ) );
 	}
@@ -34,7 +34,7 @@ class Babble_Notification {
 		// get setting and apply filter
 		$is_notification_enable = apply_filters( 'notify_babble_post_ready_for_translation', self::is_notificaion_enable() );
 
-		//Return if notification is disable in setting or by filter
+		// Return if notification is disable in setting or by filter
 		if ( false === $is_notification_enable ) {
 			return;
 		}

@@ -52,5 +52,5 @@ class Babble_Updates extends Babble_Plugin {
 	}
 }
 
-//global $bbl_updates;
-//$bbl_updates = new Babble_Updates;
+// global $bbl_updates;
+// $bbl_updates = new Babble_Updates;

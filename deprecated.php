@@ -7,7 +7,8 @@
  * @package Babble
  */
 
-/*  Copyright 2013 Code For The People Ltd
+/*
+   Copyright 2013 Code For The People Ltd
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

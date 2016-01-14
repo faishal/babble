@@ -94,8 +94,8 @@ class Babble_Menus extends Babble_Plugin {
 	/**
 	 * This will add language code for menu item.
 	 *
-	 * @param int $menu_id The ID of the menu. Required. If "0", makes the menu item a draft orphan.
-	 * @param int $menu_item_db_id The ID of the menu item. If "0", creates a new menu item.
+	 * @param int   $menu_id The ID of the menu. Required. If "0", makes the menu item a draft orphan.
+	 * @param int   $menu_item_db_id The ID of the menu item. If "0", creates a new menu item.
 	 * @param array $menu_item_data The menu item's data.
 	 */
 	public function wp_update_nav_menu_item( $menu_id, $menu_item_db_id, $args ) {
@@ -104,6 +104,7 @@ class Babble_Menus extends Babble_Plugin {
 
 	/**
 	 * Exclude nav_menu_item from translated list
+	 *
 	 * @param $translated
 	 * @param $post_type
 	 *
@@ -155,15 +156,15 @@ class Babble_Menus extends Babble_Plugin {
 				'compare' => 'LIKE',
 			),
 		);
-		//      if ( bbl_get_default_lang_code() === bbl_get_current_lang_code() ) {
+		// if ( bbl_get_default_lang_code() === bbl_get_current_lang_code() ) {
 		//
-		//          $q->query_vars[ 'meta_query' ]['relation'] =  'OR';
-		//          $q->query_vars[ 'meta_query' ][ ] = array(
-		//              'key'     => '_menu_lang_code',
-		//              'compare' => 'NOT EXISTS',
-		//              'value'   => bbl_get_current_lang_code()
-		//          );
-		//      }
+		// $q->query_vars[ 'meta_query' ]['relation'] =  'OR';
+		// $q->query_vars[ 'meta_query' ][ ] = array(
+		// 'key'     => '_menu_lang_code',
+		// 'compare' => 'NOT EXISTS',
+		// 'value'   => bbl_get_current_lang_code()
+		// );
+		// }
 	}
 
 	public function wp_insert_post_data( $data, $postarr ) {

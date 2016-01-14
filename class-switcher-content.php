@@ -35,7 +35,6 @@ class Babble_Switcher_Menu {
 
 	// PUBLIC METHODS
 	// ==============
-
 	/**
 	 * Returns an array of links to the other objects
 	 * in this translation group. Each element in the array
@@ -55,7 +54,6 @@ class Babble_Switcher_Menu {
 
 	// PRIVATE/PROTECTED METHODS
 	// =========================
-
 	/**
 	 * undocumented function
 	 *
@@ -96,7 +94,8 @@ class Babble_Switcher_Menu {
 			$this->jobs         = bbl_get_incomplete_post_jobs( get_option( 'page_for_posts' ) );
 		} else if ( ( ! is_admin() and ( is_tax() || is_category() || is_tag() ) ) || $editing_term ) {
 			if ( isset( $_REQUEST['tag_ID'] ) ) {
-				$term = get_term( intval( $_REQUEST['tag_ID'] ), $this->screen->taxonomy ); } else { 				$term = get_queried_object(); }
+				$term = get_term( intval( $_REQUEST['tag_ID'] ), $this->screen->taxonomy );
+			} else { 				$term = get_queried_object(); }
 			$this->translations = bbl_get_term_translations( $term->term_id, $term->taxonomy );
 			$this->jobs         = bbl_get_term_jobs( $term->term_id, $term->taxonomy );
 		}

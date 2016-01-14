@@ -7,7 +7,7 @@ Version: 0.1
 Author: Simon Wheatley
 Author URI: http://simonwheatley.co.uk/wordpress/
 */
- 
+
 /*  Copyright 2012 Simon Wheatley
 
 This program is free software; you can redistribute it and/or modify
@@ -30,12 +30,12 @@ require_once 'class-plugin.php';
 
 /**
  * Handles the display and functionality of the translation group tool.
- * 
+ *
  * @package BabbleTranslationGroupTool
  * @author Simon Wheatley
  **/
 class BabbleTranslationGroupTool extends Babble_Plugin {
-	
+
 
 	/**
 	 * Initiate!
@@ -53,10 +53,10 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 		$this->add_filter( 'bbl_metaboxes_for_translators', 'metaboxes_for_translators' );
 		$this->add_filter( 'bbl_pre_sync_properties', 'pre_sync_properties', null, 2 );
 	}
-	
+
 	// HOOKS AND ALL THAT
 	// ==================
-	
+
 	/**
 	 * Hooks the WP admin_menu action to add a menu to
 	 * the Tools section.
@@ -74,11 +74,11 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 	 * @return void
 	 **/
 	public function load_tools_page() {
-		if ( ! $action = ( isset( $_GET[ 'btgt_action' ] ) ) ? sanitize_text_field( $_GET[ 'btgt_action' ] ) : false )
-			return;
-		
-		$obj_id = ( isset( $_GET[ 'obj_id' ] ) ) ? intval( $_GET[ 'obj_id' ] ) : false;
-		$wp_nonce = ( isset( $_GET[ '_wpnonce' ] ) ) ? sanitize_text_field( $_GET[ '_wpnonce' ] ) : false;
+		if ( ! $action = ( isset( $_GET['btgt_action'] ) ) ? sanitize_text_field( $_GET['btgt_action'] ) : false ) {
+			return; }
+
+		$obj_id = ( isset( $_GET['obj_id'] ) ) ? intval( $_GET['obj_id'] ) : false;
+		$wp_nonce = ( isset( $_GET['_wpnonce'] ) ) ? sanitize_text_field( $_GET['_wpnonce'] ) : false;
 		switch ( $action ) {
 			case 'delete_from_groups':
 				if ( ! wp_verify_nonce( $wp_nonce, "btgt_delete_from_groups_$obj_id" ) ) {
@@ -101,14 +101,14 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 			'page' => 'btgt',
 			'lang' => bbl_get_default_lang_code(),
 		);
-		$url = esc_url(add_query_arg( $args, admin_url( 'tools.php' ) ));
-		$url .= '#' . sanitize_text_field( $_GET[ 'anchor' ] );
+		$url = esc_url( add_query_arg( $args, admin_url( 'tools.php' ) ) );
+		$url .= '#' . sanitize_text_field( $_GET['anchor'] );
 		wp_safe_redirect( $url );
 	}
 
 	/**
-	 * Hooks the various dynamic actions fired when the edit post and 
-	 * edit new post screens are loaded. Determines if the post to be 
+	 * Hooks the various dynamic actions fired when the edit post and
+	 * edit new post screens are loaded. Determines if the post to be
 	 * edited has become disconnected from it's translation group,
 	 * and shows the Reconnect metabox if it has.
 	 *
@@ -116,62 +116,61 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 	 **/
 	public function load_post() {
 		$screen = get_current_screen();
-		if ( ! $post_id = isset( $_GET[ 'post' ] ) ? intval( $_GET[ 'post' ] ) : false )
-			return;
+		if ( ! $post_id = isset( $_GET['post'] ) ? intval( $_GET['post'] ) : false ) {
+			return; }
 		$post = get_post( $post_id );
-		if ( ! in_array( $post->post_status, array( 'draft', 'pending', 'publish' ) ) )
-			return;
-		if ( bbl_get_post_lang_code( $post ) == bbl_get_default_lang_code() )
-			return;
-		if ( $default_lang_post = bbl_get_post_in_lang( $post, bbl_get_default_lang_code() ) )
-			return;
+		if ( ! in_array( $post->post_status, array( 'draft', 'pending', 'publish' ) ) ) {
+			return; }
+		if ( bbl_get_post_lang_code( $post ) == bbl_get_default_lang_code() ) {
+			return; }
+		if ( $default_lang_post = bbl_get_post_in_lang( $post, bbl_get_default_lang_code() ) ) {
+			return; }
 		$this->add_meta_box( 'bbl_reconnect', 'Reconnect Translation', 'metabox_reconnect', $post->post_type, 'side' );
 	}
 
 	/**
-	 * Hooks the WP save_post action 
+	 * Hooks the WP save_post action
 	 *
-	 * @param int $post_id The ID of the post being saved 
+	 * @param int $post_id The ID of the post being saved
 	 * @param object $post The WordPress post object being saved
 	 * @return void
 	 **/
 	function save_post( $post_id, $post ) {
-		if ( ! in_array( $post->post_status, array( 'draft', 'publish' ) ) )
-			return;
-		
-		if ( ! isset( $_POST[ '_bbl_reconnect_nonce' ] ) )
-			return;
-			
-		$posted_id = isset( $_POST[ 'post_ID' ] ) ? intval( $_POST[ 'post_ID' ] ) : 0;
-		if ( $posted_id != $post_id )
-			return;
+		if ( ! in_array( $post->post_status, array( 'draft', 'publish' ) ) ) {
+			return; }
+
+		if ( ! isset( $_POST['_bbl_reconnect_nonce'] ) ) {
+			return; }
+
+		$posted_id = isset( $_POST['post_ID'] ) ? intval( $_POST['post_ID'] ) : 0;
+		if ( $posted_id != $post_id ) {
+			return; }
 		// While we're at it, let's check the nonce
 		check_admin_referer( "bbl_reconnect_translation_$post_id", '_bbl_reconnect_nonce' );
-			
+
 		// Check the user has set a transid
-		if ( ! $transid = isset( $_POST[ 'bbl_transid' ] ) ? intval( $_POST[ 'bbl_transid' ] ) : false )
-			return;
+		if ( ! $transid = isset( $_POST['bbl_transid'] ) ? intval( $_POST['bbl_transid'] ) : false ) {
+			return; }
 
 		// Check the transid the user has set actually exists
 		if ( ! term_exists( $transid, 'post_translation' ) ) {
 			$this->set_admin_error( esc_html__( 'The TransID you want to reconnect this content to does not exist. Please check the Translation Group information and try again.', 'babble' ) );
 			return;
 		}
-		
+
 		global $bbl_post_public;
 
-		$old_trans_id = $bbl_post_public->get_transid($post);
+		$old_trans_id = $bbl_post_public->get_transid( $post );
 
 		$bbl_post_public->set_transid( $post, $transid );
-
 
 		//$original post
 		//Translated post
 		//Create a job and make it complete
 		global $bbl_jobs;
 		$lang_post = get_post( $post );
-		$translations = bbl_get_post_translations($post);
-		if( isset( $translations[bbl_get_default_lang_code()] )) {
+		$translations = bbl_get_post_translations( $post );
+		if ( isset( $translations[ bbl_get_default_lang_code() ] ) ) {
 			$original_post = $translations[ bbl_get_default_lang_code() ];
 			$lang_code     = bbl_get_post_lang_code( $post );
 			$existing_jobs = $bbl_jobs->get_incomplete_post_jobs( $original_post );
@@ -180,7 +179,7 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 				$job = get_post( $existing_jobs[ $lang_code ] );
 			} else {
 				$jobs = $bbl_jobs->create_post_jobs( $original_post->ID, (array) $lang_code );
-				$job  = get_post( $jobs[ 0 ] );
+				$job  = get_post( $jobs[0] );
 			}
 			$job->post_title   = $lang_post->post_title;
 			$job->post_name    = $lang_post->post_name;
@@ -205,9 +204,7 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 
 			update_post_meta( $job->ID, 'bbl_job_post', "{$original_post->post_type}|{$original_post->ID}", true );
 
-
 			update_post_meta( $job->ID, "bbl_post_{$original_post->ID}", $lang_post );
-
 
 			//bbl_get_base_post_type($post->post_type)
 			$base_post_type = bbl_get_base_post_type( $post->post_type );
@@ -231,12 +228,12 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 	 * @return array The data which will be applied to the post as part of the sync
 	 **/
 	public function pre_sync_properties( $postdata, $origin_id ) {
-		$current_post = get_post( $postdata[ 'ID' ] );
+		$current_post = get_post( $postdata['ID'] );
 		$origin_post = get_post( $origin_id );
-		if ( $current_post->post_parent != $postdata[ 'post_parent' ] ) {
+		if ( $current_post->post_parent != $postdata['post_parent'] ) {
 			$user = wp_get_current_user();
-			$remote_ip = $_SERVER[ 'REMOTE_ADDR' ];
-			$referer = $_SERVER[ 'HTTP_REFERER' ];
+			$remote_ip = $_SERVER['REMOTE_ADDR'];
+			$referer = $_SERVER['HTTP_REFERER'];
 			$lang = bbl_get_current_lang_code();
 			$origin_lang = bbl_get_post_lang_code( $origin_id );
 			bbl_log( "Babble: $user->user_login has changed {$postdata[ 'ID' ]} parent from $current_post->post_parent ($current_post->post_type) to {$postdata[ 'post_parent' ]}. \tOrigin: $origin_id. Origin lang: $origin_lang. IP $remote_ip. User lang: $lang. Referer $referer." );
@@ -245,12 +242,12 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 	}
 
 	/**
-	 * Hooks the Babble bbl_metaboxes_for_translators filter to 
+	 * Hooks the Babble bbl_metaboxes_for_translators filter to
 	 * add the bbl_reconnect metabox to the list of boxes allowed
 	 * on translator screens.
 	 *
-	 * @param array $boxes The array of box names which are allowed 
-	 * @return array The array of box names which are allowed 
+	 * @param array $boxes The array of box names which are allowed
+	 * @return array The array of box names which are allowed
 	 **/
 	function metaboxes_for_translators( $boxes ) {
 		$boxes[] = 'bbl_reconnect';
@@ -259,9 +256,9 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 
 	// CALLBACKS
 	// =========
-	
+
 	/**
-	 * The callback function which provides HTML for the Babble 
+	 * The callback function which provides HTML for the Babble
 	 * Translation Reconnection metabox, which allows an admin
 	 * to reconnect a post to the equivalent post in the
 	 * default language.
@@ -304,17 +301,15 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 	 * @return string A Nonced action URL
 	 **/
 	protected function get_action_link( $obj_id, $action, $anchor = null ) {
-		$args = array( 
+		$args = array(
 			'btgt_action' => $action,
 			'obj_id' => $obj_id,
-			'lang' => bbl_get_default_lang_code(), 
+			'lang' => bbl_get_default_lang_code(),
 		);
-		if ( ! is_null( $anchor ) )
-			$args[ 'anchor' ] = $anchor;
+		if ( ! is_null( $anchor ) ) {
+			$args['anchor'] = $anchor; }
 		return wp_nonce_url( add_query_arg( $args ), "btgt_{$action}_$obj_id" );
 	}
-
-
-} // END BabbleTranslationGroupTool class 
+} // END BabbleTranslationGroupTool class
 
 $bbl_translation_group_tool = new BabbleTranslationGroupTool();

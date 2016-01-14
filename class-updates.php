@@ -7,7 +7,7 @@
  * @since 1.4.1
  */
 class Babble_Updates extends Babble_Plugin {
-	
+
 	public function __construct() {
 		$this->setup( 'babble-updates', 'plugin' );
 
@@ -20,7 +20,7 @@ class Babble_Updates extends Babble_Plugin {
 	 */
 	public function plugins_loaded() {
 		$dir = dirname( __FILE__ );
-		if ( !class_exists( 'EUAPI' ) ) {
+		if ( ! class_exists( 'EUAPI' ) ) {
 			include_once $dir . '/external-update-api/external-update-api.php';
 		}
 		register_activation_hook( $dir . '/babble.php',   'euapi_flush_transients' );
@@ -42,7 +42,7 @@ class Babble_Updates extends Babble_Plugin {
 				'file'       => $item->file,
 				'github_url' => 'https://github.com/cftp/babble',
 				'http'       => array(
-					'sslverify' => false,
+				'sslverify' => false,
 				),
 			) );
 
@@ -50,7 +50,6 @@ class Babble_Updates extends Babble_Plugin {
 
 		return $handler;
 	}
-
 }
 
 //global $bbl_updates;

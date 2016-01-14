@@ -127,11 +127,11 @@ class Babble_Locale {
 	 **/
 	public function mod_rewrite_rules( $rules ) {
 		global $wp_rewrite;
-		if ( $this->no_recursion )
-			return $rules;
+		if ( $this->no_recursion ) {
+			return $rules; }
 		$this->no_recursion = true;
 		// We need the WP_Rewrite mod_rewrite_rules method to run
-		// home_url without a lang query var set, or it generates 
+		// home_url without a lang query var set, or it generates
 		// an inaccurate RewriteBase and last RewriteRule.
 		remove_filter( 'home_url', array( & $this, 'home_url' ), null, 2 );
 		$rules = $wp_rewrite->mod_rewrite_rules();
@@ -149,17 +149,17 @@ class Babble_Locale {
 	 * @param array $langs The language codes
 	 * @return array An array of language codes utilised for this site.
 	 **/
-	public function internal_rewrite_rules_filter( $rules ){
+	public function internal_rewrite_rules_filter( $rules ) {
 		global $wp_rewrite;
 		// Some rules need to be at the root of the site, without a
-		// language prefix, e.g. http://www.example.com/humans.txt. 
-		// The following filter allows plugin and theme devs to add 
+		// language prefix, e.g. http://www.example.com/humans.txt.
+		// The following filter allows plugin and theme devs to add
 		// to this list of site root level URLs which are untranslated.
 		$non_translated_rewrite_rules = apply_filters( 'bbl_non_translated_queries', array(
 			'humans\.txt$',
 			'robots\.txt$',
 		) );
-		foreach( (array) $rules as $regex => $query ) {
+		foreach ( (array) $rules as $regex => $query ) {
 			if ( in_array( $regex, $non_translated_rewrite_rules ) ) {
 				$new_rules[ $regex ] = $query;
 				continue;
@@ -174,10 +174,10 @@ class Babble_Locale {
 			$hooked = true;
 		}
 		$home_path = parse_url( home_url() );
-		if ( $hooked )
-			add_filter( 'home_url', array( $this, 'home_url' ), null, 2 );
-		if ( empty( $home_path['path'] ) || '/' == $home_path['path'] )
-			$new_rules[ 'robots\.txt$' ] = $wp_rewrite->index . '?robots=1';
+		if ( $hooked ) {
+			add_filter( 'home_url', array( $this, 'home_url' ), null, 2 ); }
+		if ( empty( $home_path['path'] ) || '/' == $home_path['path'] ) {
+			$new_rules['robots\.txt$'] = $wp_rewrite->index . '?robots=1'; }
 		return $new_rules;
 	}
 
@@ -189,56 +189,54 @@ class Babble_Locale {
 	 **/
 	public function set_locale( $locale ) {
 		// Deal with the special case of wp-comments-post.php
-		if ( false !== stristr( $_SERVER[ 'REQUEST_URI' ], 'wp-comments-post.php' ) ) {
-			if ( $comment_post_ID = ( isset( $_POST[ 'comment_post_ID' ] ) ) ? (int) $_POST[ 'comment_post_ID' ] : false ) {
+		if ( false !== stristr( $_SERVER['REQUEST_URI'], 'wp-comments-post.php' ) ) {
+			if ( $comment_post_ID = ( isset( $_POST['comment_post_ID'] ) ) ? (int) $_POST['comment_post_ID'] : false ) {
 				$this->set_content_lang( bbl_get_post_lang_code( $comment_post_ID ) );
 				return $this->content_lang;
 			}
 		}
 
 		if ( is_admin() ) {
-			if ( isset( $this->interface_lang ) )
-				return $this->interface_lang;
+			if ( isset( $this->interface_lang ) ) {
+				return $this->interface_lang; }
 		} else {
-			if ( isset( $this->content_lang ) )
-				return $this->content_lang;
+			if ( isset( $this->content_lang ) ) {
+				return $this->content_lang; }
 		}
 
 		if ( is_admin() ) {
 			// @FIXME: At this point a mischievous XSS "attack" could set a user's admin area language for them
-			if ( isset( $_POST[ 'interface_lang' ] ) ) {
-				$this->set_interface_lang( $_POST[ 'interface_lang' ] );
+			if ( isset( $_POST['interface_lang'] ) ) {
+				$this->set_interface_lang( $_POST['interface_lang'] );
 			} else {
 				// $current_user = wp_get_current_user();
-				if ( $lang = $this->get_cookie_interface_lang() )
-					$this->set_interface_lang( $lang );
+				if ( $lang = $this->get_cookie_interface_lang() ) {
+					$this->set_interface_lang( $lang ); }
 			}
 			// @FIXME: At this point a mischievous XSS "attack" could set a user's content language for them
-			if ( isset( $_GET[ 'lang' ] ) ) {
-				$lang = sanitize_text_field( $_GET[ 'lang' ] );
+			if ( isset( $_GET['lang'] ) ) {
+				$lang = sanitize_text_field( $_GET['lang'] );
 				$this->set_content_lang( $lang );
 			} else {
 				// $current_user = wp_get_current_user();
-				if ( $lang = $this->get_cookie_content_lang() )
-					$this->set_content_lang( $lang );
+				if ( $lang = $this->get_cookie_content_lang() ) {
+					$this->set_content_lang( $lang ); }
 			}
 		} else { // Front end
 			// @FIXME: Should probably check the available languages here
-			if ( preg_match( $this->lang_regex, $this->get_request_string(), $matches ) )
-				$this->set_content_lang_from_prefix( $matches[ 0 ] );
-			if ( $lang = $this->get_cookie_content_lang() )
-				$this->set_interface_lang( $lang );
+			if ( preg_match( $this->lang_regex, $this->get_request_string(), $matches ) ) {
+				$this->set_content_lang_from_prefix( $matches[0] ); }
+			if ( $lang = $this->get_cookie_content_lang() ) {
+				$this->set_interface_lang( $lang ); }
 		}
 
-		if ( ! isset( $this->content_lang ) || ! $this->content_lang )
-			$this->set_content_lang( bbl_get_default_lang_code() );
-		if ( ! isset( $this->interface_lang ) || ! $this->interface_lang )
-			$this->set_interface_lang( bbl_get_default_lang_code() );
+		if ( ! isset( $this->content_lang ) || ! $this->content_lang ) {
+			$this->set_content_lang( bbl_get_default_lang_code() ); }
+		if ( ! isset( $this->interface_lang ) || ! $this->interface_lang ) {
+			$this->set_interface_lang( bbl_get_default_lang_code() ); }
 
-		if ( is_admin() )
-			return $this->interface_lang;
-		else
-			return $this->content_lang;
+		if ( is_admin() ) {
+			return $this->interface_lang; } else { 			return $this->content_lang; }
 
 	}
 
@@ -251,15 +249,15 @@ class Babble_Locale {
 	 * @return void
 	 **/
 	public function parse_request_early( WP $wp ) {
-		// If this is the site root, redirect to default language homepage 
+		// If this is the site root, redirect to default language homepage
 		if ( ! $wp->request ) {
 			remove_filter( 'home_url', array( $this, 'home_url' ), null, 2 );
 			wp_redirect( home_url( bbl_get_default_lang_url_prefix() ) );
 			exit;
 		}
 		// Otherwise, simply set the lang for this request
-		$wp->query_vars[ 'lang' ] = $this->content_lang;
-		$wp->query_vars[ 'lang_url_prefix' ] = $this->url_prefix;
+		$wp->query_vars['lang'] = $this->content_lang;
+		$wp->query_vars['lang_url_prefix'] = $this->url_prefix;
 	}
 
 	/**
@@ -302,8 +300,8 @@ class Babble_Locale {
 		$base_url = get_option( 'home' );
 		$url      = trailingslashit( $base_url ) . $this->url_prefix;
 
-		if ( $path && is_string( $path ) )
-			$url .= '/' . ltrim( $path, '/' );
+		if ( $path && is_string( $path ) ) {
+			$url .= '/' . ltrim( $path, '/' ); }
 
 		return $url;
 	}
@@ -396,8 +394,8 @@ class Babble_Locale {
 	 **/
 	public function switch_to_lang( $lang ) {
 		// @FIXME: Need to validate language here
-		if ( ! is_array( $this->lang_stack ) )
-			$this->lang_stack = array();
+		if ( ! is_array( $this->lang_stack ) ) {
+			$this->lang_stack = array(); }
 		$this->lang_stack[] = $this->content_lang;
 		$this->set_content_lang( $lang );
 		set_query_var( 'lang', $this->content_lang );
@@ -466,46 +464,42 @@ class Babble_Locale {
 		global $wp_rewrite;
 		// @FIXME: Copying a huge hunk of code from WP->parse_request here, feels ugly.
 		// START: Huge hunk of WP->parse_request
-		if ( isset($_SERVER['PATH_INFO']) )
-			$pathinfo = $_SERVER['PATH_INFO'];
-		else
-			$pathinfo = '';
-		$pathinfo_array = explode('?', $pathinfo);
-		$pathinfo = str_replace("%", "%25", $pathinfo_array[0]);
+		if ( isset( $_SERVER['PATH_INFO'] ) ) {
+			$pathinfo = $_SERVER['PATH_INFO']; } else { 			$pathinfo = ''; }
+		$pathinfo_array = explode( '?', $pathinfo );
+		$pathinfo = str_replace( '%', '%25', $pathinfo_array[0] );
 		$req_uri = $_SERVER['REQUEST_URI'];
-		$req_uri_array = explode('?', $req_uri);
+		$req_uri_array = explode( '?', $req_uri );
 		$req_uri = $req_uri_array[0];
 		$self = $_SERVER['PHP_SELF'];
-		$home_path = parse_url(home_url());
-		if ( isset($home_path['path']) )
-			$home_path = $home_path['path'];
-		else
-			$home_path = '';
-		$home_path = trim($home_path, '/');
+		$home_path = parse_url( home_url() );
+		if ( isset( $home_path['path'] ) ) {
+			$home_path = $home_path['path']; } else { 			$home_path = ''; }
+		$home_path = trim( $home_path, '/' );
 
 		// Trim path info from the end and the leading home path from the
 		// front.  For path info requests, this leaves us with the requesting
 		// filename, if any.  For 404 requests, this leaves us with the
 		// requested permalink.
-		$req_uri = str_replace($pathinfo, '', $req_uri);
-		$req_uri = trim($req_uri, '/');
-		$req_uri = preg_replace("|^$home_path|", '', $req_uri);
-		$req_uri = trim($req_uri, '/');
-		$pathinfo = trim($pathinfo, '/');
-		$pathinfo = preg_replace("|^$home_path|", '', $pathinfo);
-		$pathinfo = trim($pathinfo, '/');
-		$self = trim($self, '/');
-		$self = preg_replace("|^$home_path|", '', $self);
-		$self = trim($self, '/');
+		$req_uri = str_replace( $pathinfo, '', $req_uri );
+		$req_uri = trim( $req_uri, '/' );
+		$req_uri = preg_replace( "|^$home_path|", '', $req_uri );
+		$req_uri = trim( $req_uri, '/' );
+		$pathinfo = trim( $pathinfo, '/' );
+		$pathinfo = preg_replace( "|^$home_path|", '', $pathinfo );
+		$pathinfo = trim( $pathinfo, '/' );
+		$self = trim( $self, '/' );
+		$self = preg_replace( "|^$home_path|", '', $self );
+		$self = trim( $self, '/' );
 
 		// The requested permalink is in $pathinfo for path info requests and
 		//  $req_uri for other requests.
-		if ( ! empty($pathinfo) && !preg_match('|^.*' . $wp_rewrite->index . '$|', $pathinfo) ) {
+		if ( ! empty( $pathinfo ) && ! preg_match( '|^.*' . $wp_rewrite->index . '$|', $pathinfo ) ) {
 			$request = $pathinfo;
 		} else {
 			// If the request uri is the index, blank it out so that we don't try to match it against a rule.
-			if ( is_object( $wp_rewrite ) && $req_uri == $wp_rewrite->index )
-				$req_uri = '';
+			if ( is_object( $wp_rewrite ) && $req_uri == $wp_rewrite->index ) {
+				$req_uri = ''; }
 			$request = $req_uri;
 		}
 		// END: Huge hunk of WP->parse_request
@@ -521,8 +515,8 @@ class Babble_Locale {
 	 **/
 	protected function maybe_set_cookie_content_lang() {
 		// @FIXME: At this point a mischievous XSS "attack" could set a user's content language for them
-		if ( $requested_lang = ( isset( $_GET[ 'lang' ] ) ) ? sanitize_text_field( $_GET[ 'lang' ] ) : false )
-			setcookie( $this->content_lang_cookie, $requested_lang, time() + 31536000, COOKIEPATH, COOKIE_DOMAIN);
+		if ( $requested_lang = ( isset( $_GET['lang'] ) ) ? sanitize_text_field( $_GET['lang'] ) : false ) {
+			setcookie( $this->content_lang_cookie, $requested_lang, time() + 31536000, COOKIEPATH, COOKIE_DOMAIN ); }
 	}
 
 	/**
@@ -534,8 +528,8 @@ class Babble_Locale {
 	 **/
 	protected function maybe_set_cookie_interface_lang() {
 		// @FIXME: At this point a mischievous XSS "attack" could set a user's admin area language for them
-		if ( $requested_lang = ( isset( $_POST[ 'interface_lang' ] ) ) ? $_POST[ 'interface_lang' ] : false )
-			setcookie( $this->interface_lang_cookie, $requested_lang, time() + 31536000, COOKIEPATH, COOKIE_DOMAIN);
+		if ( $requested_lang = ( isset( $_POST['interface_lang'] ) ) ? $_POST['interface_lang'] : false ) {
+			setcookie( $this->interface_lang_cookie, $requested_lang, time() + 31536000, COOKIEPATH, COOKIE_DOMAIN ); }
 	}
 
 	/**
@@ -557,7 +551,7 @@ class Babble_Locale {
 	 * @return string A language code
 	 **/
 	protected function get_cookie_interface_lang() {
-		return ( isset( $_COOKIE[ $this->interface_lang_cookie] ) ) ? $_COOKIE[ $this->interface_lang_cookie ] : '';
+		return ( isset( $_COOKIE[ $this->interface_lang_cookie ] ) ) ? $_COOKIE[ $this->interface_lang_cookie ] : '';
 	}
 
 	/**
@@ -571,18 +565,17 @@ class Babble_Locale {
 		$option_name = 'bbl-locale-version';
 		$version = get_option( $option_name, 0 );
 
-		if ( $this->version == $version )
-			return;
+		if ( $this->version == $version ) {
+			return; }
 
 		if ( $version < 1 ) {
-			bbl_log( "Babble Locale: Flushing rewrite rules" );
+			bbl_log( 'Babble Locale: Flushing rewrite rules' );
 			flush_rewrite_rules();
 		}
 
-		bbl_log( "Babble Locale: Done updates" );
+		bbl_log( 'Babble Locale: Done updates' );
 		update_option( $option_name, $this->version );
 	}
-
 }
 
 global $bbl_locale;

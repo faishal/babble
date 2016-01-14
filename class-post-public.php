@@ -119,7 +119,6 @@ class Babble_Post_Public extends Babble_Plugin {
 		$this->add_action( 'load-post.php', 'load_post_edit' );
 		$this->add_action( 'admin_head', null, 5, 10 );
 
-
 		$this->initiate();
 		//acf/location/match_field_groups
 	}
@@ -140,11 +139,8 @@ class Babble_Post_Public extends Babble_Plugin {
 
 		// Ensure we catch any existing language shadow post_types already registered
 		$core_post_types = array( 'post', 'page', 'attachment' );
-		if ( is_array( $this->post_types ) )
-			$post_types = array_merge( $core_post_types, array_keys( $this->post_types ) );
-		else
-			$post_types = $core_post_types;
-
+		if ( is_array( $this->post_types ) ) {
+			$post_types = array_merge( $core_post_types, array_keys( $this->post_types ) ); } else { 			$post_types = $core_post_types; }
 
 		register_taxonomy( 'post_translation', $post_types, array(
 			'rewrite' => false,
@@ -167,23 +163,22 @@ class Babble_Post_Public extends Babble_Plugin {
 	 * @return void
 	 **/
 	public function load_post_edit() {
-		$post_id = isset( $_GET[ 'post' ] ) ? absint( $_GET[ 'post' ] ) : false;
-		if ( ! $post_id )
-			$post_id = isset( $_POST[ 'post_ID' ] ) ? absint( $_POST[ 'post_ID' ] ) : false;
+		$post_id = isset( $_GET['post'] ) ? absint( $_GET['post'] ) : false;
+		if ( ! $post_id ) {
+			$post_id = isset( $_POST['post_ID'] ) ? absint( $_POST['post_ID'] ) : false; }
 		$translated_post = get_post( $post_id );
-		if ( ! $translated_post )
-			return;
-		if ( ! bbl_is_translated_post_type( $translated_post->post_type ) )
-			return;
+		if ( ! $translated_post ) {
+			return; }
+		if ( ! bbl_is_translated_post_type( $translated_post->post_type ) ) {
+			return; }
 
 		$post_original_lang = get_post_meta( $translated_post->ID, 'bbl_post_original_lang', true );
 
-		$canonical_post = bbl_get_post_in_lang( $translated_post, $post_original_lang);
-
+		$canonical_post = bbl_get_post_in_lang( $translated_post, $post_original_lang );
 
 		$lang_code = bbl_get_post_lang_code( $translated_post );
-		if ( $post_original_lang == $lang_code )
-			return;
+		if ( $post_original_lang == $lang_code ) {
+			return; }
 		// @TODO Check capabilities include editing a translation post
 		// - If not, the button shouldn't be on the Admin Bar
 		// - But we also need to not process at this point
@@ -207,16 +202,16 @@ class Babble_Post_Public extends Babble_Plugin {
 	public function admin_init() {
 		$this->maybe_upgrade();
 		$post_type = false;
-		if ( isset( $_GET[ 'post_type' ] ) ) {
-			$post_type = sanitize_text_field( $_GET[ 'post_type' ] );
-		} else if ( isset( $_GET[ 'post' ] ) ) {
-			$post = absint( $_GET[ 'post' ] );
+		if ( isset( $_GET['post_type'] ) ) {
+			$post_type = sanitize_text_field( $_GET['post_type'] );
+		} else if ( isset( $_GET['post'] ) ) {
+			$post = absint( $_GET['post'] );
 			$post = get_post( $post );
 			$post_type = $post->post_type;
 		}
 		$menu_id = false;
-		if ( isset( $this->post_types[ $post_type ] ) )
-			$menu_id = '#menu-posts-' . $this->post_types[ $post_type ];
+		if ( isset( $this->post_types[ $post_type ] ) ) {
+			$menu_id = '#menu-posts-' . $this->post_types[ $post_type ]; }
 
 		$data = array(
 			'menu_id' => $menu_id,
@@ -245,7 +240,7 @@ class Babble_Post_Public extends Babble_Plugin {
 		$new_post_id = wp_insert_post( array(
 			'post_type'   => $new_post_type,
 			'post_status' => 'draft',
-			'post_content' =>'--',
+			'post_content' => '--',
 		), true );
 		$this->no_recursion = false;
 
@@ -290,12 +285,12 @@ class Babble_Post_Public extends Babble_Plugin {
 	 **/
 	public function load_post_new() {
 		$screen = get_current_screen();
-		if ( 'post' != $screen->base || 'add' != $screen->action )
-			return;
-		if ( bbl_get_current_lang_code() == bbl_get_default_lang_code() )
-			return;
-		if ( !bbl_is_translated_post_type( $screen->post_type ) )
-			return;
+		if ( 'post' != $screen->base || 'add' != $screen->action ) {
+			return; }
+		if ( bbl_get_current_lang_code() == bbl_get_default_lang_code() ) {
+			return; }
+		if ( ! bbl_is_translated_post_type( $screen->post_type ) ) {
+			return; }
 
 		wp_die( __( 'You can only create content in your site\'s default language. Please consult your editorial team.', 'babble' ), '', array( 'back_link' => true ) );
 	}
@@ -309,8 +304,8 @@ class Babble_Post_Public extends Babble_Plugin {
 	 **/
 	public function wp_before_admin_bar_render() {
 		global $wp_admin_bar;
-		if ( ! bbl_is_default_lang() )
-			$wp_admin_bar->remove_node( 'new-content' );
+		if ( ! bbl_is_default_lang() ) {
+			$wp_admin_bar->remove_node( 'new-content' ); }
 	}
 
 	/**
@@ -332,7 +327,7 @@ class Babble_Post_Public extends Babble_Plugin {
 			return;
 		}
 
-		if ( $this->no_recursion ){
+		if ( $this->no_recursion ) {
 			return;
 		}
 
@@ -347,47 +342,47 @@ class Babble_Post_Public extends Babble_Plugin {
 		$args = get_object_vars( $args );
 		// @FIXME: Is it reckless to convert ALL object instances in $args to an array?
 		foreach ( $args as $key => & $arg ) {
-			if ( is_object( $arg ) )
-				$arg = get_object_vars( $arg );
+			if ( is_object( $arg ) ) {
+				$arg = get_object_vars( $arg ); }
 			// Don't set any args reserved for built-in post_types
-			if ( '_' == substr( $key, 0, 1 ) )
-				unset( $args[ $key ] );
+			if ( '_' == substr( $key, 0, 1 ) ) {
+				unset( $args[ $key ] ); }
 		}
 
 		$features = $this->get_features_supported_by_post_type( $post_type );
-		$args[ 'supports' ] = array();
-		foreach ( $features as $feature => $true )
-			$args[ 'supports' ][] = $feature;
+		$args['supports'] = array();
+		foreach ( $features as $feature => $true ) {
+			$args['supports'][] = $feature; }
 
 		// I am a little concerned that this argument may make things
 		// brittle, e.g. the UI might stop showing up in the shadow
 		// post type edit screens, p'raps.
-		$args[ 'show_ui' ] = true;
+		$args['show_ui'] = true;
 
-		$slug = ( $args[ 'rewrite' ][ 'slug' ] ) ? $args[ 'rewrite' ][ 'slug' ] : $post_type;
+		$slug = ( $args['rewrite']['slug'] ) ? $args['rewrite']['slug'] : $post_type;
 		$archive_slug = false;
-		if ( $archive_slug = $args[ 'has_archive' ] )
-			if ( ! is_string( $args[ 'has_archive' ] ) )
-				$archive_slug = $slug;
+		if ( $archive_slug = $args['has_archive'] ) {
+			if ( ! is_string( $args['has_archive'] ) ) {
+				$archive_slug = $slug; }
+		}
 
 		foreach ( $langs as $lang ) {
 			$new_args = $args;
 
-
 			// @FIXME: We are in danger of a post_type name being longer than 20 chars
-			// I would prefer to keep the post_type human readable, as human devs and sysadmins always 
+			// I would prefer to keep the post_type human readable, as human devs and sysadmins always
 			// end up needing to read this kind of thing.
 			$new_post_type = sanitize_key( strtolower( "{$post_type}_{$lang->code}" ) );
 
-			if ( false !== $args[ 'rewrite' ] ) {
-				if ( ! is_array( $new_args[ 'rewrite' ] ) )
-					$new_args[ 'rewrite' ] = array();
-				$new_args[ 'query_var' ] = $new_args[ 'rewrite' ][ 'slug' ] = $slug ; //$this->get_slug_in_lang( $slug, $lang, $args );
-				$new_args[ 'has_archive' ] = $archive_slug; //$this->get_slug_in_lang( $archive_slug, $lang );
+			if ( false !== $args['rewrite'] ) {
+				if ( ! is_array( $new_args['rewrite'] ) ) {
+					$new_args['rewrite'] = array(); }
+				$new_args['query_var'] = $new_args['rewrite']['slug'] = $slug ; //$this->get_slug_in_lang( $slug, $lang, $args );
+				$new_args['has_archive'] = $archive_slug; //$this->get_slug_in_lang( $archive_slug, $lang );
 			}
 			$this->slugs_and_vars[ $lang->code . '_' . $post_type ] = array(
-				'query_var' => $new_args[ 'query_var' ],
-				'has_archive' => $new_args[ 'has_archive' ],
+				'query_var' => $new_args['query_var'],
+				'has_archive' => $new_args['has_archive'],
 			);
 
 			$new_args['show_in_admin_bar'] = false;
@@ -406,20 +401,20 @@ class Babble_Post_Public extends Babble_Plugin {
 				$this->lang_map[ $new_post_type ] = $lang->code;
 
 				// @TODO: Refactor the $this::lang_map array so we can use this new structure instead
-				if ( ! isset( $this->lang_map2[ $lang->code ] ) || ! is_array( $this->lang_map2[ $lang->code ] ) )
-					$this->lang_map2[ $lang->code ] = array();
+				if ( ! isset( $this->lang_map2[ $lang->code ] ) || ! is_array( $this->lang_map2[ $lang->code ] ) ) {
+					$this->lang_map2[ $lang->code ] = array(); }
 				$this->lang_map2[ $lang->code ][ $post_type ] = $new_post_type;
 
 				// This will not work until init has run at the early priority used
 				// to register the post_translation taxonomy. However we catch all the
-				// post_types registered before the hook runs, so we don't miss any 
+				// post_types registered before the hook runs, so we don't miss any
 				// (take a look at where we register post_translation for more info).
 				register_taxonomy_for_object_type( 'post_translation', $new_post_type );
 				register_taxonomy_for_object_type( 'post_translation', $post_type );
 			}
 		}
 
-		// Exclude the registered post type from search if it's language isn't 
+		// Exclude the registered post type from search if it's language isn't
 		// the current language.
 		if ( bbl_get_current_lang_code() != bbl_get_default_lang_code() ) {
 			$post_type_obj = get_post_type_object( $post_type );
@@ -460,19 +455,19 @@ class Babble_Post_Public extends Babble_Plugin {
 	 **/
 	public function added_post_meta( $meta_id, $post_id, $meta_key, $meta_value ) {
 		// Some metadata shouldn't be synced
-		if ( ! apply_filters( 'bbl_sync_meta_key', true, $meta_key ) )
-			return;
+		if ( ! apply_filters( 'bbl_sync_meta_key', true, $meta_key ) ) {
+			return; }
 
-		if ( $this->no_meta_recursion )
-			return;
+		if ( $this->no_meta_recursion ) {
+			return; }
 		$this->no_meta_recursion = 'added_post_meta';
 
 		$unique = isset( $this->unique_meta_keys[ $meta_key ] );
 
 		$translations = $this->get_post_translations( $post_id );
 		foreach ( $translations as $lang_code => & $translation ) {
-			if ( $this->get_post_lang_code( $post_id ) == $lang_code )
-				continue;
+			if ( $this->get_post_lang_code( $post_id ) == $lang_code ) {
+				continue; }
 			add_post_meta( $translation->ID, $meta_key, $meta_value, $unique );
 		}
 
@@ -491,17 +486,17 @@ class Babble_Post_Public extends Babble_Plugin {
 	 **/
 	public function updated_post_meta( $meta_id, $post_id, $meta_key, $meta_value ) {
 		// Some metadata shouldn't be synced
-		if ( ! apply_filters( 'bbl_sync_meta_key', true, $meta_key ) )
-			return;
+		if ( ! apply_filters( 'bbl_sync_meta_key', true, $meta_key ) ) {
+			return; }
 
-		if ( $this->no_meta_recursion )
-			return;
+		if ( $this->no_meta_recursion ) {
+			return; }
 		$this->no_meta_recursion = 'updated_post_meta';
 
 		$translations = $this->get_post_translations( $post_id );
 		foreach ( $translations as $lang_code => & $translation ) {
-			if ( $this->get_post_lang_code( $post_id ) == $lang_code )
-				continue;
+			if ( $this->get_post_lang_code( $post_id ) == $lang_code ) {
+				continue; }
 			update_post_meta( $translation->ID, $meta_key, $meta_value );
 		}
 
@@ -521,23 +516,23 @@ class Babble_Post_Public extends Babble_Plugin {
 	public function deleted_post_meta( $meta_id, $post_id, $meta_key, $meta_value ) {
 
 		// When we are deleting posts, we don't want to sync
-		// the metadata deletion across the other posts in 
+		// the metadata deletion across the other posts in
 		// the same translation group
-		if ( in_array( $post_id, $this->deleting_post_ids ) )
-			return;
+		if ( in_array( $post_id, $this->deleting_post_ids ) ) {
+			return; }
 
 		// Some metadata shouldn't be synced
-		if ( ! apply_filters( 'bbl_sync_meta_key', true, $meta_key ) )
-			return;
+		if ( ! apply_filters( 'bbl_sync_meta_key', true, $meta_key ) ) {
+			return; }
 
-		if ( $this->no_meta_recursion )
-			return;
+		if ( $this->no_meta_recursion ) {
+			return; }
 		$this->no_meta_recursion = 'deleted_post_meta';
 
 		$translations = $this->get_post_translations( $post_id );
 		foreach ( $translations as $lang_code => & $translation ) {
-			if ( $this->get_post_lang_code( $post_id ) == $lang_code )
-				continue;
+			if ( $this->get_post_lang_code( $post_id ) == $lang_code ) {
+				continue; }
 			delete_post_meta( $translation->ID, $meta_key );
 		}
 
@@ -570,7 +565,7 @@ class Babble_Post_Public extends Babble_Plugin {
 			return;
 		}
 
-		if ( isset( $query->query_vars[ 'post_type' ] ) && true === in_array( 'nav_menu_item', (array) $query->query_vars[ 'post_type' ] ) ) {
+		if ( isset( $query->query_vars['post_type'] ) && true === in_array( 'nav_menu_item', (array) $query->query_vars['post_type'] ) ) {
 			return;
 		}
 		$query->query_vars = $this->translate_query_vars( $query->query_vars );
@@ -615,21 +610,21 @@ class Babble_Post_Public extends Babble_Plugin {
 			return $posts;
 		}
 
-		if ( is_admin() )
-			return $posts;
+		if ( is_admin() ) {
+			return $posts; }
 
 		// Get fallback content in the default language
 		$subs_index = array();
 		foreach ( $posts as & $post ) {
 			if ( empty( $post->post_title ) || empty( $post->post_excerpt ) || empty( $post->post_content ) ) {
-				if ( $default_post = bbl_get_default_lang_post( $post->ID ) )
-					$subs_index[ $post->ID ] = $default_post->ID;
+				if ( $default_post = bbl_get_default_lang_post( $post->ID ) ) {
+					$subs_index[ $post->ID ] = $default_post->ID; }
 			}
-			if ( ! $this->get_transid( $post ) && bbl_get_default_lang_code() == bbl_get_post_lang_code( $post ) )
-				$this->set_transid( $post );
+			if ( ! $this->get_transid( $post ) && bbl_get_default_lang_code() == bbl_get_post_lang_code( $post ) ) {
+				$this->set_transid( $post ); }
 		}
-		if ( ! $subs_index )
-			return $posts;
+		if ( ! $subs_index ) {
+			return $posts; }
 
 		$subs_posts = get_posts( array( 'include' => array_values( $subs_index ), 'post_status' => 'publish' ) );
 		// @FIXME: Check the above get_posts call results are cached somewhere… I think they are
@@ -637,14 +632,14 @@ class Babble_Post_Public extends Babble_Plugin {
 		foreach ( $posts as & $post ) {
 			// @TODO why does this only override the title/excerpt/content? Why not override the post object entirely?
 			// @FIXME: I'm assuming this get_post call is cached, which it seems to be
-			if( isset( $subs_index[ $post->ID ] ) ) {
+			if ( isset( $subs_index[ $post->ID ] ) ) {
 				$default_post = get_post( $subs_index[ $post->ID ] );
-				if ( empty( $post->post_title ) )
-					$post->post_title = $default_post->post_title;
-				if ( empty( $post->post_excerpt ) )
-					$post->post_excerpt = $default_post->post_excerpt;
-				if ( empty( $post->post_content ) )
-					$post->post_content = $default_post->post_content;
+				if ( empty( $post->post_title ) ) {
+					$post->post_title = $default_post->post_title; }
+				if ( empty( $post->post_excerpt ) ) {
+					$post->post_excerpt = $default_post->post_excerpt; }
+				if ( empty( $post->post_content ) ) {
+					$post->post_content = $default_post->post_content; }
 			}
 		}
 		return $posts;
@@ -661,10 +656,10 @@ class Babble_Post_Public extends Babble_Plugin {
 	public function body_class( array $classes, $class ) {
 		// Shadow post_type archives also get the post_type class for
 		// the default language
-		if ( is_post_type_archive() && ! bbl_is_default_lang() )
-			$classes[] = 'post-type-archive-' . bbl_get_post_type_in_lang( get_query_var( 'post_type' ), bbl_get_default_lang_code() );
-		if ( is_single() )
-			$classes[] = 'single-' . bbl_get_base_post_type( get_post_type() );
+		if ( is_post_type_archive() && ! bbl_is_default_lang() ) {
+			$classes[] = 'post-type-archive-' . bbl_get_post_type_in_lang( get_query_var( 'post_type' ), bbl_get_default_lang_code() ); }
+		if ( is_single() ) {
+			$classes[] = 'single-' . bbl_get_base_post_type( get_post_type() ); }
 
 		return $classes;
 	}
@@ -684,12 +679,12 @@ class Babble_Post_Public extends Babble_Plugin {
 		global $wp_rewrite;
 
 		// Regular ol' post types, and other types added by other plugins, etc
-		if ( 'post' == $post->post_type || 'page' == $post->post_type || ! isset( $this->post_types[ $post->post_type ] ) )
-			return user_trailingslashit( $post_link );
+		if ( 'post' == $post->post_type || 'page' == $post->post_type || ! isset( $this->post_types[ $post->post_type ] ) ) {
+			return user_trailingslashit( $post_link ); }
 
 		// Deal with our shadow post types
-		if ( ! ( $base_post_type = $this->get_base_post_type( $post->post_type ) ) )
-			return user_trailingslashit( $post_link );
+		if ( ! ( $base_post_type = $this->get_base_post_type( $post->post_type ) ) ) {
+			return user_trailingslashit( $post_link ); }
 
 		// Deal with post_types shadowing the post post_type
 		if ( 'post' == $base_post_type ) {
@@ -711,38 +706,38 @@ class Babble_Post_Public extends Babble_Plugin {
 				'%pagename%',
 			);
 
-			$post_link = get_option('permalink_structure');
+			$post_link = get_option( 'permalink_structure' );
 
 			// @FIXME: Should I somehow fake this, so plugin authors who hook it still get some consequence?
 			// $post_link = apply_filters('pre_post_link', $post_link, $post, $leavename);
 
 			if ( '' != $post_link && ! in_array( $post->post_status, array( 'draft', 'pending', 'auto-draft' ) ) ) {
-				$unixtime = strtotime($post->post_date);
+				$unixtime = strtotime( $post->post_date );
 
 				$category = '';
-				if ( strpos($post_link, '%category%') !== false ) {
-					$cats = get_the_category($post->ID);
+				if ( strpos( $post_link, '%category%' ) !== false ) {
+					$cats = get_the_category( $post->ID );
 					if ( $cats ) {
-						usort($cats, '_usort_terms_by_ID'); // order by ID
+						usort( $cats, '_usort_terms_by_ID' ); // order by ID
 						$category = $cats[0]->slug;
-						if ( $parent = $cats[0]->parent )
-							$category = get_category_parents($parent, false, '/', true) . $category;
+						if ( $parent = $cats[0]->parent ) {
+							$category = get_category_parents( $parent, false, '/', true ) . $category; }
 					}
 					// show default category in permalinks, without
 					// having to assign it explicitly
-					if ( empty($category) ) {
+					if ( empty( $category ) ) {
 						$default_category = get_category( get_option( 'default_category' ) );
 						$category = is_wp_error( $default_category ) ? '' : $default_category->slug;
 					}
 				}
 
 				$author = '';
-				if ( strpos($post_link, '%author%') !== false ) {
-					$authordata = get_userdata($post->post_author);
+				if ( strpos( $post_link, '%author%' ) !== false ) {
+					$authordata = get_userdata( $post->post_author );
 					$author = $authordata->user_nicename;
 				}
 
-				$date = explode(" ",date('Y m d H i s', $unixtime));
+				$date = explode( ' ',date( 'Y m d H i s', $unixtime ) );
 				$rewritereplace =
 					array(
 						$date[0],
@@ -761,13 +756,12 @@ class Babble_Post_Public extends Babble_Plugin {
 				bbl_switch_to_lang( $lang );
 				$post_link = home_url( str_replace( $rewritecode, $rewritereplace, $post_link ) );
 				bbl_restore_lang();
-				$post_link = user_trailingslashit($post_link, 'single');
+				$post_link = user_trailingslashit( $post_link, 'single' );
 				// END copying from get_permalink function
 				return $post_link;
 			} else { // if they're not using the fancy permalink option the link won't work. Known bug. :)
 				return $post_link;
 			}
-
 		} else if ( 'page' == $base_post_type ) {
 			return get_page_link( $post->ID, $leavename );
 		}
@@ -789,7 +783,7 @@ class Babble_Post_Public extends Babble_Plugin {
 	 * @return array The array, like array( $permalink, $post_name )
 	 */
 	public function get_sample_permalink( $permalink, $title, $name, $id, $post ) {
-		$permalink[ 0 ] = $this->post_type_link( $permalink[ 0 ], $post, $leavename );
+		$permalink[0] = $this->post_type_link( $permalink[0], $post, $leavename );
 		return $permalink;
 	}
 
@@ -801,11 +795,11 @@ class Babble_Post_Public extends Babble_Plugin {
 	 * @return string
 	 **/
 	public function page_link( $link, $post_id ) {
-		if ( $this->no_recursion )
-			return $link;
+		if ( $this->no_recursion ) {
+			return $link; }
 
 		// Deal with the language front pages
-		if ( 'page' == get_option('show_on_front') && $page_on_front = get_option( 'page_on_front' ) ) {
+		if ( 'page' == get_option( 'show_on_front' ) && $page_on_front = get_option( 'page_on_front' ) ) {
 			$front_page_transid = $this->get_transid( $page_on_front );
 			$this_transid = $this->get_transid( $post_id );
 			if ( $front_page_transid == $this_transid ) {
@@ -834,8 +828,8 @@ class Babble_Post_Public extends Babble_Plugin {
 	 * @return string A URL for the translated (shadow) post_type archive
 	 **/
 	public function post_type_archive_link( $link, $post_type ) {
-		if ( $this->no_recursion )
-			return $link;
+		if ( $this->no_recursion ) {
+			return $link; }
 		$this->no_recursion = 'post_type_archive_link';
 
 		$lang_post_type = $this->get_post_type_in_lang( $post_type, bbl_get_current_lang_code() );
@@ -882,8 +876,8 @@ class Babble_Post_Public extends Babble_Plugin {
 			return;
 		}
 
-		if ( $this->no_recursion )
-			return;
+		if ( $this->no_recursion ) {
+			return; }
 		$this->no_recursion = 'post_updated';
 
 		$transid = $this->get_transid( $post_id );
@@ -892,8 +886,8 @@ class Babble_Post_Public extends Babble_Plugin {
 
 		$translations = $this->get_post_translations( $post_id );
 		foreach ( $translations as $lang_code => & $translation ) {
-			if ( $translation->ID == $post_id )
-				continue;
+			if ( $translation->ID == $post_id ) {
+				continue; }
 			// Copy the various core post properties across
 			$this->sync_properties( $post_id, $translation->ID );
 		}
@@ -903,7 +897,7 @@ class Babble_Post_Public extends Babble_Plugin {
 		$post_lang_code = bbl_get_post_lang_code( $post_id );
 		if ( bbl_get_default_lang_code() != $post_lang_code ) {
 			$source_post = bbl_get_post_in_lang( $post_id, bbl_get_default_lang_code() );
-			if( isset($source_post) ) {
+			if ( isset( $source_post ) ) {
 				$target_post = get_post( $post_id );
 				$post_data   = array(
 					'ID'                => $post_id,
@@ -933,8 +927,8 @@ class Babble_Post_Public extends Babble_Plugin {
 		if ( bbl_is_locked() ) {
 			return;
 		}
-		if ( $new_status == $old_status )
-			return;
+		if ( $new_status == $old_status ) {
+			return; }
 
 		if ( $this->no_recursion ) {
 			return;
@@ -943,15 +937,15 @@ class Babble_Post_Public extends Babble_Plugin {
 		if ( 'publish' == $new_status && $new_status != $old_status ) {
 			// Ensure the date of publication of a translation gets
 			// sync'd immediately with the original language post.
-			$post_lang_code = get_post_meta($post->ID, 'bbl_job_language_code' , true );
-			if( $post_lang_code == ''){
+			$post_lang_code = get_post_meta( $post->ID, 'bbl_job_language_code' , true );
+			if ( $post_lang_code == '' ) {
 				$post_lang_code = bbl_get_current_lang_code();
 			}
 			if ( $post_lang_code != bbl_get_post_lang_code( $post->ID ) ) {
 				$source_post = bbl_get_post_in_lang( $post->ID, $post_lang_code );
 				$postdata = array(
 					'ID' => $post->ID,
-					'post_date' =>$source_post->post_date,
+					'post_date' => $source_post->post_date,
 				);
 				wp_update_post( $postdata );
 			}
@@ -977,42 +971,42 @@ class Babble_Post_Public extends Babble_Plugin {
 			foreach ( $items as $key => &$item ) {
 				if ( bbl_get_current_lang_code() != bbl_get_default_lang_code() ) {
 					$vars     = array();
-					$url_info = parse_url( $item[ 2 ] );
-					if(! isset($url_info[ 'query' ] )){
-						$url_info[ 'query' ] = 	'';
+					$url_info = parse_url( $item[2] );
+					if ( ! isset( $url_info['query'] ) ) {
+						$url_info['query'] = '';
 					}
 
-					parse_str( $url_info[ 'query' ], $vars );
-					if ( !isset( $vars[ 'post_type' ] ) ) {
-						$vars[ 'post_type' ] = 'post';
+					parse_str( $url_info['query'], $vars );
+					if ( ! isset( $vars['post_type'] ) ) {
+						$vars['post_type'] = 'post';
 					}
-					if ( 'post-new.php' == substr( $item[ 2 ], 0, 12 ) ) {
+					if ( 'post-new.php' == substr( $item[2], 0, 12 ) ) {
 						//unset( $submenu[ $parent ][ $key ] );
-						if ( isset( $base_post_types[ $vars[ 'post_type' ] ] ) ) {
+						if ( isset( $base_post_types[ $vars['post_type'] ] ) ) {
 
-							$item[ 2 ] = esc_url(add_query_arg( array(
-								'post_type' => bbl_get_post_type_in_lang( $vars[ 'post_type' ], bbl_get_current_lang_code() ),
+							$item[2] = esc_url(add_query_arg( array(
+								'post_type' => bbl_get_post_type_in_lang( $vars['post_type'], bbl_get_current_lang_code() ),
 								//'lang' => bbl_get_current_lang_code()
 							), 'post-new.php' ));
 
 						}
-					} else if ( 'edit.php' == substr( $item[ 2 ], 0, 8 ) ) {
-						if ( isset( $base_post_types[ $vars[ 'post_type' ] ] ) ) {
+					} else if ( 'edit.php' == substr( $item[2], 0, 8 ) ) {
+						if ( isset( $base_post_types[ $vars['post_type'] ] ) ) {
 
-							$item[ 2 ] = esc_url(add_query_arg( array(
-								'post_type' => bbl_get_post_type_in_lang( $vars[ 'post_type' ], bbl_get_current_lang_code() ),
+							$item[2] = esc_url(add_query_arg( array(
+								'post_type' => bbl_get_post_type_in_lang( $vars['post_type'], bbl_get_current_lang_code() ),
 								//'lang' => bbl_get_current_lang_code()
 							), 'edit.php' ));
 
 						}
-					} else if('edit-tags.php' === substr( $item[ 2 ], 0, 13 ) ){
-						if ( ! isset( $vars[ 'taxonomy' ] ) ) {
-							$vars[ 'taxonomy' ] = 'post_tag';
+					} else if ( 'edit-tags.php' === substr( $item[2], 0, 13 ) ) {
+						if ( ! isset( $vars['taxonomy'] ) ) {
+							$vars['taxonomy'] = 'post_tag';
 						}
 
-						$item[ 2 ] = esc_url(add_query_arg( array(
-							'post_type' => bbl_get_post_type_in_lang( $vars[ 'post_type' ], bbl_get_current_lang_code() ),
-							'taxonomy' => bbl_get_taxonomy_in_lang( $vars[ 'taxonomy' ], bbl_get_current_lang_code())
+						$item[2] = esc_url(add_query_arg( array(
+							'post_type' => bbl_get_post_type_in_lang( $vars['post_type'], bbl_get_current_lang_code() ),
+							'taxonomy' => bbl_get_taxonomy_in_lang( $vars['taxonomy'], bbl_get_current_lang_code() ),
 						), 'edit-tags.php' ));
 
 					}
@@ -1022,12 +1016,12 @@ class Babble_Post_Public extends Babble_Plugin {
 		// Remove links to shadow post types
 		foreach ( $menu as $key => $item ) {
 			$vars = array();
-			$url_info = parse_url( $item[ 2 ] );
-			if ( ! isset( $url_info[ 'query' ] ) )
-				continue;
-			parse_str( $url_info[ 'query' ], $vars );
-			if ( ! isset( $vars[ 'post_type' ] ) || ! isset( $this->post_types[ $vars[ 'post_type' ] ] ) )
-				continue;
+			$url_info = parse_url( $item[2] );
+			if ( ! isset( $url_info['query'] ) ) {
+				continue; }
+			parse_str( $url_info['query'], $vars );
+			if ( ! isset( $vars['post_type'] ) || ! isset( $this->post_types[ $vars['post_type'] ] ) ) {
+				continue; }
 			unset( $menu[ $key ] );
 		}
 		return $menu;
@@ -1044,23 +1038,21 @@ class Babble_Post_Public extends Babble_Plugin {
 	public function single_template( $template ) {
 		//		if( bbl_is_default_lang() )
 		//			return $template;
-		if( $this->no_recursion ){
+		if ( $this->no_recursion ) {
 			return $template;
 		}
 		$this->no_recursion = true;
 		// Deal with the language front pages and custom page templates
 		$post = get_post( get_the_ID() );
-		if ( 'page' == get_option('show_on_front') ) {
+		if ( 'page' == get_option( 'show_on_front' ) ) {
 			$front_page_transid = $this->get_transid( get_option( 'page_on_front' ) );
 			$this_transid = $this->get_transid( get_the_ID() );
 			// Check if this is a translation of the page on the front of the site
 			if ( $front_page_transid == $this_transid ) {
 				// global $wp_query, $wp;
 				if ( 'page' == $this->get_base_post_type( $post->post_type ) ) {
-					if ( $custom_page_template = get_post_meta( get_option( 'page_on_front' ), '_wp_page_template', true ) )
-						$templates = (array) $custom_page_template;
-					else
-						$templates = (array) 'page.php';
+					if ( $custom_page_template = get_post_meta( get_option( 'page_on_front' ), '_wp_page_template', true ) ) {
+						$templates = (array) $custom_page_template; } else { 						$templates = (array) 'page.php'; }
 					if ( $_template = locate_template( $templates ) ) {
 						return $_template;
 					}
@@ -1070,26 +1062,24 @@ class Babble_Post_Public extends Babble_Plugin {
 		// Check if we're dealing with a page or a translation of a page
 		if ( 'page' == $this->get_base_post_type( $post->post_type ) ) {
 			$custom_page_template = get_post_meta( get_the_ID(), '_wp_page_template', true );
-			if ( $custom_page_template && 'default' != $custom_page_template )
-				$templates = (array) $custom_page_template;
-			else
-				$templates = array( 'page.php' );
+			if ( $custom_page_template && 'default' != $custom_page_template ) {
+				$templates = (array) $custom_page_template; } else { 				$templates = array( 'page.php' ); }
 			if ( $_template = locate_template( $templates ) ) {
 				return $_template;
 			}
 		}
 
 		$templates[] = "single-{$this->get_base_post_type($post->post_type)}.php";
-		$templates[] = "single.php";
+		$templates[] = 'single.php';
 		$template = get_query_template( 'single-posts', $templates );
 		$this->no_recursion = false;
 		return $template;
 	}
 
 	function archive_template( $template ) {
-		if( bbl_is_default_lang() )
-			return $template;
-		if( $this->no_recursion ){
+		if ( bbl_is_default_lang() ) {
+			return $template; }
+		if ( $this->no_recursion ) {
 			return $template;
 		}
 		$this->no_recursion = true;
@@ -1104,10 +1094,9 @@ class Babble_Post_Public extends Babble_Plugin {
 		}
 		$templates[] = 'archive.php';
 
-		$template =  get_query_template( 'archive', $templates );
+		$template = get_query_template( 'archive', $templates );
 		$this->no_recursion = false;
 		return $template;
-
 
 	}
 	/**
@@ -1124,8 +1113,8 @@ class Babble_Post_Public extends Babble_Plugin {
 			'_wp_trash_meta_status',
 			'_wp_trash_meta_time',
 		);
-		if ( in_array( $meta_key, $sync_not ) )
-			$sync = false;
+		if ( in_array( $meta_key, $sync_not ) ) {
+			$sync = false; }
 		return $sync;
 	}
 
@@ -1138,10 +1127,10 @@ class Babble_Post_Public extends Babble_Plugin {
 	 **/
 	public function manage_posts_columns( array $columns, $post_type ) {
 		// Insert our cols just before comments, or date.
-		if ( $post_type == bbl_get_post_type_in_lang( $post_type, bbl_get_default_lang_code() ) )
-			return $columns;
+		if ( $post_type == bbl_get_post_type_in_lang( $post_type, bbl_get_default_lang_code() ) ) {
+			return $columns; }
 		# @TODO is this phrase localisable? Might need changing.
-		$columns[ 'bbl_link' ] = __( 'Translation of', 'babble' );
+		$columns['bbl_link'] = __( 'Translation of', 'babble' );
 		return $columns;
 	}
 
@@ -1153,8 +1142,8 @@ class Babble_Post_Public extends Babble_Plugin {
 	 * @return void
 	 **/
 	public function manage_posts_custom_column( $column_name, $post_id ) {
-		if ( 'bbl_link' != $column_name )
-			return;
+		if ( 'bbl_link' != $column_name ) {
+			return; }
 		$default_post = bbl_get_post_in_lang( $post_id, bbl_get_default_lang_code() );
 		if ( ! $default_post ) {
 			echo '<em style="color: #bc0b0b">' . __( 'No link', 'babble' ) . '</em>';
@@ -1167,23 +1156,23 @@ class Babble_Post_Public extends Babble_Plugin {
 		bbl_restore_lang();
 		$edit_title = esc_attr( sprintf( __( 'Edit the originating post: “%s”', 'babble' ), get_the_title( $default_post->ID ) ) );
 		$view_title = esc_attr( sprintf( __( 'View the originating post: “%s”', 'babble' ), get_the_title( $default_post->ID ) ) );
-		echo "<a href='$view_link' title='$view_title'>" . __( 'View', 'babble' ) . "</a> | <a href='$edit_link' title='$edit_title'>" . __( 'Edit', 'babble' ) . "</a>";
+		echo "<a href='$view_link' title='$view_title'>" . __( 'View', 'babble' ) . "</a> | <a href='$edit_link' title='$edit_title'>" . __( 'Edit', 'babble' ) . '</a>';
 	}
 
 	// PUBLIC METHODS
 	// ==============
 
 	public function bbl_translated_taxonomy( $translated, $taxonomy ) {
-		if ( 'post_translation' == $taxonomy )
-			return false;
+		if ( 'post_translation' == $taxonomy ) {
+			return false; }
 		return $translated;
 	}
 
 	public function admin_body_class( $class ) {
 
 		$post_type = get_current_screen() ? get_current_screen()->post_type : null;
-		if ( $post_type )
-			$class .= ' bbl-post-type-' . $post_type;
+		if ( $post_type ) {
+			$class .= ' bbl-post-type-' . $post_type; }
 
 		return $class;
 
@@ -1200,62 +1189,59 @@ class Babble_Post_Public extends Babble_Plugin {
 	protected function translate_query_vars( array $query_vars, $request = false ) {
 
 		// Sequester the original query, in case we need it to get the default content later
-		$query_vars[ 'bbl_original_query' ] = $query_vars;
+		$query_vars['bbl_original_query'] = $query_vars;
 
 		// We've done this already (avoid re-translating the vars)
-		if ( isset( $query_vars[ 'bbl_done_translation' ] ) && $query_vars[ 'bbl_done_translation' ] )
-			return $query_vars;
-		$query_vars[ 'bbl_done_translation' ] = true;
+		if ( isset( $query_vars['bbl_done_translation'] ) && $query_vars['bbl_done_translation'] ) {
+			return $query_vars; }
+		$query_vars['bbl_done_translation'] = true;
 
-		$lang_url_prefix = isset( $query_vars[ 'lang_url_prefix' ] ) ? $query_vars[ 'lang_url_prefix' ] : get_query_var( 'lang_url_prefix' );
-		$lang = isset( $query_vars[ 'lang' ] ) ? $query_vars[ 'lang' ] : get_query_var( 'lang' );
+		$lang_url_prefix = isset( $query_vars['lang_url_prefix'] ) ? $query_vars['lang_url_prefix'] : get_query_var( 'lang_url_prefix' );
+		$lang = isset( $query_vars['lang'] ) ? $query_vars['lang'] : get_query_var( 'lang' );
 		if ( is_admin()  ) {
-			if(empty( $lang )){
+			if ( empty( $lang ) ) {
 				$lang = bbl_get_current_content_lang_code();
 			}
 			if ( bbl_get_default_lang_code() == $lang ) {
 				return $query_vars;
 			} else {
-				$query_vars[ 'post_type' ] = $this->get_post_type_in_lang( $query_vars[ 'post_type' ], bbl_get_current_lang_code() );
+				$query_vars['post_type'] = $this->get_post_type_in_lang( $query_vars['post_type'], bbl_get_current_lang_code() );
 				return $query_vars;
 			}
-
 		}
-		if(!empty( $query_vars[ 's' ] )){
-			unset( $query_vars[ 'error' ] ); // Fix for search result
+		if ( ! empty( $query_vars['s'] ) ) {
+			unset( $query_vars['error'] ); // Fix for search result
 			return $query_vars;
 		}
 		// Detect language specific homepages
 		if ( $request === $lang_url_prefix ) {
-			unset( $query_vars[ 'error' ] );
+			unset( $query_vars['error'] );
 			// @FIXME: Cater for front pages which don't list the posts
-			if ( 'page' == get_option('show_on_front') && $page_on_front = get_option('page_on_front') ) {
+			if ( 'page' == get_option( 'show_on_front' ) && $page_on_front = get_option( 'page_on_front' ) ) {
 				// @TODO: Get translated page ID
-				$query_vars[ 'p' ] = $this->get_post_in_lang( $page_on_front, bbl_get_current_lang_code() )->ID;
-				$query_vars[ 'post_type' ] = $this->get_post_type_in_lang( 'page', bbl_get_current_lang_code() );
-				$query_vars[ 'bbl_is_home' ] = true;
+				$query_vars['p'] = $this->get_post_in_lang( $page_on_front, bbl_get_current_lang_code() )->ID;
+				$query_vars['post_type'] = $this->get_post_type_in_lang( 'page', bbl_get_current_lang_code() );
+				$query_vars['bbl_is_home'] = true;
 				return $query_vars;
 			}
 
 			if ( bbl_get_default_lang_code() != $lang && empty( $query_vars['s'] ) ) {
-				$post_type = isset( $query_vars[ 'post_type' ] ) ? $query_vars[ 'post_type' ] : 'post';
+				$post_type = isset( $query_vars['post_type'] ) ? $query_vars['post_type'] : 'post';
 
-				$query_vars[ 'post_type' ] = $this->get_post_type_in_lang( $post_type, bbl_get_current_lang_code() );
+				$query_vars['post_type'] = $this->get_post_type_in_lang( $post_type, bbl_get_current_lang_code() );
 
 			}
 
 			return $query_vars;
 		}
 
-
 		// Trigger the archive listing for the relevant shadow post type
 		// of 'post' for this language.
 
-		if ( isset( $query_vars[ 'post_type' ] ) && empty( $query_vars['s'] ) ) {
-			$post_type = isset( $query_vars[ 'post_type' ] ) ? $query_vars[ 'post_type' ] : 'post';
-			$query_vars[ 'post_type' ] = $this->get_post_type_in_lang( $post_type, bbl_get_current_lang_code() );
+		if ( isset( $query_vars['post_type'] ) && empty( $query_vars['s'] ) ) {
+			$post_type = isset( $query_vars['post_type'] ) ? $query_vars['post_type'] : 'post';
+			$query_vars['post_type'] = $this->get_post_type_in_lang( $post_type, bbl_get_current_lang_code() );
 		}
-
 
 		// If we're asking for the default content, it's fine
 		if ( bbl_get_default_lang_code() == $lang ) {
@@ -1266,68 +1252,67 @@ class Babble_Post_Public extends Babble_Plugin {
 		$base_taxonomies = array_keys( $bbl_taxonomies->get_base_taxonomies() );
 		foreach ( $base_taxonomies as $base_taxonomy ) {
 			if ( isset( $query_vars[ $base_taxonomy ] ) && false != $query_vars[ $base_taxonomy ] ) {
-				$translated_taxonomy = bbl_get_taxonomy_in_lang($base_taxonomy, bbl_get_current_lang_code() );
-				if( $query_vars[ $base_taxonomy ] ) {
+				$translated_taxonomy = bbl_get_taxonomy_in_lang( $base_taxonomy, bbl_get_current_lang_code() );
+				if ( $query_vars[ $base_taxonomy ] ) {
 					$query_vars[ $translated_taxonomy ] = $query_vars[ $base_taxonomy ];
 					unset( $query_vars[ $base_taxonomy ] );
 				}
 			}
 		}
 
-
 		// Now swap the query vars so we get the content in the right language post_type
 
 		// @FIXME: Do I need to change $wp->matched query? I think $wp->matched_rule is fine?
 		// @FIXME: Danger of post type slugs clashing??
-		if ( isset( $query_vars[ 'pagename' ] ) && $query_vars[ 'pagename' ] ) {
-			// Substitute post_type for 
-			$query_vars[ 'name' ] = $query_vars[ 'pagename' ];
-			$query_vars[ bbl_get_post_type_in_lang( 'page', $query_vars[ 'lang' ] ) ] = $query_vars[ 'pagename' ];
-			$query_vars[ 'post_type' ] = bbl_get_post_type_in_lang( 'page', bbl_get_current_lang_code() );
+		if ( isset( $query_vars['pagename'] ) && $query_vars['pagename'] ) {
+			// Substitute post_type for
+			$query_vars['name'] = $query_vars['pagename'];
+			$query_vars[ bbl_get_post_type_in_lang( 'page', $query_vars['lang'] ) ] = $query_vars['pagename'];
+			$query_vars['post_type'] = bbl_get_post_type_in_lang( 'page', bbl_get_current_lang_code() );
 			// Trigger a listing of translated posts if this is meant to
 			// be the blog page.
 
 			if ( 'page' == get_option( 'show_on_front' ) ) {
 				// Test if the current page is in the same translation group as
 				// the 'page_for_posts.
-				$current_post = get_page_by_path( $query_vars[ 'pagename' ], null, $query_vars[ 'post_type' ] );
+				$current_post = get_page_by_path( $query_vars['pagename'], null, $query_vars['post_type'] );
 
-				if ( null === $current_post ){
-					$query_vars[ 'error' ] = '404'; //Set 404 page on non-default language if not found other wise will show latest post
+				if ( null === $current_post ) {
+					$query_vars['error'] = '404'; //Set 404 page on non-default language if not found other wise will show latest post
 					return $query_vars;
 				}
 
 				if ( $this->get_transid( get_option( 'page_for_posts' ) ) == $this->get_transid( $current_post ) ) {
-					$query_vars[ 'post_type' ] = bbl_get_post_type_in_lang( 'post', bbl_get_current_lang_code() );
-					unset( $query_vars[ 'name' ] );
-					unset( $query_vars[ bbl_get_post_type_in_lang( 'page', $query_vars[ 'lang' ] ) ] );
+					$query_vars['post_type'] = bbl_get_post_type_in_lang( 'post', bbl_get_current_lang_code() );
+					unset( $query_vars['name'] );
+					unset( $query_vars[ bbl_get_post_type_in_lang( 'page', $query_vars['lang'] ) ] );
 				} else {
-					$query_vars[ 'p' ] = $current_post->ID;
-					$query_vars[ 'post_type' ] = $this->get_post_type_in_lang( $current_post->post_type, bbl_get_current_lang_code() );
-					unset( $query_vars[ 'page' ] );
-					unset( $query_vars[ 'name' ] );
-					unset( $query_vars[ 'pagename' ] );
-					unset($query_vars[ bbl_get_post_type_in_lang( 'page', $query_vars[ 'lang' ] ) ]);
+					$query_vars['p'] = $current_post->ID;
+					$query_vars['post_type'] = $this->get_post_type_in_lang( $current_post->post_type, bbl_get_current_lang_code() );
+					unset( $query_vars['page'] );
+					unset( $query_vars['name'] );
+					unset( $query_vars['pagename'] );
+					unset( $query_vars[ bbl_get_post_type_in_lang( 'page', $query_vars['lang'] ) ] );
 					return $query_vars;
 				}
 			}
-			unset( $query_vars[ 'page' ] );
-			unset( $query_vars[ 'pagename' ] );
-		} elseif ( isset( $query_vars[ 'year' ] ) && $query_vars[ 'year' ] ) {
+			unset( $query_vars['page'] );
+			unset( $query_vars['pagename'] );
+		} elseif ( isset( $query_vars['year'] ) && $query_vars['year'] ) {
 			// @FIXME: This is not a reliable way to detect queries for the 'post' post_type.
-			$query_vars[ 'post_type' ] =  bbl_get_post_type_in_lang( 'post', bbl_get_current_lang_code() );
-		} elseif ( isset( $query_vars[ 'post_type' ] ) ) {
-			if ( is_array( $query_vars[ 'post_type' ] ) ) {
+			$query_vars['post_type'] = bbl_get_post_type_in_lang( 'post', bbl_get_current_lang_code() );
+		} elseif ( isset( $query_vars['post_type'] ) ) {
+			if ( is_array( $query_vars['post_type'] ) ) {
 				$new_post_types = array();
-				foreach ( $query_vars[ 'post_type' ] as $post_type ) {
+				foreach ( $query_vars['post_type'] as $post_type ) {
 					$new_post_types[] = bbl_get_post_type_in_lang( $post_type, bbl_get_current_lang_code() );
 				}
-				$query_vars[ 'post_type' ] = $new_post_types;
+				$query_vars['post_type'] = $new_post_types;
 			} else {
-				$query_vars[ 'post_type' ] = bbl_get_post_type_in_lang( $query_vars[ 'post_type' ], bbl_get_current_lang_code() );
+				$query_vars['post_type'] = bbl_get_post_type_in_lang( $query_vars['post_type'], bbl_get_current_lang_code() );
 			}
 		} else {
-			$query_vars[ 'post_type' ] = bbl_get_post_type_in_lang( 'post', bbl_get_current_lang_code() );
+			$query_vars['post_type'] = bbl_get_post_type_in_lang( 'post', bbl_get_current_lang_code() );
 		}
 
 		return $query_vars;
@@ -1341,19 +1326,19 @@ class Babble_Post_Public extends Babble_Plugin {
 	 * @return boolean True if this post is used as the front page of the site for a language
 	 **/
 	public function is_language_front_page( $post_id = null, $lang_code = null ) {
-		if ( 'page' != get_option('show_on_front') )
-			return false;
+		if ( 'page' != get_option( 'show_on_front' ) ) {
+			return false; }
 
 		$post = get_post( $post_id );
-		// If we have a lang code, and it doesn't match the requested post lang then this 
+		// If we have a lang code, and it doesn't match the requested post lang then this
 		// is not the right front page
-		if ( ! is_null( $lang_code ) && $lang_code != $this->get_post_lang_code( $post->ID ) )
-			return false;
+		if ( ! is_null( $lang_code ) && $lang_code != $this->get_post_lang_code( $post->ID ) ) {
+			return false; }
 
 		$front_page_transid = $this->get_transid( get_option( 'page_on_front' ) );
 		$this_transid = $this->get_transid( get_the_ID() );
-		if ( $front_page_transid != $this_transid )
-			return false;
+		if ( $front_page_transid != $this_transid ) {
+			return false; }
 
 		return true;
 	}
@@ -1367,10 +1352,10 @@ class Babble_Post_Public extends Babble_Plugin {
 	 **/
 	public function get_post_lang_code( $post ) {
 		$post = get_post( $post );
-		if ( ! $post )
-			return new WP_Error( 'bbl_invalid_post', esc_html__( 'Invalid Post passed to get_post_lang_code', 'babble' ) );
-		if ( isset( $this->lang_map[ $post->post_type ] ) )
-			return $this->lang_map[ $post->post_type ];
+		if ( ! $post ) {
+			return new WP_Error( 'bbl_invalid_post', esc_html__( 'Invalid Post passed to get_post_lang_code', 'babble' ) ); }
+		if ( isset( $this->lang_map[ $post->post_type ] ) ) {
+			return $this->lang_map[ $post->post_type ]; }
 		return bbl_get_default_lang_code();
 	}
 
@@ -1390,7 +1375,7 @@ class Babble_Post_Public extends Babble_Plugin {
 			'lang'            => $lang_code,
 			'post_type'       => 'bbl_job',
 		);
-		$url = esc_url(add_query_arg( $args, $url ));
+		$url = esc_url( add_query_arg( $args, $url ) );
 		return $url;
 	}
 
@@ -1404,8 +1389,8 @@ class Babble_Post_Public extends Babble_Plugin {
 	public function get_default_lang_post( $post ) {
 		$post = get_post( $post );
 		$translations = bbl_get_post_translations( $post->ID );
-		if ( isset( $translations[ bbl_get_default_lang_code() ] ) )
-			return $translations[ bbl_get_default_lang_code() ];
+		if ( isset( $translations[ bbl_get_default_lang_code() ] ) ) {
+			return $translations[ bbl_get_default_lang_code() ]; }
 		return false;
 	}
 
@@ -1427,15 +1412,15 @@ class Babble_Post_Public extends Babble_Plugin {
 		}
 
 		# @TODO A transid should never be a wp_error. Check and fix.
-		if ( is_wp_error( $transid ) )
-			bbl_log( "Error getting transid: " . print_r( $transid, true ) );
+		if ( is_wp_error( $transid ) ) {
+			bbl_log( 'Error getting transid: ' . print_r( $transid, true ) ); }
 		$post_ids = get_objects_in_term( $transid, 'post_translation' );
 
 		// Work out all the translated equivalent post types
 		$post_types = array();
 		$langs = bbl_get_active_langs();
-		foreach ( $langs as $lang )
-			$post_types[] = bbl_get_post_type_in_lang( $post->post_type, $lang->code );
+		foreach ( $langs as $lang ) {
+			$post_types[] = bbl_get_post_type_in_lang( $post->post_type, $lang->code ); }
 
 		// Get all the translations in one cached DB query
 		$args = array(
@@ -1447,8 +1432,8 @@ class Babble_Post_Public extends Babble_Plugin {
 		);
 		$posts = get_posts( $args );
 		$translations = array();
-		foreach ( $posts as $post )
-			$translations[ $this->get_post_lang_code( $post ) ] = $post;
+		foreach ( $posts as $post ) {
+			$translations[ $this->get_post_lang_code( $post ) ] = $post; }
 
 		wp_cache_add( $transid, $translations, 'bbl_post_translations' );
 
@@ -1463,8 +1448,8 @@ class Babble_Post_Public extends Babble_Plugin {
 	 * @return string The name of the base post type
 	 **/
 	public function get_base_post_type( $post_type ) {
-		if ( ! isset( $this->post_types[ $post_type ] ) )
-			return $post_type;
+		if ( ! isset( $this->post_types[ $post_type ] ) ) {
+			return $post_type; }
 		return $this->post_types[ $post_type ];
 	}
 
@@ -1475,8 +1460,8 @@ class Babble_Post_Public extends Babble_Plugin {
 	 **/
 	public function get_base_post_types() {
 		$post_types = array();
-		foreach ( $this->post_types as $post_type )
-			$post_types[ $post_type ] = get_post_type_object( $post_type );
+		foreach ( $this->post_types as $post_type ) {
+			$post_types[ $post_type ] = get_post_type_object( $post_type ); }
 		return $post_types;
 	}
 
@@ -1489,11 +1474,11 @@ class Babble_Post_Public extends Babble_Plugin {
 	 **/
 	public function get_post_type_in_lang( $post_type, $lang_code ) {
 		$base_post_type = $this->get_base_post_type( $post_type );
-		if ( bbl_get_default_lang_code() == $lang_code )
-			return $base_post_type;
+		if ( bbl_get_default_lang_code() == $lang_code ) {
+			return $base_post_type; }
 		// Some post types are untranslated…
-		if ( ! apply_filters( 'bbl_translated_post_type', true, $post_type ) )
-			return $post_type;
+		if ( ! apply_filters( 'bbl_translated_post_type', true, $post_type ) ) {
+			return $post_type; }
 		if ( ! isset( $this->lang_map2[ $lang_code ][ $base_post_type ] ) ) {
 			return false;
 		}
@@ -1511,8 +1496,8 @@ class Babble_Post_Public extends Babble_Plugin {
 		$post_types = array();
 		$langs = bbl_get_active_langs();
 		foreach ( $langs as $lang ) {
-			if ( isset( $this->lang_map2[ $lang->code ][ $base_post_type ] ) )
-				$post_types[] = $this->lang_map2[ $lang->code ][ $base_post_type ];
+			if ( isset( $this->lang_map2[ $lang->code ][ $base_post_type ] ) ) {
+				$post_types[] = $this->lang_map2[ $lang->code ][ $base_post_type ]; }
 		}
 		return $post_types;
 	}
@@ -1548,8 +1533,8 @@ class Babble_Post_Public extends Babble_Plugin {
 	public function get_slug_in_lang( $slug, $lang ) {
 		$_slug = mb_strtolower( apply_filters( 'bbl_translate_post_type_slug', $slug, $lang->code ) );
 		// @FIXME: For some languages the translation might be the same as the original
-		if ( $_slug &&  $_slug != $slug )
-			return $_slug;
+		if ( $_slug &&  $_slug != $slug ) {
+			return $_slug; }
 		// FIXME: Do we need to check that the slug is unique at this point?
 		return mb_strtolower( "{$_slug}_{$lang->code}" );
 	}
@@ -1567,21 +1552,19 @@ class Babble_Post_Public extends Babble_Plugin {
 	 * @return void
 	 **/
 	function save_text_directionality( $post_id, $post ) {
-		if ( ! isset( $_POST[ '_bbl_default_text_direction' ] ) )
-			return;
+		if ( ! isset( $_POST['_bbl_default_text_direction'] ) ) {
+			return; }
 
-		if ( 'revision' == $post->post_type )
-			return;
+		if ( 'revision' == $post->post_type ) {
+			return; }
 
-		if ( $this->no_recursion )
-			return;
+		if ( $this->no_recursion ) {
+			return; }
 		$this->no_recursion = 'save_text_directionality';
 
 		check_admin_referer( "bbl_default_text_direction-{$post->ID}", '_bbl_default_text_direction' );
-		if ( isset( $_POST[ 'bbl_default_text_direction' ] ) && (bool) $_POST[ 'bbl_default_text_direction' ] )
-			update_post_meta( $post_id, '_bbl_default_text_direction', true );
-		else
-			delete_post_meta( $post_id, '_bbl_default_text_direction' );
+		if ( isset( $_POST['bbl_default_text_direction'] ) && (bool) $_POST['bbl_default_text_direction'] ) {
+			update_post_meta( $post_id, '_bbl_default_text_direction', true ); } else { 			delete_post_meta( $post_id, '_bbl_default_text_direction' ); }
 
 		$this->no_recursion = false;
 	}
@@ -1594,8 +1577,8 @@ class Babble_Post_Public extends Babble_Plugin {
 	 * @return void
 	 **/
 	public function sync_properties( $source_id, $target_id ) {
-		if ( ! ( $source_post = get_post( $source_id ) ) )
-			return;
+		if ( ! ( $source_post = get_post( $source_id ) ) ) {
+			return; }
 
 		$source_lang_code = bbl_get_post_lang_code( $source_id );
 
@@ -1622,19 +1605,17 @@ class Babble_Post_Public extends Babble_Plugin {
 			'post_mime_type' => $source_post->post_mime_type,
 		);
 
-		if ( $target_parent_post )
-			$postdata[ 'post_parent' ] = $target_parent_post->ID;
-		else
-			$postdata[ 'post_parent' ] = 0;
+		if ( $target_parent_post ) {
+			$postdata['post_parent'] = $target_parent_post->ID; } else { 			$postdata['post_parent'] = 0; }
 
 		if ( bbl_get_default_lang_code() == $source_lang_code ) {
-			$postdata[ 'post_date' ] = $source_post->post_date;
-			$postdata[ 'post_date_gmt' ] = $source_post->post_date_gmt;
+			$postdata['post_date'] = $source_post->post_date;
+			$postdata['post_date_gmt'] = $source_post->post_date_gmt;
 		}
 
 		// Comment status only synced when going from the default lang code
-		if ( bbl_get_default_lang_code() == $source_lang_code )
-			$postdata[ 'comment_status' ] = $source_post->comment_status;
+		if ( bbl_get_default_lang_code() == $source_lang_code ) {
+			$postdata['comment_status'] = $source_post->comment_status; }
 
 		$postdata = apply_filters( 'bbl_pre_sync_properties', $postdata, $source_id );
 		$GLOBALS['acf_save_lock'] = true ;
@@ -1650,8 +1631,8 @@ class Babble_Post_Public extends Babble_Plugin {
 	 * @return void
 	 **/
 	function sync_post_meta( $post_id ) {
-		if ( $this->no_meta_recursion )
-			return;
+		if ( $this->no_meta_recursion ) {
+			return; }
 		$this->no_meta_recursion = 'updated_post_meta';
 
 		// First delete all the synced meta from this post
@@ -1659,23 +1640,23 @@ class Babble_Post_Public extends Babble_Plugin {
 		foreach ( $current_metas as $current_meta_key => & $current_meta_values ) {
 			// Some metadata shouldn't be synced, this filter allows a dev to return
 			// false if the particular meta_key is one which shouldn't be synced.
-			// If you find a core meta_key which is currently synced and should NOT be, 
+			// If you find a core meta_key which is currently synced and should NOT be,
 			// please submit a patch to the sync_meta_key method on this class. Thanks.
-			if ( apply_filters( 'bbl_sync_meta_key', true, $current_meta_key ) )
-				delete_post_meta( $post_id, $current_meta_key );
+			if ( apply_filters( 'bbl_sync_meta_key', true, $current_meta_key ) ) {
+				delete_post_meta( $post_id, $current_meta_key ); }
 		}
 
 		// Now add meta in again from the origin post
 		$origin_post = bbl_get_post_in_lang( $post_id, bbl_get_default_lang_code() );
 
 		$metas = get_post_meta( $origin_post->ID );
-		if ( ! $metas )
-			return;
+		if ( ! $metas ) {
+			return; }
 
 		foreach ( $metas as $meta_key => & $meta_value ) {
 			// Some metadata shouldn't be synced
-			if ( ! apply_filters( 'bbl_sync_meta_key', true, $meta_key ) )
-				continue;
+			if ( ! apply_filters( 'bbl_sync_meta_key', true, $meta_key ) ) {
+				continue; }
 			// The meta could be an array stored in a single postmeta row or an
 			// array of values from multiple rows; work out which we have.
 			$val_multi = get_post_meta( $origin_post->ID, $meta_key );
@@ -1699,11 +1680,11 @@ class Babble_Post_Public extends Babble_Plugin {
 	 **/
 	function get_transid( $post, $create = true ) {
 		$post = get_post( $post );
-		if( ! is_object( $post) ){
+		if ( ! is_object( $post ) ) {
 			return false;
 		}
-		if ( ! $post->ID )
-			return false;
+		if ( ! $post->ID ) {
+			return false; }
 		if (  $transid = wp_cache_get( $post->ID, 'bbl_post_transids' ) ) {
 			return $transid;
 		}
@@ -1711,8 +1692,8 @@ class Babble_Post_Public extends Babble_Plugin {
 		$transids = (array) wp_get_object_terms( $post->ID, 'post_translation', array( 'fields' => 'ids' ) );
 		// "There can be only one" (so we'll just drop the others)
 		$transid = false;
-		if ( isset( $transids[ 0 ] ) ) {
-			$transid = $transids[ 0 ];
+		if ( isset( $transids[0] ) ) {
+			$transid = $transids[0];
 		} else {
 			if ( $create ) {
 				$transid = $this->set_transid( $post );
@@ -1738,26 +1719,24 @@ class Babble_Post_Public extends Babble_Plugin {
 	 **/
 	function set_transid( $post, $transid = false ) {
 		$post = get_post( $post );
-		if ( ! isset( $post->ID ) )
-			return false;
+		if ( ! isset( $post->ID ) ) {
+			return false; }
 		// @FIXME: Abstract the code for generating and associating a new TransID
 		if ( ! $transid ) {
 			$transid_name = 'post_transid_' . uniqid();
 			$result = wp_insert_term( $transid_name, 'post_translation', array() );
-			if ( is_wp_error( $result ) )
-				bbl_log( "Problem creating a new Post TransID: " . print_r( $result, true ) );
-			else
-				$transid = $result[ 'term_id' ];
+			if ( is_wp_error( $result ) ) {
+				bbl_log( 'Problem creating a new Post TransID: ' . print_r( $result, true ) ); } else { 				$transid = $result['term_id']; }
 			// Delete anything in there currently
 			wp_cache_delete( $transid, 'bbl_post_translations' );
 		}
-		$term = get_term($transid, 'post_translation');
+		$term = get_term( $transid, 'post_translation' );
 		$result = wp_set_object_terms( $post->ID, $term->slug, 'post_translation' );
 
 		update_post_meta( $post->ID, 'bbl_post_translation', $term->name );
 
-		if ( is_wp_error( $result ) )
-			bbl_log( "Problem associating TransID with new posts: " . print_r( $result, true ) );
+		if ( is_wp_error( $result ) ) {
+			bbl_log( 'Problem associating TransID with new posts: ' . print_r( $result, true ) ); }
 
 		$this->clean_post_cache( $post->ID );
 
@@ -1781,7 +1760,7 @@ class Babble_Post_Public extends Babble_Plugin {
 	 **/
 	protected function get_features_supported_by_post_type( $post_type ) {
 		global $_wp_post_type_features;
-		return (array) $_wp_post_type_features[$post_type];
+		return (array) $_wp_post_type_features[ $post_type ];
 	}
 
 	/**
@@ -1791,15 +1770,15 @@ class Babble_Post_Public extends Babble_Plugin {
 	 * @return boolean True if we are on media upload generally, and the specific tab if specified
 	 **/
 	protected function is_media_upload_tab( $tab = null ) {
-		if ( ! is_admin() )
-			return false;
-		if ( 'media-upload.php' != basename( $_SERVER[ 'SCRIPT_NAME' ] ) ) {
+		if ( ! is_admin() ) {
+			return false; }
+		if ( 'media-upload.php' != basename( $_SERVER['SCRIPT_NAME'] ) ) {
 			return false;
 		}
 		if ( is_null( $tab ) ) {
 			return true;
 		}
-		if ( isset( $_GET[ 'tab' ] ) || $tab == sanitize_text_field( $_GET[ 'tab' ] ) ) {
+		if ( isset( $_GET['tab'] ) || $tab == sanitize_text_field( $_GET['tab'] ) ) {
 			return true;
 		}
 		return false;
@@ -1811,9 +1790,9 @@ class Babble_Post_Public extends Babble_Plugin {
 	 * @return boolean True if we are viewing the media manager
 	 **/
 	protected function is_media_manager() {
-		if ( ! is_admin() )
-			return false;
-		if ( !isset( $_POST['action'] ) ) {
+		if ( ! is_admin() ) {
+			return false; }
+		if ( ! isset( $_POST['action'] ) ) {
 			return false;
 		}
 		if ( 'query-attachments' == $_POST['action'] ) {
@@ -1831,7 +1810,7 @@ class Babble_Post_Public extends Babble_Plugin {
 		global $wpdb;
 		$meta_keys = array(
 			'_thumbnail_id',
-			'_wp_old_slug' ,
+			'_wp_old_slug',
 			'_wp_page_template',
 			'_wp_trash_meta_status',
 			'_wp_trash_meta_time',
@@ -1860,32 +1839,32 @@ class Babble_Post_Public extends Babble_Plugin {
 		$option_name = 'bbl_post_public_version';
 		$version = get_option( $option_name, 0 );
 
-		if ( $version == $this->version )
-			return;
+		if ( $version == $this->version ) {
+			return; }
 
 		if ( $start_time = get_option( "{$option_name}_running", false ) ) {
 			$time_diff = time() - $start_time;
 			// Check the lock is less than 30 mins old, and if it is, bail
 			if ( $time_diff < ( 60 * 30 ) ) {
-				bbl_log( "Babble Post Public: Existing update routine has been running for less than 30 minutes" );
+				bbl_log( 'Babble Post Public: Existing update routine has been running for less than 30 minutes' );
 				return;
 			}
-			bbl_log( "Babble Post Public: Update routine is running, but older than 30 minutes; going ahead regardless" );
+			bbl_log( 'Babble Post Public: Update routine is running, but older than 30 minutes; going ahead regardless' );
 		} else {
 			add_option( "{$option_name}_running", time(), null, 'no' );
 		}
 
 		if ( $version < 9 ) {
-			bbl_log( "Babble Post Public: Start pruning metadata" );
+			bbl_log( 'Babble Post Public: Start pruning metadata' );
 			$this->prune_post_meta();
-			bbl_log( "Babble Post Public: Remove excess post meta" );
+			bbl_log( 'Babble Post Public: Remove excess post meta' );
 		}
 
 		// N.B. Remember to increment $this->version above when you add a new IF
 
 		update_option( $option_name, $this->version );
 		delete_option( "{$option_name}_running", true, null, 'no' );
-		bbl_log( "Babble Post Public: Done upgrade, now at version " . $this->version );
+		bbl_log( 'Babble Post Public: Done upgrade, now at version ' . $this->version );
 	}
 
 	/**
@@ -1909,17 +1888,16 @@ class Babble_Post_Public extends Babble_Plugin {
 		return (bool) count( $wpdb->get_results( $sql ) );
 	}
 
-	function admin_head(){
+	function admin_head() {
 		global $current_screen;
 
-		if ( !class_exists( 'acf' ) ) {
+		if ( ! class_exists( 'acf' ) ) {
 			return;
 		}
 
-		if ( !isset( $current_screen ) || !isset( $current_screen->post_type ) ) {
+		if ( ! isset( $current_screen ) || ! isset( $current_screen->post_type ) ) {
 			return;
 		}
-
 
 		if ( 'post' === $current_screen->base && isset( $this->post_types[ $current_screen->post_type ] ) ) {
 			add_filter( 'acf/location/match_field_groups', array( &$this, 'post_match_field_groups' ), 999, 2 );
@@ -1943,14 +1921,14 @@ class Babble_Post_Public extends Babble_Plugin {
 	}
 	function hidden_meta_boxes( $hidden ) {
 		global $current_screen;
-		if ( is_string( $current_screen ) ){
+		if ( is_string( $current_screen ) ) {
 			$current_screen = convert_to_screen( $current_screen );
 		}
 
 		return $hidden;
 	}
 
-	function default_hidden_meta_boxes( $hidden, $screen ){
+	function default_hidden_meta_boxes( $hidden, $screen ) {
 
 	}
 }

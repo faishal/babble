@@ -70,21 +70,21 @@ class Babble_Taxonomies extends Babble_Plugin {
 	 *
 	 * @return mixed
 	 */
-	function widget_tag_cloud_args( $args ){
-		if ( empty( $args[ 'taxonomy' ] ) ){
-			$args[ 'taxonomy' ] = 'category';
+	function widget_tag_cloud_args( $args ) {
+		if ( empty( $args['taxonomy'] ) ) {
+			$args['taxonomy'] = 'category';
 		}
 
-		if( false === bbl_is_default_lang() ){
-			if( isset( $this->lang_map[bbl_get_current_lang_code()] ) && isset( $this->lang_map[bbl_get_current_lang_code()][$args['taxonomy']])){
-				$args['taxonomy'] = $this->lang_map[bbl_get_current_lang_code()][$args['taxonomy']];
+		if ( false === bbl_is_default_lang() ) {
+			if ( isset( $this->lang_map[ bbl_get_current_lang_code() ] ) && isset( $this->lang_map[ bbl_get_current_lang_code() ][ $args['taxonomy'] ] ) ) {
+				$args['taxonomy'] = $this->lang_map[ bbl_get_current_lang_code() ][ $args['taxonomy'] ];
 			}
 		}
 
 		return $args;
 	}
-	function taxonomy_template($template){
-		if( bbl_is_default_lang() ) {
+	function taxonomy_template( $template ) {
+		if ( bbl_is_default_lang() ) {
 			return $template;
 		}
 
@@ -98,15 +98,13 @@ class Babble_Taxonomies extends Babble_Plugin {
 			}
 
 			$templates[] = 'category.php';
-		}
-		else if ( 'post_tag' == $base_taxonomy ) {
+		} else if ( 'post_tag' == $base_taxonomy ) {
 			if ( ! empty( $term->slug ) ) {
 				$templates[] = "tag-{$term->slug}.php";
 				$templates[] = "tag-{$term->term_id}.php";
 			}
 			$templates[] = 'tag.php';
-		}
-		else {
+		} else {
 			if ( ! empty( $term->slug ) ) {
 				$taxonomy    = $term->taxonomy;
 				$templates[] = "taxonomy-$taxonomy-{$term->slug}.php";
@@ -165,11 +163,11 @@ class Babble_Taxonomies extends Babble_Plugin {
 		}
 
 		// Use the Babble term counting function, unless the taxonomy registrant
-		// has defined their own – in which case we'll just have to hope against 
+		// has defined their own – in which case we'll just have to hope against
 		// hope that it's Babble aware :S
 		// FIXME: Setting this in the following fashion seems hacky… I feel uncomfortable.
-		if ( empty( $GLOBALS[ 'wp_taxonomies' ][ $taxonomy ]->update_count_callback ) ) {
-			$GLOBALS[ 'wp_taxonomies' ][ $taxonomy ]->update_count_callback = array( & $this, 'update_post_term_count' );
+		if ( empty( $GLOBALS['wp_taxonomies'][ $taxonomy ]->update_count_callback ) ) {
+			$GLOBALS['wp_taxonomies'][ $taxonomy ]->update_count_callback = array( & $this, 'update_post_term_count' );
 		}
 
 		// Untranslated taxonomies do not have shadow equivalents in each language,
@@ -199,31 +197,31 @@ class Babble_Taxonomies extends Babble_Plugin {
 
 		// @FIXME: Is it reckless to convert ALL object instances in $args to an array?
 		foreach ( $args as $key => & $arg ) {
-			if ( is_object( $arg ) )
-				$arg = get_object_vars( $arg );
+			if ( is_object( $arg ) ) {
+				$arg = get_object_vars( $arg ); }
 			// Don't set any args reserved for built-in post_types
-			if ( '_' == substr( $key, 0, 1 ) )
-				unset( $args[ $key ] );
+			if ( '_' == substr( $key, 0, 1 ) ) {
+				unset( $args[ $key ] ); }
 		}
 
 		#$args[ 'rewrite' ] = false;
-		unset( $args[ 'name' ] );
-		unset( $args[ 'object_type' ] );
+		unset( $args['name'] );
+		unset( $args['object_type'] );
 
-		$slug = ( $args[ 'rewrite' ][ 'slug' ] ) ? $args[ 'rewrite' ][ 'slug' ] : $taxonomy;
+		$slug = ( $args['rewrite']['slug'] ) ? $args['rewrite']['slug'] : $taxonomy;
 
 		foreach ( $langs as $lang ) {
 			$new_args = $args;
 			$new_object_type = array();
 			// N.B. Here we assume that the taxonomy is on a post type
-			foreach( $object_type as $ot )
-				$new_object_type[] = bbl_get_post_type_in_lang( $ot, $lang->code );
+			foreach ( $object_type as $ot ) {
+				$new_object_type[] = bbl_get_post_type_in_lang( $ot, $lang->code ); }
 
-			if ( false !== $args[ 'rewrite' ] ) {
-				if ( ! is_array( $new_args[ 'rewrite' ] ) )
-					$new_args[ 'rewrite' ] = array();
+			if ( false !== $args['rewrite'] ) {
+				if ( ! is_array( $new_args['rewrite'] ) ) {
+					$new_args['rewrite'] = array(); }
 				// Do I not need to add this query_var into the query_vars filter? It seems not.
-				$new_args[ 'query_var' ] = $new_args[ 'rewrite' ][ 'slug' ] = $this->get_slug_in_lang( $slug, $lang->code );
+				$new_args['query_var'] = $new_args['rewrite']['slug'] = $this->get_slug_in_lang( $slug, $lang->code );
 			}
 
 			// @FIXME: Note currently we are in danger of a taxonomy name being longer than 32 chars
@@ -231,8 +229,8 @@ class Babble_Taxonomies extends Babble_Plugin {
 			$new_taxonomy = sanitize_key( strtolower( "{$taxonomy}_{$lang->code}" ) );
 
 			$this->taxonomies[ $new_taxonomy ] = $taxonomy;
-			if ( ! isset( $this->lang_map[ $lang->code ] ) || ! is_array( $this->lang_map[ $lang->code ] ) )
-				$this->lang_map[ $lang->code ] = array();
+			if ( ! isset( $this->lang_map[ $lang->code ] ) || ! is_array( $this->lang_map[ $lang->code ] ) ) {
+				$this->lang_map[ $lang->code ] = array(); }
 			$this->lang_map[ $lang->code ][ $taxonomy ] = $new_taxonomy;
 
 			register_taxonomy( $new_taxonomy, $new_object_type, $new_args );
@@ -248,7 +246,7 @@ class Babble_Taxonomies extends Babble_Plugin {
 	}
 
 	public function is_taxonomy_translated( $taxonomy ) {
-		if( in_array( $taxonomy, $this->ignored_taxonomies() ) ) {
+		if ( in_array( $taxonomy, $this->ignored_taxonomies() ) ) {
 			return false;
 		}
 
@@ -366,15 +364,15 @@ class Babble_Taxonomies extends Babble_Plugin {
 		// START copying from get_term_link, replacing $taxonomy with $base_taxonomy
 		global $wp_rewrite;
 
-		if ( !is_object($term) ) {
-			if ( is_int($term) ) {
-				$term = &get_term($term, $base_taxonomy);
+		if ( ! is_object( $term ) ) {
+			if ( is_int( $term ) ) {
+				$term = &get_term( $term, $base_taxonomy );
 			} else {
-				$term = $this->cached_get_term_by('slug', $term, $base_taxonomy);
+				$term = $this->cached_get_term_by( 'slug', $term, $base_taxonomy );
 			}
 		}
 
-		if ( !is_object($term) ) {
+		if ( ! is_object( $term ) ) {
 			$term = new WP_Error( 'invalid_term', esc_html__( 'Empty Term', 'babble' ) );
 		}
 
@@ -382,12 +380,12 @@ class Babble_Taxonomies extends Babble_Plugin {
 			return $term;
 		}
 
-		$termlink = $wp_rewrite->get_extra_permastruct($base_taxonomy);
+		$termlink = $wp_rewrite->get_extra_permastruct( $base_taxonomy );
 
 		$slug = $term->slug;
-		$t = get_taxonomy($base_taxonomy);
+		$t = get_taxonomy( $base_taxonomy );
 
-		if ( empty($termlink) ) {
+		if ( empty( $termlink ) ) {
 			if ( 'category' == $base_taxonomy ) {
 				$termlink = '?cat=' . $term->term_id;
 			} elseif ( $t->query_var ) {
@@ -395,22 +393,22 @@ class Babble_Taxonomies extends Babble_Plugin {
 			} else {
 				$termlink = "?taxonomy=$base_taxonomy&term=$slug";
 			}
-			$termlink = home_url($termlink);
+			$termlink = home_url( $termlink );
 		} else {
 			if ( $t->rewrite['hierarchical'] ) {
 				$hierarchical_slugs = array();
-				$ancestors = get_ancestors($term->term_id, $base_taxonomy);
-				foreach ( (array)$ancestors as $ancestor ) {
-					$ancestor_term = get_term($ancestor, $base_taxonomy);
+				$ancestors = get_ancestors( $term->term_id, $base_taxonomy );
+				foreach ( (array) $ancestors as $ancestor ) {
+					$ancestor_term = get_term( $ancestor, $base_taxonomy );
 					$hierarchical_slugs[] = $ancestor_term->slug;
 				}
-				$hierarchical_slugs = array_reverse($hierarchical_slugs);
+				$hierarchical_slugs = array_reverse( $hierarchical_slugs );
 				$hierarchical_slugs[] = $slug;
-				$termlink = str_replace("%$base_taxonomy%", implode('/', $hierarchical_slugs), $termlink);
+				$termlink = str_replace( "%$base_taxonomy%", implode( '/', $hierarchical_slugs ), $termlink );
 			} else {
-				$termlink = str_replace("%$base_taxonomy%", $slug, $termlink);
+				$termlink = str_replace( "%$base_taxonomy%", $slug, $termlink );
 			}
-			$termlink = home_url( user_trailingslashit($termlink, 'category') );
+			$termlink = home_url( user_trailingslashit( $termlink, 'category' ) );
 		}
 		// STOP copying from get_term_link
 
@@ -465,8 +463,8 @@ class Babble_Taxonomies extends Babble_Plugin {
 		}
 
 		// Sequester the original query, in case we need it to get the default content later
-		if ( ! isset( $wp->query_vars[ 'bbl_tax_original_query' ] ) ) {
-			$wp->query_vars[ 'bbl_tax_original_query' ] = $wp->query_vars;
+		if ( ! isset( $wp->query_vars['bbl_tax_original_query'] ) ) {
+			$wp->query_vars['bbl_tax_original_query'] = $wp->query_vars;
 		}
 
 		$taxonomy 	= false;
@@ -476,17 +474,17 @@ class Babble_Taxonomies extends Babble_Plugin {
 		$lang_taxonomies = array();
 		foreach ( $taxonomies as $taxonomy => $tax_obj ) {
 			$tax = $this->get_taxonomy_in_lang( $taxonomy, bbl_get_current_lang_code() );
-			$lang_taxonomies[ $tax_obj->rewrite[ 'slug' ] ] = $tax;
+			$lang_taxonomies[ $tax_obj->rewrite['slug'] ] = $tax;
 		}
 
-		if ( isset( $wp->query_vars[ 'tag' ] ) ) {
-			$taxonomy = $this->get_taxonomy_in_lang( 'post_tag', $wp->query_vars[ 'lang' ] );
-			$terms = $wp->query_vars[ 'tag' ];
-			unset( $wp->query_vars[ 'tag' ] );
-		} else if ( isset( $wp->query_vars[ 'category_name' ] ) ) {
-			$taxonomy = $this->get_taxonomy_in_lang( 'category', $wp->query_vars[ 'lang' ] );
-			$terms = $wp->query_vars[ 'category_name' ];
-			unset( $wp->query_vars[ 'category_name' ] );
+		if ( isset( $wp->query_vars['tag'] ) ) {
+			$taxonomy = $this->get_taxonomy_in_lang( 'post_tag', $wp->query_vars['lang'] );
+			$terms = $wp->query_vars['tag'];
+			unset( $wp->query_vars['tag'] );
+		} else if ( isset( $wp->query_vars['category_name'] ) ) {
+			$taxonomy = $this->get_taxonomy_in_lang( 'category', $wp->query_vars['lang'] );
+			$terms = $wp->query_vars['category_name'];
+			unset( $wp->query_vars['category_name'] );
 		} else {
 			$taxonomies = array();
 			foreach ( $lang_taxonomies as $slug => $tax ) {
@@ -507,17 +505,17 @@ class Babble_Taxonomies extends Babble_Plugin {
 					}
 					$post_types = array_unique( $post_types );
 				}
-				$wp->query_vars[ 'post_type' ] = $post_types;
+				$wp->query_vars['post_type'] = $post_types;
 			}
 		}
 
 		if ( $taxonomy && $terms ) {
 
-			if ( ! isset( $wp->query_vars[ 'tax_query' ] ) || ! is_array( $wp->query_vars[ 'tax_query' ] ) ) {
-				$wp->query_vars[ 'tax_query' ] = array();
+			if ( ! isset( $wp->query_vars['tax_query'] ) || ! is_array( $wp->query_vars['tax_query'] ) ) {
+				$wp->query_vars['tax_query'] = array();
 			}
 
-			$wp->query_vars[ 'tax_query' ][] = array(
+			$wp->query_vars['tax_query'][] = array(
 				'taxonomy' => $taxonomy,
 				'field' => 'slug',
 				'terms' => $terms,
@@ -585,7 +583,6 @@ class Babble_Taxonomies extends Babble_Plugin {
 
 				$result = wp_set_object_terms( $translation->ID, $translated_terms, $translated_taxonomy, $append );
 			}
-
 		} else {
 
 			// Here we assume that this taxonomy is on a post type
@@ -596,7 +593,6 @@ class Babble_Taxonomies extends Babble_Plugin {
 				}
 				wp_set_object_terms( $translation->ID, $terms, $taxonomy, $append );
 			}
-
 		}
 
 		$this->no_recursion = false;
@@ -684,7 +680,7 @@ class Babble_Taxonomies extends Babble_Plugin {
 		// Get all the translations in one cached DB query
 		$existing_terms = get_terms( $taxonomies, array( 'include' => $term_ids, 'hide_empty' => false ) );
 
-		// Finally, we're ready to return the terms in this 
+		// Finally, we're ready to return the terms in this
 		// translation group.
 		$terms = array();
 		foreach ( $existing_terms as $t ) {
@@ -705,7 +701,7 @@ class Babble_Taxonomies extends Babble_Plugin {
 	 * @param boolean $fallback If true: if a term is not available, fallback to the default language content (defaults to true)
 	 * @return object|boolean The WP Term object, or if $fallback was false and no post then returns false
 	 **/
-	public function get_term_in_lang( $term, $taxonomy, $lang_code, $fallback = true  ) {
+	public function get_term_in_lang( $term, $taxonomy, $lang_code, $fallback = true ) {
 		$translations = $this->get_term_translations( $term, $taxonomy );
 		if ( isset( $translations[ $lang_code ] ) ) {
 			return $translations[ $lang_code ];
@@ -742,7 +738,7 @@ class Babble_Taxonomies extends Babble_Plugin {
 			'lang'            => $lang_code,
 			'post_type'       => 'bbl_job',
 		);
-		$url = esc_url(add_query_arg( $args, $url ));
+		$url = esc_url( add_query_arg( $args, $url ) );
 		return $url;
 	}
 
@@ -787,8 +783,8 @@ class Babble_Taxonomies extends Babble_Plugin {
 	 **/
 	public function get_base_taxonomies() {
 		$taxonomies = array();
-		foreach ( $this->taxonomies as $taxonomy )
-			$taxonomies[ $taxonomy ] = get_taxonomy( $taxonomy );
+		foreach ( $this->taxonomies as $taxonomy ) {
+			$taxonomies[ $taxonomy ] = get_taxonomy( $taxonomy ); }
 		return $taxonomies;
 	}
 
@@ -909,7 +905,7 @@ class Babble_Taxonomies extends Babble_Plugin {
 			}
 
 			if ( $object_types ) {
-				$count += (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $wpdb->term_relationships, $wpdb->posts WHERE $wpdb->posts.ID = $wpdb->term_relationships.object_id AND post_status = 'publish' AND post_type IN ('" . implode("', '", $object_types ) . "') AND term_taxonomy_id = %d", $term ) );
+				$count += (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM $wpdb->term_relationships, $wpdb->posts WHERE $wpdb->posts.ID = $wpdb->term_relationships.object_id AND post_status = 'publish' AND post_type IN ('" . implode( "', '", $object_types ) . "') AND term_taxonomy_id = %d", $term ) );
 			}
 
 			do_action( 'edit_term_taxonomy', $term, $taxonomy );
@@ -931,13 +927,13 @@ class Babble_Taxonomies extends Babble_Plugin {
 		}
 
 		if ( ! $target_term_id ) {
-			throw new exception( "Please specify a target term_id" );
+			throw new exception( 'Please specify a target term_id' );
 		}
 
 		$transids = wp_get_object_terms( $target_term_id, 'term_translation', array( 'fields' => 'ids' ) );
 		// "There can be only one" (so we'll just drop the others)
-		if ( isset( $transids[ 0 ] ) ) {
-			$transid = $transids[ 0 ];
+		if ( isset( $transids[0] ) ) {
+			$transid = $transids[0];
 		} else {
 			$transid = $this->set_transid( $target_term_id );
 		}
@@ -957,22 +953,22 @@ class Babble_Taxonomies extends Babble_Plugin {
 	 **/
 	public function set_transid( $target_term_id, $transid = null ) {
 		if ( ! $target_term_id ) {
-			throw new exception( "Please specify a target term_id" );
+			throw new exception( 'Please specify a target term_id' );
 		}
 
 		if ( ! $transid ) {
 			$transid_name = 'term_transid_' . uniqid();
 			$result = wp_insert_term( $transid_name, 'term_translation', array() );
 			if ( is_wp_error( $result ) ) {
-				bbl_log( "Problem creating a new Term TransID: " . print_r( $result, true ) );
+				bbl_log( 'Problem creating a new Term TransID: ' . print_r( $result, true ) );
 			} else {
-				$transid = $result[ 'term_id' ];
+				$transid = $result['term_id'];
 			}
 		}
 
 		$result = wp_set_object_terms( $target_term_id, absint( $transid ), 'term_translation' );
 		if ( is_wp_error( $result ) ) {
-			bbl_log( "Problem associating TransID with new posts: " . print_r( $result, true ) );
+			bbl_log( 'Problem associating TransID with new posts: ' . print_r( $result, true ) );
 		}
 
 		wp_cache_delete( $target_term_id, 'bbl_term_transids' );
@@ -991,8 +987,7 @@ class Babble_Taxonomies extends Babble_Plugin {
 	protected function maybe_resync_terms( $post_id, $post ) {
 		// Check that the fields were included on the screen, we
 		// can do this by checking for the presence of the nonce.
-		$nonce = isset( $_POST[ '_bbl_metabox_resync' ] ) ? $_POST[ '_bbl_metabox_resync' ] : false;
-
+		$nonce = isset( $_POST['_bbl_metabox_resync'] ) ? $_POST['_bbl_metabox_resync'] : false;
 
 		if ( ! in_array( $post->post_status, array( 'draft', 'publish' ) ) ) {
 			return;
@@ -1002,7 +997,7 @@ class Babble_Taxonomies extends Babble_Plugin {
 			return;
 		}
 
-		$posted_id = isset( $_POST[ 'post_ID' ] ) ? intval( $_POST[ 'post_ID' ] ) : 0;
+		$posted_id = isset( $_POST['post_ID'] ) ? intval( $_POST['post_ID'] ) : 0;
 		if ( $posted_id != $post_id ) {
 			return;
 		}
@@ -1030,7 +1025,7 @@ class Babble_Taxonomies extends Babble_Plugin {
 			$term_ids = array_map( 'absint', $term_ids );
 			$result = wp_set_object_terms( $post_id, $term_ids, $taxonomy );
 			if ( is_wp_error( $result, true ) ) {
-				throw new exception( "Problem syncing terms: " . print_r( $terms, true ), " Error: " . print_r( $result, true ) );
+				throw new exception( 'Problem syncing terms: ' . print_r( $terms, true ), ' Error: ' . print_r( $result, true ) );
 			}
 		}
 	}
@@ -1062,41 +1057,38 @@ class Babble_Taxonomies extends Babble_Plugin {
 	 */
 	function cached_get_term_by( $field, $value, $taxonomy, $output = OBJECT, $filter = 'raw' ) {
 		// ID lookups are cached
-		if ( 'id' == $field )
-			return get_term_by( $field, $value, $taxonomy, $output, $filter );
+		if ( 'id' == $field ) {
+			return get_term_by( $field, $value, $taxonomy, $output, $filter ); }
 
 		$cache_key = $field . '|' . $taxonomy . '|' . md5( $value );
 		$term_id = wp_cache_get( $cache_key, 'get_term_by' );
 
 		if ( false === $term_id ) {
 			$term = get_term_by( $field, $value, $taxonomy );
-			if ( $term && ! is_wp_error( $term ) )
-				wp_cache_set( $cache_key, $term->term_id, 'get_term_by' );
-			else
-				wp_cache_set( $cache_key, 0, 'get_term_by' ); // if we get an invalid value, let's cache it anyway
+			if ( $term && ! is_wp_error( $term ) ) {
+				wp_cache_set( $cache_key, $term->term_id, 'get_term_by' ); } else { 				wp_cache_set( $cache_key, 0, 'get_term_by' ); // if we get an invalid value, let's cache it anyway
+				}
 		} else {
 			$term = get_term( $term_id, $taxonomy, $output, $filter );
 		}
 
-		if ( is_wp_error( $term ) )
-			$term = false;
+		if ( is_wp_error( $term ) ) {
+			$term = false; }
 
-		return $term;
+			return $term;
 	}
 
-	function wp_flush_get_term_by_cache( $term_id, $taxonomy ){
+	function wp_flush_get_term_by_cache( $term_id, $taxonomy ) {
 		$term = get_term_by( 'id', $term_id, $taxonomy );
 		if ( ! $term ) {
 			return;
 		}
-		foreach( array( 'name', 'slug' ) as $field ) {
+		foreach ( array( 'name', 'slug' ) as $field ) {
 			$cache_key = $field . '|' . $taxonomy . '|' . md5( $term->$field );
 			$cache_group = 'get_term_by';
 			wp_cache_delete( $cache_key, $cache_group );
 		}
 	}
-
-
 }
 
 global $bbl_taxonomies;

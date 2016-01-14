@@ -1,5 +1,5 @@
 <?php
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
 
@@ -17,7 +17,7 @@ class Babble_Notification {
 	static function init() {
 		add_action( 'babble_post_ready_for_translation', array(
 			get_called_class(),
-			'babble_post_ready_for_translation'
+			'babble_post_ready_for_translation',
 		), 10, 3 );
 
 		//Register setting page
@@ -49,7 +49,6 @@ class Babble_Notification {
 		$post_title = _draft_or_post_title( $post_id );
 		$post_type  = get_post_type_object( $post->post_type )->labels->singular_name;
 
-
 		$subject = sprintf( __( '[%1$s] New %2$s is ready for translation : "%3$s"', 'babble' ), $blogname, $post_type, $post_title );
 
 		$body  = sprintf( __( 'A new %1$s (#%2$s "%3$s") was marked ready for translation by %4$s %5$s', 'babble' ), $post_type, $post_id, $post_title, $current_user->display_name, $current_user->user_email ) . "\r\n";
@@ -70,7 +69,6 @@ class Babble_Notification {
 			$body .= "\r\n";
 		}
 
-
 		$body .= sprintf( __( '== %s Details ==', 'babble' ), $post_type ) . "\r\n";
 		$body .= sprintf( __( 'Title: %s', 'babble' ), $post_title ) . "\r\n";
 		/* translators: 1: author name, 2: author email */
@@ -87,12 +85,10 @@ class Babble_Notification {
 		$body .= sprintf( __( 'Edit: %s', 'babble' ), $edit_link ) . "\r\n";
 		$body .= sprintf( __( 'View: %s', 'babble' ), $view_link ) . "\r\n";
 
-
 		$body .= "\r\n--------------------\r\n";
 		$body .= sprintf( __( 'This email was sent %s.', 'edit-flow' ), date( 'r' ) );
 		$body .= "\r\n \r\n";
-		$body .= get_option( 'blogname' ) . " | " . get_bloginfo( 'url' ) . " | " . admin_url( '/' ) . "\r\n";
-
+		$body .= get_option( 'blogname' ) . ' | ' . get_bloginfo( 'url' ) . ' | ' . admin_url( '/' ) . "\r\n";
 
 		$blogadmins = get_users( array( 'fields' => array( 'user_email' ), 'role' => 'administrator' ) );
 		foreach ( $blogadmins as $admin ) {
@@ -108,7 +104,7 @@ class Babble_Notification {
 	private static function is_notificaion_enable() {
 		$setting = get_option( self::$option_name, array() );
 
-		return ( isset( $setting[ 'is_enable' ] ) && '1' === $setting[ 'is_enable' ] );
+		return ( isset( $setting['is_enable'] ) && '1' === $setting['is_enable'] );
 	}
 
 	/**
@@ -117,7 +113,7 @@ class Babble_Notification {
 	public static function admin_menu() {
 		add_submenu_page( 'options-general.php', 'Babble', 'Babble', 'manage_options', 'babble-settings', array(
 			get_called_class(),
-			'options_page'
+			'options_page',
 		) );
 	}
 
@@ -130,12 +126,12 @@ class Babble_Notification {
 
 		add_settings_section( 'babble_notification_section', __( 'Notification', 'babble' ), array(
 			get_called_class(),
-			'settings_section_callback'
+			'settings_section_callback',
 		), 'babble_notification_page' );
 
 		add_settings_field( 'is_enable', __( 'Translation Notification', 'babble' ), array(
 			get_called_class(),
-			'is_enable_render'
+			'is_enable_render',
 		), 'babble_notification_page', 'babble_notification_section' );
 
 	}
@@ -143,7 +139,8 @@ class Babble_Notification {
 	/**
 	 * Render field UI for Transaltion notification switch
 	 */
-	public static function is_enable_render() { ?>
+	public static function is_enable_render() {
+	?>
 		<label for="<?php echo esc_attr( self::$option_name ); ?>_is_enable"><input type='checkbox'
 		                                                                            id="<?php echo esc_attr( self::$option_name ); ?>_is_enable"
 		                                                                            name='<?php echo esc_attr( self::$option_name ); ?>[is_enable]' <?php checked( self::is_notificaion_enable() ); ?>
@@ -160,7 +157,8 @@ class Babble_Notification {
 	/**
 	 * Render option page for babble
 	 */
-	public static function options_page() { ?>
+	public static function options_page() {
+	?>
 		<form action='options.php' method='post'>
 			<h2>Babble Settings</h2>
 			<?php
@@ -172,7 +170,6 @@ class Babble_Notification {
 	<?php
 
 	}
-
 }
 
 Babble_Notification::init();

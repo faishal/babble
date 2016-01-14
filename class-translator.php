@@ -6,7 +6,7 @@
  * @since 1.4
  */
 class Babble_Translator extends Babble_Plugin {
-    
+
 	/**
 	 * A version number used for cachebusting, rewrite rule
 	 * flushing, etc.
@@ -14,17 +14,17 @@ class Babble_Translator extends Babble_Plugin {
 	 * @var float
 	 **/
 	protected $version;
-	
-    public function __construct() {
-        $this->setup( 'babble-translator', 'plugin' );
-        
-        $this->add_action( 'admin_init', 'maybe_upgrade' );
+
+	public function __construct() {
+		$this->setup( 'babble-translator', 'plugin' );
+
+		$this->add_action( 'admin_init', 'maybe_upgrade' );
 
 		$this->version = 1;
-    }
+	}
 
 	/**
-	 * Called by admin_init, this method ensures we are all up to date and 
+	 * Called by admin_init, this method ensures we are all up to date and
 	 * so on.
 	 *
 	 * @return void
@@ -40,8 +40,8 @@ class Babble_Translator extends Babble_Plugin {
 			case 0:
 			default:
 
-				if ( !$role = get_role( 'translator' ) )
-					$role = add_role( 'translator', $role_name );
+				if ( ! $role = get_role( 'translator' ) ) {
+					$role = add_role( 'translator', $role_name ); }
 
 				$role->add_cap( 'read' );
 				$role->add_cap( 'edit_bbl_jobs' );
@@ -60,7 +60,6 @@ class Babble_Translator extends Babble_Plugin {
 		}
 
 	}
-
 }
 
 global $bbl_translator;

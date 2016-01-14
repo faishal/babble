@@ -106,8 +106,8 @@ function bbl_comments_template( $file = '/comments.php', $separate_comments = fa
 	}
 
 	$overridden_cpage = false;
-	if ( '' == get_query_var( 'cpage' ) && get_option( 'page_comments' ) ) {
-		set_query_var( 'cpage', 'newest' == get_option( 'default_comments_page' ) ? get_comment_pages_count() : 1 );
+	if ( '' === get_query_var( 'cpage' ) && get_option( 'page_comments' ) ) {
+		set_query_var( 'cpage', 'newest' === get_option( 'default_comments_page' ) ? get_comment_pages_count() : 1 );
 		$overridden_cpage = true;
 	}
 
@@ -177,7 +177,7 @@ class Bbl_Comment_Query {
 
 		$this->query_vars = wp_parse_args( $query_vars, $defaults );
 		do_action_ref_array( 'pre_get_comments', array( &$this ) );
-		extract( $this->query_vars, EXTR_SKIP );
+		extract( $this->query_vars, EXTR_SKIP ); // @codingStandardsIgnoreLine
 
 		// $args can be whatever, only use the args defined in defaults to compute the key
 		$key          = md5( serialize( compact( array_keys( $defaults ) ) ) );
@@ -200,19 +200,19 @@ class Bbl_Comment_Query {
 
 		$where = '';
 
-		$show_unapproved = ( '' != $unapproved_user_id || '' !== $unapproved_author || '' != $unapproved_author_email );
+		$show_unapproved = ( '' !== $unapproved_user_id || '' !== $unapproved_author || '' !== $unapproved_author_email );
 
 		if ( $show_unapproved ) {
 			$where .= ' ( ';
 		}
 
-		if ( 'hold' == $status ) {
+		if ( 'hold' === $status ) {
 			$where .= "comment_approved = '0'";
-		} elseif ( 'approve' == $status ) {
+		} elseif ( 'approve' === $status ) {
 			$where .= "comment_approved = '1'";
-		} elseif ( 'spam' == $status ) {
+		} elseif ( 'spam' === $status ) {
 			$where .= "comment_approved = 'spam'";
-		} elseif ( 'trash' == $status ) {
+		} elseif ( 'trash' === $status ) {
 			$where .= "comment_approved = 'trash'";
 		} else {
 			$where .= "( comment_approved = '0' OR comment_approved = '1' )";
@@ -232,7 +232,7 @@ class Bbl_Comment_Query {
 			$where .= ' ) ) ';
 		}
 
-		$order = ( 'ASC' == strtoupper( $order ) ) ? 'ASC' : 'DESC';
+		$order = ( 'ASC' === strtoupper( $order ) ) ? 'ASC' : 'DESC';
 
 		if ( ! empty( $orderby ) ) {
 			$ordersby = is_array( $orderby ) ? $orderby : preg_split( '/[,\s]/', $orderby );
@@ -281,7 +281,7 @@ class Bbl_Comment_Query {
 
 		if ( ! empty( $post_id ) ) {
 			$where .= $wpdb->prepare( ' AND comment_post_ID = %d', $post_id );
-		} else if ( '' != $post__in ) {
+		} else if ( '' !== $post__in ) {
 			$_post__in = implode( ',', array_map( 'absint', $post__in ) );
 			$where .= " AND comment_post_ID IN ($_post__in)";
 		}
@@ -291,9 +291,9 @@ class Bbl_Comment_Query {
 		if ( '' !== $karma ) {
 			$where .= $wpdb->prepare( ' AND comment_karma = %d', $karma );
 		}
-		if ( 'comment' == $type ) {
+		if ( 'comment' === $type ) {
 			$where .= " AND comment_type = ''";
-		} elseif ( 'pings' == $type ) {
+		} elseif ( 'pings' === $type ) {
 			$where .= ' AND comment_type IN ("pingback", "trackback")';
 		} elseif ( ! empty( $type ) ) {
 			$where .= $wpdb->prepare( ' AND comment_type = %s', $type );
@@ -324,7 +324,7 @@ class Bbl_Comment_Query {
 		if ( ! empty( $post_fields ) ) {
 			$join = "JOIN $wpdb->posts ON $wpdb->posts.ID = $wpdb->comments.comment_post_ID";
 			foreach ( $post_fields as $field_name => $field_value ) {
-				$where .= $wpdb->prepare( " AND {$wpdb->posts}.{$field_name} = %s", $field_value );
+				$where .= $wpdb->prepare( " AND {$wpdb->posts}.{$field_name} = %s", $field_value ); // @codingStandardsIgnoreLine
 			}
 		}
 
@@ -337,10 +337,10 @@ class Bbl_Comment_Query {
 		$query = "SELECT $fields FROM $wpdb->comments $join WHERE $where ORDER BY $orderby $order $limits";
 
 		if ( $count ) {
-			return $wpdb->get_var( $query );
+			return $wpdb->get_var( $query ); // @codingStandardsIgnoreLine
 		}
 
-		$comments = $wpdb->get_results( $query );
+		$comments = $wpdb->get_results( $query ); // @codingStandardsIgnoreLine
 		$comments = apply_filters_ref_array( 'the_comments', array( $comments, &$this ) );
 
 		wp_cache_add( $cache_key, $comments, 'comment' );

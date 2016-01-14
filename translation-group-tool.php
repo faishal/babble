@@ -74,11 +74,11 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 	 * @return void
 	 **/
 	public function load_tools_page() {
-		if ( ! $action = ( isset( $_GET['btgt_action'] ) ) ? sanitize_text_field( $_GET['btgt_action'] ) : false ) {
+		if ( ! $action = ( isset( $_GET['btgt_action'] ) ) ? sanitize_text_field( $_GET['btgt_action'] ) : false ) { // @codingStandardsIgnoreLine
 			return; }
 
-		$obj_id = ( isset( $_GET['obj_id'] ) ) ? intval( $_GET['obj_id'] ) : false;
-		$wp_nonce = ( isset( $_GET['_wpnonce'] ) ) ? sanitize_text_field( $_GET['_wpnonce'] ) : false;
+		$obj_id = ( isset( $_GET['obj_id'] ) ) ? intval( $_GET['obj_id'] ) : false; // @codingStandardsIgnoreLine
+		$wp_nonce = ( isset( $_GET['_wpnonce'] ) ) ? sanitize_text_field( $_GET['_wpnonce'] ) : false; // @codingStandardsIgnoreLine
 		switch ( $action ) {
 			case 'delete_from_groups':
 				if ( ! wp_verify_nonce( $wp_nonce, "btgt_delete_from_groups_$obj_id" ) ) {
@@ -102,7 +102,7 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 			'lang' => bbl_get_default_lang_code(),
 		);
 		$url = esc_url( add_query_arg( $args, admin_url( 'tools.php' ) ) );
-		$url .= '#' . sanitize_text_field( $_GET['anchor'] );
+		$url .= '#' . sanitize_text_field( $_GET['anchor'] ); // @codingStandardsIgnoreLine
 		wp_safe_redirect( $url );
 	}
 
@@ -116,12 +116,12 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 	 **/
 	public function load_post() {
 		$screen = get_current_screen();
-		if ( ! $post_id = isset( $_GET['post'] ) ? intval( $_GET['post'] ) : false ) {
+		if ( ! $post_id = isset( $_GET['post'] ) ? intval( $_GET['post'] ) : false ) { // @codingStandardsIgnoreLine
 			return; }
 		$post = get_post( $post_id );
 		if ( ! in_array( $post->post_status, array( 'draft', 'pending', 'publish' ) ) ) {
 			return; }
-		if ( bbl_get_post_lang_code( $post ) == bbl_get_default_lang_code() ) {
+		if ( bbl_get_post_lang_code( $post ) === bbl_get_default_lang_code() ) {
 			return; }
 		if ( $default_lang_post = bbl_get_post_in_lang( $post, bbl_get_default_lang_code() ) ) {
 			return; }
@@ -139,17 +139,17 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 		if ( ! in_array( $post->post_status, array( 'draft', 'publish' ) ) ) {
 			return; }
 
-		if ( ! isset( $_POST['_bbl_reconnect_nonce'] ) ) {
+		if ( ! isset( $_POST['_bbl_reconnect_nonce'] ) ) { // @codingStandardsIgnoreLine
 			return; }
 
-		$posted_id = isset( $_POST['post_ID'] ) ? intval( $_POST['post_ID'] ) : 0;
+		$posted_id = isset( $_POST['post_ID'] ) ? intval( $_POST['post_ID'] ) : 0; // @codingStandardsIgnoreLine
 		if ( $posted_id != $post_id ) {
 			return; }
 		// While we're at it, let's check the nonce
 		check_admin_referer( "bbl_reconnect_translation_$post_id", '_bbl_reconnect_nonce' );
 
 		// Check the user has set a transid
-		if ( ! $transid = isset( $_POST['bbl_transid'] ) ? intval( $_POST['bbl_transid'] ) : false ) {
+		if ( ! $transid = isset( $_POST['bbl_transid'] ) ? intval( $_POST['bbl_transid'] ) : false ) { // @codingStandardsIgnoreLine
 			return; }
 
 		// Check the transid the user has set actually exists
@@ -209,7 +209,7 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 			// bbl_get_base_post_type($post->post_type)
 			$base_post_type = bbl_get_base_post_type( $post->post_type );
 
-			if ( 'page' == $base_post_type ) {
+			if ( 'page' === $base_post_type ) {
 				$custom_page_template = get_post_meta( $original_post->ID, '_wp_page_template', true );
 				update_post_meta( $lang_post->ID, '_wp_page_template', $custom_page_template );
 			}
@@ -230,10 +230,10 @@ class BabbleTranslationGroupTool extends Babble_Plugin {
 	public function pre_sync_properties( $postdata, $origin_id ) {
 		$current_post = get_post( $postdata['ID'] );
 		$origin_post = get_post( $origin_id );
-		if ( $current_post->post_parent != $postdata['post_parent'] ) {
+		if ( $current_post->post_parent !== $postdata['post_parent'] ) {
 			$user = wp_get_current_user();
-			$remote_ip = $_SERVER['REMOTE_ADDR'];
-			$referer = $_SERVER['HTTP_REFERER'];
+			$remote_ip = $_SERVER['REMOTE_ADDR']; // @codingStandardsIgnoreLine
+			$referer = $_SERVER['HTTP_REFERER']; // @codingStandardsIgnoreLine
 			$lang = bbl_get_current_lang_code();
 			$origin_lang = bbl_get_post_lang_code( $origin_id );
 			bbl_log( "Babble: $user->user_login has changed {$postdata[ 'ID' ]} parent from $current_post->post_parent ($current_post->post_type) to {$postdata[ 'post_parent' ]}. \tOrigin: $origin_id. Origin lang: $origin_lang. IP $remote_ip. User lang: $lang. Referer $referer." );

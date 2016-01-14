@@ -35,7 +35,7 @@ class Babble_Updates extends Babble_Plugin {
 	 * @return EUAPI_Handler|null          An EUAPI_Handler if we're overriding updates for this plugin, null if not.
 	 */
 	public function euapi_plugin_handler( EUAPI_Handler $handler = null, EUAPI_Item $item ) {
-		if ( 'http://babbleplugin.com/' == $item->url ) {
+		if ( 'http://babbleplugin.com/' === $item->url ) {
 
 			$handler = new EUAPI_Handler_GitHub( array(
 				'type'       => $item->type,

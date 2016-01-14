@@ -21,9 +21,9 @@ class Babble_Widget extends WP_Widget {
 			'show_as' => 'dropdown',
 		), $args );
 
-		echo $args['before_widget'];
+		echo $args['before_widget']; // @codingStandardsIgnoreLine
 
-		echo $args['before_title'] . __( 'Languages', 'babble' ) . $args['after_title'];
+		echo $args['before_title'] . esc_html__( 'Languages', 'babble' ) . $args['after_title']; // @codingStandardsIgnoreLine
 
 		$list = bbl_get_switcher_links();
 
@@ -46,13 +46,13 @@ class Babble_Widget extends WP_Widget {
 						ability to create one; so here's a link
 						to allow him/her to do so
 						*/
-						echo '<option ' . $selected . 'class="' . esc_attr( $item['class'] ) . '" value="' . esc_url( $item['href'] ) . '">' . esc_html( $item['lang']->display_name ) . ' [' . __( 'Add' ) . ']</option>';
+						echo '<option ' . $selected . 'class="' . esc_attr( $item['class'] ) . '" value="' . esc_url( $item['href'] ) . '">' . esc_html( $item['lang']->display_name ) . ' [' . esc_html__( 'Add' ) . ']</option>'; // @codingStandardsIgnoreLine
 					} elseif ( $item['href'] ) {
 						/*
 						Means there is a translation of this page
 						into the language in question
 						*/
-						echo '<option ' . $selected . 'class="' . esc_attr( $item['class'] ) . '" value="' . esc_url( $item['href'] ) . '">' . esc_html( $item['lang']->display_name ) . '</option>';
+						echo '<option ' . $selected . 'class="' . esc_attr( $item['class'] ) . '" value="' . esc_url( $item['href'] ) . '">' . esc_html( $item['lang']->display_name ) . '</option>'; // @codingStandardsIgnoreLine
 					} elseif ( 'on' === $instance['show_if_unavailable'] ) {
 						/*
 						We're on the front end, but there is
@@ -80,7 +80,7 @@ class Babble_Widget extends WP_Widget {
 						ability to create one; so here's a link
 						to allow him/her to do so
 						*/
-						echo '<li><a href="' . esc_url( $item['href'] ) . '" class="' . esc_attr( $item['class'] ) . '">' . esc_html( $item['lang']->display_name ) . ' [' . __( 'Add', 'babble' ) . ']</a></li>';
+						echo '<li><a href="' . esc_url( $item['href'] ) . '" class="' . esc_attr( $item['class'] ) . '">' . esc_html( $item['lang']->display_name ) . ' [' . esc_html__( 'Add', 'babble' ) . ']</a></li>'; // @codingStandardsIgnoreLine
 					} elseif ( $item['href'] ) {
 						/*
 						Means there is a translation of this page
@@ -106,7 +106,7 @@ class Babble_Widget extends WP_Widget {
 
 		}
 
-		echo $args['after_widget'];
+		echo $args['after_widget']; // @codingStandardsIgnoreLine
 	}
 
 	function update( $new_instance, $old_instance ) {
@@ -126,7 +126,7 @@ class Babble_Widget extends WP_Widget {
 
 		?>
 		<p>
-			<?php _e( 'Show as:','babble' ); ?>
+			<?php esc_html_e( 'Show as:','babble' ); ?>
 			<select id="<?php echo esc_attr( $this->get_field_id( 'show_as' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'show_as' ) ); ?>">
 				<option value="dropdown" <?php selected( $instance['show_as'],'dropdown' ); ?>><?php esc_html_e( 'Dropdown','babble' ); ?></option>
 				<option value="list" <?php selected( $instance['show_as'],'list' ); ?>><?php esc_html_e( 'List','babble' ); ?></option>

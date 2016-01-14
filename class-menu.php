@@ -111,7 +111,7 @@ class Babble_Menus extends Babble_Plugin {
 	 * @return bool
 	 */
 	public function bbl_translated_post_type( $translated, $post_type ) {
-		if ( 'nav_menu_item' == $post_type ) {
+		if ( 'nav_menu_item' === $post_type ) {
 			return false;
 		}
 
@@ -149,7 +149,7 @@ class Babble_Menus extends Babble_Plugin {
 			return;
 		}
 
-		$q->query_vars['meta_query'] = array(
+		$q->query_vars['meta_query'] = array( // @codingStandardsIgnoreLine
 			array(
 				'key'     => '_menu_lang_code',
 				'value'   => bbl_get_current_lang_code(),

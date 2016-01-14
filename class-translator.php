@@ -41,7 +41,8 @@ class Babble_Translator extends Babble_Plugin {
 			default:
 
 				if ( ! $role = get_role( 'translator' ) ) {
-					$role = add_role( 'translator', $role_name ); }
+					$role = add_role( 'translator', $role_name );// @codingStandardsIgnoreLine
+				}
 
 				$role->add_cap( 'read' );
 				$role->add_cap( 'edit_bbl_jobs' );

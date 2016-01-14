@@ -116,12 +116,12 @@ class Babble_Plugin {
 		$file = str_replace( $ds, '/', __FILE__ );
 		$plugins_dir = str_replace( $ds, '/', dirname( __FILE__ ) );
 		// Setup the dir and url for this plugin/theme
-		if ( 'theme' == $type ) {
+		if ( 'theme' === $type ) {
 			// This is a theme
 			$this->type = 'theme';
 			$this->dir = get_stylesheet_directory();
 			$this->url = get_stylesheet_directory_uri();
-		} elseif ( stripos( $file, $plugins_dir ) !== false || 'plugin' == $type ) {
+		} elseif ( stripos( $file, $plugins_dir ) !== false || 'plugin' === $type ) {
 			// This is a plugin
 			$this->type = 'plugin';
 
@@ -179,9 +179,9 @@ class Babble_Plugin {
 	 * @author © John Godley
 	 **/
 	function add_action( $action, $function = '', $priority = 10, $accepted_args = 1 ) {
-		if ( $priority === null ) {
+		if ( null === $priority ) {
 			$priority = 10; }
-		add_action( $action, array( &$this, $function == '' ? $action : $function ), $priority, $accepted_args );
+		add_action( $action, array( &$this, '' === $function ? $action : $function ), $priority, $accepted_args );
 	}
 
 
@@ -196,7 +196,7 @@ class Babble_Plugin {
 	 * @author © John Godley
 	 **/
 	function add_filter( $filter, $function = '', $priority = 10, $accepted_args = 1 ) {
-		add_filter( $filter, array( &$this, $function == '' ? $filter : $function ), $priority, $accepted_args );
+		add_filter( $filter, array( &$this, '' === $function ? $filter : $function ), $priority, $accepted_args );
 	}
 
 
@@ -211,7 +211,7 @@ class Babble_Plugin {
 	 * @author © John Godley
 	 **/
 	function remove_filter( $filter, $function = '', $priority = 10, $accepted_args = 1 ) {
-		remove_filter( $filter, array( &$this, $function == '' ? $filter : $function ), $priority, $accepted_args );
+		remove_filter( $filter, array( &$this, '' === $function ? $filter : $function ), $priority, $accepted_args );
 	}
 
 
@@ -224,9 +224,9 @@ class Babble_Plugin {
 	 * @author © John Godley
 	 **/
 	function register_activation( $pluginfile = __FILE__, $function = '' ) {
-		if ( $this->type == 'plugin' ) {
-			add_action( 'activate_'.basename( dirname( $pluginfile ) ).'/'.basename( $pluginfile ), array( &$this, $function == '' ? 'activate' : $function ) );
-		} elseif ( $this->type == 'theme' ) {
+		if ( 'plugin' === $this->type ) {
+			add_action( 'activate_'.basename( dirname( $pluginfile ) ).'/'.basename( $pluginfile ), array( &$this, '' === $function ? 'activate' : $function ) );
+		} elseif ( 'theme' === $this->type ) {
 			$this->theme_activation_function = ( $function ) ? $function : 'activate';
 			add_action( 'load-themes.php', array( & $this, 'theme_activation' ) );
 		}
@@ -240,10 +240,10 @@ class Babble_Plugin {
 	 * @author Simon Wheatley
 	 **/
 	public function theme_activation() {
-		if ( ! isset( $_GET['activated'] ) ) {
+		if ( ! isset( $_GET['activated'] ) ) { // @codingStandardsIgnoreLine
 			return;
 		}
-		$activated = (bool) $_GET['activated'];
+		$activated = (bool) $_GET['activated']; // @codingStandardsIgnoreLine
 		if ( ! $activated ) {
 			return; }
 		if ( ! $this->theme_activation_function ) {
@@ -261,7 +261,7 @@ class Babble_Plugin {
 	 * @author © John Godley
 	 **/
 	function register_deactivation( $pluginfile, $function = '' ) {
-		add_action( 'deactivate_'.basename( dirname( $pluginfile ) ).'/'.basename( $pluginfile ), array( &$this, $function == '' ? 'deactivate' : $function ) );
+		add_action( 'deactivate_'.basename( dirname( $pluginfile ) ).'/'.basename( $pluginfile ), array( &$this, '' === $function ? 'deactivate' : $function ) );
 	}
 
 	/**
@@ -278,11 +278,11 @@ class Babble_Plugin {
 		global $posts, $post, $wp_did_header, $wp_did_template_redirect, $wp_query, $wp_rewrite, $wpdb, $wp_version, $wp, $id, $comment, $user_ID;
 
 		if ( is_array( $wp_query->query_vars ) ) {
-			extract( $wp_query->query_vars, EXTR_SKIP ); }
+			extract( $wp_query->query_vars, EXTR_SKIP ); } // @codingStandardsIgnoreLine
 
 		// Plus our specific template vars
 		if ( is_array( $vars ) ) {
-			extract( $vars ); }
+			extract( $vars ); } // @codingStandardsIgnoreLine
 
 		require( $template_file );
 	}
@@ -296,15 +296,17 @@ class Babble_Plugin {
 	protected function render_admin( $template_file, $vars = null ) {
 		// Plus our specific template vars
 		if ( is_array( $vars ) ) {
-			extract( $vars ); }
+			extract( $vars ); // @codingStandardsIgnoreLine
+		}
 
 		// Try to render
 		if ( file_exists( $this->dir( "templates-admin/$template_file" ) ) ) {
 			require( $this->dir( "templates-admin/$template_file" ) );
 		} else {
 			$msg = sprintf( __( 'This plugin admin template could not be found: %s' ), $this->dir( "templates-admin/$template_file" ) );
-			bbl_log( "Plugin template error: $msg" );
-			echo "<p style='background-color: #ffa; border: 1px solid red; color: #300; padding: 10px;'>$msg</p>";
+			bbl_log( "Plugin template error: $msg" ); ?>
+			<p style='background-color: #ffa; border: 1px solid red; color: #300; padding: 10px;'><?php esc_html( $msg ); ?></p>
+			<?php
 		}
 	}
 
@@ -370,7 +372,9 @@ class Babble_Plugin {
 	 * @author Simon Wheatley
 	 **/
 	protected function render_admin_notice( $notice ) {
-		echo "<div class='updated'><p>$notice</p></div>";
+		?>
+		<div class='updated'><p><?php esc_html( $notice ) ?></p></div>
+		<?php
 	}
 
 	/**
@@ -381,7 +385,9 @@ class Babble_Plugin {
 	 * @author Simon Wheatley
 	 **/
 	protected function render_admin_error( $error ) {
-		echo "<div class='error'><p>$error</p></div>";
+		?>
+		<div class='error'><p><?php esc_html( $error ); ?></p></div>
+		<?php
 	}
 
 	/**
@@ -437,8 +443,8 @@ class Babble_Plugin {
 			return $this->dir( "templates/$template_file" ); }
 		// Oh dear. We can't find the template.
 		$msg = sprintf( __( 'This plugin template could not be found, perhaps you need to hook `sil_plugins_dir` and `sil_plugins_url`: %s' ), $this->dir( "templates/$template_file" ) );
-		bbl_log( "Template error: $msg" );
-		echo "<p style='background-color: #ffa; border: 1px solid red; color: #300; padding: 10px;'>$msg</p>";
+		bbl_log( "Template error: $msg" ); ?>
+		<p style='background-color: #ffa; border: 1px solid red; color: #300; padding: 10px;'><?php esc_html( $msg ); ?></p><?php
 	}
 
 	/**
@@ -457,7 +463,7 @@ class Babble_Plugin {
 	function add_meta_box( $id, $title, $function = '', $page, $context = 'advanced', $priority = 'default', $args = null ) {
 
 		require_once( ABSPATH . 'wp-admin/includes/template.php' );
-		add_meta_box( $id, $title, array( &$this, $function == '' ? $id : $function ), $page, $context, $priority, $args );
+		add_meta_box( $id, $title, array( &$this, '' === $function ? $id : $function ), $page, $context, $priority, $args );
 	}
 
 	/**
@@ -471,7 +477,7 @@ class Babble_Plugin {
 	 * @param callable $func Hook to run when shortcode is found.
 	 */
 	protected function add_shortcode( $tag, $function = null ) {
-		add_shortcode( $tag, array( &$this, $function == '' ? $tag : $function ) );
+		add_shortcode( $tag, array( &$this, '' === $function ? $tag : $function ) );
 	}
 
 	/**

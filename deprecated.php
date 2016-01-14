@@ -36,7 +36,7 @@ $bbl_translating = true;
  **/
 function bbl_start_translating() {
 	global $bbl_translating;
-	_deprecated_function( __FUNCTION__, 1.4 );
+	_deprecated_function( __FUNCTION__, 1.4  ); // @codingStandardsIgnoreLine
 	$bbl_translating = true;
 }
 
@@ -47,7 +47,7 @@ function bbl_start_translating() {
  **/
 function bbl_stop_translating() {
 	global $bbl_translating;
-	_doing_it_wrong( __FUNCTION__, __( 'Instead of calling this function, you should pass a `bbl_translate` argument to `get_posts()` with a value of boolean false.', 'babble' ), 1.4 );
+	_doing_it_wrong( __FUNCTION__, esc_html__( 'Instead of calling this function, you should pass a `bbl_translate` argument to `get_posts()` with a value of boolean false.', 'babble' ), 1.4 ); // @codingStandardsIgnoreLine
 	$bbl_translating = false;
 }
 
@@ -58,6 +58,6 @@ function bbl_stop_translating() {
  **/
 function bbl_translating() {
 	global $bbl_translating;
-	_deprecated_function( __FUNCTION__, 1.4 );
+	_deprecated_function( __FUNCTION__, 1.4 ); // @codingStandardsIgnoreLine
 	return $bbl_translating;
 }

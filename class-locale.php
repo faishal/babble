@@ -115,7 +115,7 @@ class Babble_Locale {
 	 **/
 	public function admin_notices() {
 		if ( ! get_option( 'permalink_structure' ) ) {
-			printf( '<div class="error"><p>%s</p></div>', sprintf( __( '<strong>Babble problem:</strong> Fancy permalinks are disabled. <a href="%s">Please enable them</a> in order to have language prefixed URLs work correctly.', 'babble' ), admin_url( '/options-permalink.php' ) ) );
+			printf( '<div class="error"><p>%s</p></div>', sprintf( __( '<strong>Babble problem:</strong> Fancy permalinks are disabled. <a href="%s">Please enable them</a> in order to have language prefixed URLs work correctly.', 'babble' ), esc_url( admin_url( '/options-permalink.php' ) ) ) ); // @codingStandardsIgnoreLine
 		}
 	}
 
@@ -176,7 +176,7 @@ class Babble_Locale {
 		$home_path = parse_url( home_url() );
 		if ( $hooked ) {
 			add_filter( 'home_url', array( $this, 'home_url' ), null, 2 ); }
-		if ( empty( $home_path['path'] ) || '/' == $home_path['path'] ) {
+		if ( empty( $home_path['path'] ) || '/' === $home_path['path'] ) {
 			$new_rules['robots\.txt$'] = $wp_rewrite->index . '?robots=1'; }
 		return $new_rules;
 	}
@@ -189,7 +189,7 @@ class Babble_Locale {
 	 **/
 	public function set_locale( $locale ) {
 		// Deal with the special case of wp-comments-post.php
-		if ( false !== stristr( $_SERVER['REQUEST_URI'], 'wp-comments-post.php' ) ) {
+		if ( false !== stristr( $_SERVER['REQUEST_URI'], 'wp-comments-post.php' ) ) { // @codingStandardsIgnoreLine
 			if ( $comment_post_ID = ( isset( $_POST['comment_post_ID'] ) ) ? (int) $_POST['comment_post_ID'] : false ) {
 				$this->set_content_lang( bbl_get_post_lang_code( $comment_post_ID ) );
 				return $this->content_lang;
@@ -206,16 +206,16 @@ class Babble_Locale {
 
 		if ( is_admin() ) {
 			// @FIXME: At this point a mischievous XSS "attack" could set a user's admin area language for them
-			if ( isset( $_POST['interface_lang'] ) ) {
-				$this->set_interface_lang( $_POST['interface_lang'] );
+			if ( isset( $_POST['interface_lang'] ) ) { // @codingStandardsIgnoreLine
+				$this->set_interface_lang( sanitize_text_field( $_POST['interface_lang'] ) ); // @codingStandardsIgnoreLine
 			} else {
 				// $current_user = wp_get_current_user();
 				if ( $lang = $this->get_cookie_interface_lang() ) {
 					$this->set_interface_lang( $lang ); }
 			}
 			// @FIXME: At this point a mischievous XSS "attack" could set a user's content language for them
-			if ( isset( $_GET['lang'] ) ) {
-				$lang = sanitize_text_field( $_GET['lang'] );
+			if ( isset( $_GET['lang'] ) ) { // @codingStandardsIgnoreLine
+				$lang = sanitize_text_field( $_GET['lang'] ); // @codingStandardsIgnoreLine
 				$this->set_content_lang( $lang );
 			} else {
 				// $current_user = wp_get_current_user();
@@ -464,15 +464,15 @@ class Babble_Locale {
 		global $wp_rewrite;
 		// @FIXME: Copying a huge hunk of code from WP->parse_request here, feels ugly.
 		// START: Huge hunk of WP->parse_request
-		if ( isset( $_SERVER['PATH_INFO'] ) ) {
-			$pathinfo = $_SERVER['PATH_INFO'];
+		if ( isset( $_SERVER['PATH_INFO'] ) ) { // @codingStandardsIgnoreLine
+			$pathinfo = $_SERVER['PATH_INFO'];// @codingStandardsIgnoreLine
 		} else { 			$pathinfo = ''; }
 		$pathinfo_array = explode( '?', $pathinfo );
 		$pathinfo = str_replace( '%', '%25', $pathinfo_array[0] );
-		$req_uri = $_SERVER['REQUEST_URI'];
+		$req_uri = $_SERVER['REQUEST_URI']; // @codingStandardsIgnoreLine
 		$req_uri_array = explode( '?', $req_uri );
 		$req_uri = $req_uri_array[0];
-		$self = $_SERVER['PHP_SELF'];
+		$self = $_SERVER['PHP_SELF']; // @codingStandardsIgnoreLine
 		$home_path = parse_url( home_url() );
 		if ( isset( $home_path['path'] ) ) {
 			$home_path = $home_path['path'];
@@ -500,7 +500,7 @@ class Babble_Locale {
 			$request = $pathinfo;
 		} else {
 			// If the request uri is the index, blank it out so that we don't try to match it against a rule.
-			if ( is_object( $wp_rewrite ) && $req_uri == $wp_rewrite->index ) {
+			if ( is_object( $wp_rewrite ) && $req_uri === $wp_rewrite->index ) {
 				$req_uri = ''; }
 			$request = $req_uri;
 		}
@@ -517,7 +517,7 @@ class Babble_Locale {
 	 **/
 	protected function maybe_set_cookie_content_lang() {
 		// @FIXME: At this point a mischievous XSS "attack" could set a user's content language for them
-		if ( $requested_lang = ( isset( $_GET['lang'] ) ) ? sanitize_text_field( $_GET['lang'] ) : false ) {
+		if ( $requested_lang = ( isset( $_GET['lang'] ) ) ? sanitize_text_field( $_GET['lang'] ) : false ) { // @codingStandardsIgnoreLine
 			setcookie( $this->content_lang_cookie, $requested_lang, time() + 31536000, COOKIEPATH, COOKIE_DOMAIN ); }
 	}
 
@@ -530,7 +530,7 @@ class Babble_Locale {
 	 **/
 	protected function maybe_set_cookie_interface_lang() {
 		// @FIXME: At this point a mischievous XSS "attack" could set a user's admin area language for them
-		if ( $requested_lang = ( isset( $_POST['interface_lang'] ) ) ? $_POST['interface_lang'] : false ) {
+		if ( $requested_lang = ( isset( $_POST['interface_lang'] ) ) ? sanitize_text_field( $_POST['interface_lang'] ) : false ) { // @codingStandardsIgnoreLine
 			setcookie( $this->interface_lang_cookie, $requested_lang, time() + 31536000, COOKIEPATH, COOKIE_DOMAIN ); }
 	}
 
@@ -542,7 +542,7 @@ class Babble_Locale {
 	 * @return string A language code
 	 **/
 	protected function get_cookie_content_lang() {
-		return ( isset( $_COOKIE[ $this->content_lang_cookie ] ) ) ? $_COOKIE[ $this->content_lang_cookie ] : '';
+		return ( isset( $_COOKIE[ $this->content_lang_cookie ] ) ) ? wp_unslash( $_COOKIE[ $this->content_lang_cookie ] ) : ''; // @codingStandardsIgnoreLine
 	}
 
 	/**
@@ -553,7 +553,7 @@ class Babble_Locale {
 	 * @return string A language code
 	 **/
 	protected function get_cookie_interface_lang() {
-		return ( isset( $_COOKIE[ $this->interface_lang_cookie ] ) ) ? $_COOKIE[ $this->interface_lang_cookie ] : '';
+		return ( isset( $_COOKIE[ $this->interface_lang_cookie ] ) ) ? wp_unslash( $_COOKIE[ $this->interface_lang_cookie ] ) : ''; // @codingStandardsIgnoreLine
 	}
 
 	/**
@@ -567,7 +567,7 @@ class Babble_Locale {
 		$option_name = 'bbl-locale-version';
 		$version = get_option( $option_name, 0 );
 
-		if ( $this->version == $version ) {
+		if ( $this->version === $version ) {
 			return; }
 
 		if ( $version < 1 ) {

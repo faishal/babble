@@ -109,10 +109,10 @@ class Babble_Languages extends Babble_Plugin {
 	 * @return void
 	 **/
 	public function admin_notices() {
-		if ( get_current_screen()->id == 'settings_page_babble_languages' ) {
+		if ( get_current_screen()->id === 'settings_page_babble_languages' ) {
 			return; }
 		if ( ! $this->get_option( 'active_langs', false ) || ! $this->get_option( 'default_lang', false ) ) {
-			printf( '<div class="error"><p>%s</p></div>', sprintf( __( '<strong>Babble setup:</strong> Please visit the <a href="%s">Available Languages settings</a> and setup your available languages and the default language.', 'babble' ), admin_url( 'options-general.php?page=babble_languages' ) ) );
+			printf( '<div class="error"><p>%s</p></div>', sprintf( __( '<strong>Babble setup:</strong> Please visit the <a href="%s">Available Languages settings</a> and setup your available languages and the default language.', 'babble' ), esc_url( admin_url( 'options-general.php?page=babble_languages' ) ) ) ); // @codingStandardsIgnoreLine
 		}
 	}
 
@@ -150,13 +150,13 @@ class Babble_Languages extends Babble_Plugin {
 		$langs = $this->merge_lang_sets( $this->available_langs, $this->lang_prefs );
 		// Merge in any POSTed field values
 		foreach ( $langs as $code => & $lang ) {
-			$lang->url_prefix = ( isset( $_POST[ 'url_prefix_' . $code ] ) ) ? sanitize_text_field( $_POST[ "url_prefix_$code" ] ) : $lang->url_prefix;
+			$lang->url_prefix = ( isset( $_POST[ 'url_prefix_' . $code ] ) ) ? sanitize_text_field( $_POST[ "url_prefix_$code" ] ) : $lang->url_prefix; // @codingStandardsIgnoreLine
 			if ( ! $lang->url_prefix ) {
 				$lang->url_prefix = $lang->url_prefix; }
 			$lang->text_direction = $lang->text_direction;
 			// This line must come after the text direction value is set
-			$lang->input_lang_class = ( 'rtl' == $lang->text_direction ) ? 'lang-rtl' : 'lang-ltr' ;
-			$lang->display_name = ( isset( $_POST[ "display_name_$code" ] ) ) ? sanitize_text_field( $_POST[ "display_name_$code" ] ) : $lang->display_name;
+			$lang->input_lang_class = ( 'rtl' === $lang->text_direction ) ? 'lang-rtl' : 'lang-ltr' ;
+			$lang->display_name = ( isset( $_POST[ "display_name_$code" ] ) ) ? sanitize_text_field( $_POST[ "display_name_$code" ] ) : $lang->display_name; // @codingStandardsIgnoreLine
 			if ( ! $lang->display_name ) {
 				$lang->display_name = $lang->name; }
 			// Note any url_prefix errors
@@ -326,7 +326,7 @@ class Babble_Languages extends Babble_Plugin {
 	 * @return void
 	 **/
 	protected function maybe_process_languages() {
-		if ( ! isset( $_POST['_babble_nonce'] ) ) {
+		if ( ! isset( $_POST['_babble_nonce'] ) ) { // @codingStandardsIgnoreLine
 			return; }
 		check_admin_referer( 'babble_lang_prefs', '_babble_nonce' );
 
@@ -335,8 +335,8 @@ class Babble_Languages extends Babble_Plugin {
 		$url_prefixes = array();
 		foreach ( $this->available_langs as $code => $lang ) {
 			$lang_pref = new stdClass;
-			$lang_pref->display_name = isset( $_POST[ 'display_name_' . $code ] ) ? sanitize_text_field( $_POST[ 'display_name_' . $code ] ) : '';
-			$lang_pref->url_prefix = isset( $_POST[ 'url_prefix_' . $code ] ) ? sanitize_text_field( $_POST[ 'url_prefix_' . $code ] ) : '';
+			$lang_pref->display_name = isset( $_POST[ 'display_name_' . $code ] ) ? sanitize_text_field( $_POST[ 'display_name_' . $code ] ) : ''; // @codingStandardsIgnoreLine
+			$lang_pref->url_prefix = isset( $_POST[ 'url_prefix_' . $code ] ) ? sanitize_text_field( $_POST[ 'url_prefix_' . $code ] ) : ''; // @codingStandardsIgnoreLine
 			// Check we don't have more than one language using the same url prefix
 			if ( array_key_exists( $lang_pref->url_prefix, $url_prefixes ) ) {
 				$lang_1 = $this->format_code_lang( $code );
@@ -359,8 +359,8 @@ class Babble_Languages extends Babble_Plugin {
 			$langs = $this->merge_lang_sets( $this->available_langs, $this->lang_prefs );
 			$active_langs = array();
 			$post_active_langs = array();
-			if ( isset( $_POST['active_langs'] ) && is_array( $_POST['active_langs'] ) ) {
-				$post_active_langs = array_map( 'sanitize_text_field', $_POST['active_langs'] );
+			if ( isset( $_POST['active_langs'] ) && is_array( $_POST['active_langs'] ) ) { // @codingStandardsIgnoreLine
+				$post_active_langs = array_map( 'sanitize_text_field', $_POST['active_langs'] ); // @codingStandardsIgnoreLine
 			}
 			foreach ( $post_active_langs as $code ) {
 				$active_langs[ $langs[ $code ]->url_prefix ] = $code; }
@@ -372,10 +372,10 @@ class Babble_Languages extends Babble_Plugin {
 				$this->langs = $langs;
 				$this->update_option( 'langs', $this->langs );
 			}
-			if ( ! isset( $_POST['public_langs'] ) ) {
+			if ( ! isset( $_POST['public_langs'] ) ) { // @codingStandardsIgnoreLine
 				$this->set_admin_error( __( 'You must set at least your default language as public.', 'babble' ) );
 			} else {
-				$public_langs = $post_active_langs = array_map( 'sanitize_text_field', $_POST['public_langs'] );
+				$public_langs = $post_active_langs = array_map( 'sanitize_text_field', $_POST['public_langs'] ); // @codingStandardsIgnoreLine
 				$default_lang = ( isset( $_POST['default_lang'] ) ) ? sanitize_text_field( $_POST['default_lang'] ) : false;
 				if ( $default_lang && ! in_array( $default_lang, $public_langs ) ) {
 					$this->set_admin_error( __( 'You must set your default language as public.', 'babble' ) ); }
@@ -387,7 +387,7 @@ class Babble_Languages extends Babble_Plugin {
 			$this->update_option( 'public_langs', $public_langs );
 
 			// First the default language
-			$default_lang = ( isset( $_POST['default_lang'] ) ) ? sanitize_text_field( $_POST['default_lang'] ) : false;
+			$default_lang = ( isset( $_POST['default_lang'] ) ) ? sanitize_text_field( $_POST['default_lang'] ) : false; // @codingStandardsIgnoreLine
 			$this->update_option( 'default_lang', $default_lang );
 			// Now the prefs
 			$this->update_option( 'lang_prefs', $lang_prefs );
@@ -450,7 +450,7 @@ class Babble_Languages extends Babble_Plugin {
 	protected function is_rtl( $lang ) {
 		$locale_file = WP_LANG_DIR . "/$lang.php";
 		if ( ( 0 === validate_file( $lang ) ) && is_readable( $locale_file ) ) {
-			$locale_file_code = file_get_contents( $locale_file );
+			$locale_file_code = file_get_contents( $locale_file ); // @codingStandardsIgnoreLine
 			// Regex to find something looking like: $text_direction = 'rtl';
 			return ( (bool) preg_match( '/\$text_direction\s?=\s?[\'|"]rtl[\'|"]\s?;/i', $locale_file_code ) ) ? 'rtl' : 'ltr';
 		}
@@ -678,10 +678,10 @@ class Babble_Languages extends Babble_Plugin {
 		// If multisite, check options.
 		if ( is_multisite() && ! defined( 'WP_INSTALLING' ) ) {
 			$ms_locale = get_option( 'WPLANG' );
-			if ( $ms_locale === false ) {
+			if ( false === $ms_locale ) {
 				$ms_locale = get_site_option( 'WPLANG' ); }
 
-			if ( $ms_locale !== false ) {
+			if ( false !== $ms_locale ) {
 				$locale = $ms_locale; }
 		}
 
